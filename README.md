@@ -1,2 +1,5 @@
-# Locomotiv
-Fichiers de départ pour le TP2
+# Locomotiv'
+### Membres de l'équipe :
+* Alexandre Roy
+* Anthony Pageau
+* Amine Blal
