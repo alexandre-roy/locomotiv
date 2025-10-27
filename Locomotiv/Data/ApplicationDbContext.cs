@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Locomotiv.Utils.Services;
 using System.IO;
+using Seismoscope.Model;
 
 public class ApplicationDbContext : DbContext
 {
@@ -23,8 +24,8 @@ public class ApplicationDbContext : DbContext
         if (!Users.Any())
         {
             Users.AddRange(
-                new User { Prenom = "John", Nom = "Doe", Username = "johndoe", Password = "password123" },
-                new User { Prenom = "Jane", Nom = "Doe", Username = "janedoe", Password = "password123" }
+                new Employe { Prenom = "John", Nom = "Doe", Username = "johndoe", Password = "password123" },
+                new Administrateur { Prenom = "Jane", Nom = "Doe", Username = "janedoe", Password = "password123" }
             );
             SaveChanges();
         }

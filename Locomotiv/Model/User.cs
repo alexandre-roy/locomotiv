@@ -55,6 +55,9 @@
         }
     }
 
+    protected User()
+    {
+    }
     protected User(int id, string prenom, string nom, string username, string password)
     {
         Id = id;
@@ -63,4 +66,6 @@
         Username = username;
         Password = password;
     }
+
+
 }

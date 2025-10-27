@@ -8,8 +8,18 @@ namespace Seismoscope.Model
 {
     public class Employe : User
     {
-        protected Employe(int id, string prenom, string nom, string username, string password) : base(id, prenom, nom, username, password)
+
+        public Employe(): base()
         {
+        }
+
+        public Employe(int id, string prenom, string nom, string username, string password) : base(id, prenom, nom, username, password)
+        {
+            Id = id;
+            Prenom = prenom;
+            Nom = nom;
+            Username = username;
+            Password = password;
         }
     }
 }

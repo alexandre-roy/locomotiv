@@ -8,8 +8,16 @@ namespace Seismoscope.Model
 {
     public class Administrateur : User
     {
-        protected Administrateur(int id, string prenom, string nom, string username, string password) : base(id, prenom, nom, username, password)
+        public Administrateur(): base()
         {
+        }
+        public Administrateur(int id, string prenom, string nom, string username, string password) : base(id, prenom, nom, username, password)
+        {
+            Id = id;
+            Prenom = prenom;
+            Nom = nom;
+            Username = username;
+            Password = password;
         }
     }
 }
