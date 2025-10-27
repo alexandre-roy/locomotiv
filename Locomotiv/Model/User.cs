@@ -1,12 +1,66 @@
-﻿public class User
+﻿public abstract class User
 {
-    public int Id { get; set; } // Clé primaire
+    private int _id;
+    public int Id // Clé primaire
+    {
+        get;
 
-    public string Prenom { get; set; }
+        set
+        {
+            _id = value;
+        }
+    }
 
-    public string Nom { get; set; }
+    private string _prenom;
+    public string Prenom
+    {
+        get;
 
-    public string Username { get; set; }
+        set
+        {
+            _prenom = value;
+        }
+    }
 
-    public string Password { get; set; }
+    private string _nom;
+    public string Nom
+    {
+        get;
+
+        set
+        {
+            _nom = value;
+        }
+    }
+
+    private string _username;
+    public string Username
+    {
+        get;
+
+        set
+        {
+            _username = value;
+        }
+    }
+
+    private string _password;
+    public string Password
+    {
+        get;
+
+        set
+        {
+            _password = value;
+        }
+    }
+
+    protected User(int id, string prenom, string nom, string username, string password)
+    {
+        Id = id;
+        Prenom = prenom;
+        Nom = nom;
+        Username = username;
+        Password = password;
+    }
 }
