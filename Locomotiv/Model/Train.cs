@@ -4,11 +4,11 @@ public class Train
 {
     public int Id { get; set; }
 
-    public TypeTrain Type { get; set; }
+    public TypeTrain TypeDeTrain { get; set; }
 
     public decimal Vitesse { get; set; }
 
-    public NveauDePriorite NveauDePriorite { get; set; }
+    public NiveauDePriorite NiveauDePriorite { get; set; }
 
     public int Capacite { get; set; }
 

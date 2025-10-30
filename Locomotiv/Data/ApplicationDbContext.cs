@@ -79,31 +79,35 @@ public class ApplicationDbContext : DbContext
                 
                 new Train
                 {
-                    Type = TypeTrain.Maintenance,
+                    TypeDeTrain = TypeTrain.Maintenance,
                     Vitesse = 80,
-                    NiveauDePriorite = 1,
-                    Capacite = 50
+                    NiveauDePriorite = NiveauDePriorite.Haute,
+                    Capacite = 50,
+                    Etat = EtatTrain.EnGare
                 },
                 new Train
                 {
-                    Type = TypeTrain.Marchandise,
+                    TypeDeTrain = TypeTrain.Marchandise,
                     Vitesse = 80,
-                    NiveauDePriorite = 1,
-                    Capacite = 50
+                    NiveauDePriorite = NiveauDePriorite.Moyenne,
+                    Capacite = 50,
+                    Etat = EtatTrain.Programme
                 },
                 new Train
                 {
-                    Type = TypeTrain.Passager,
+                    TypeDeTrain = TypeTrain.Passager,
                     Vitesse = 80,
-                    NiveauDePriorite = 1,
-                    Capacite = 50
+                    NiveauDePriorite = NiveauDePriorite.Faible,
+                    Capacite = 50,
+                    Etat = EtatTrain.EnTransit
                 },
                 new Train
                 {
-                    Type = TypeTrain.Express,
+                    TypeDeTrain = TypeTrain.Express,
                     Vitesse = 80,
-                    NiveauDePriorite = 1,
-                    Capacite = 50
+                    NiveauDePriorite = NiveauDePriorite.Critique,
+                    Capacite = 50,
+                    Etat = EtatTrain.EnAttente
                 }
             );
             SaveChanges();

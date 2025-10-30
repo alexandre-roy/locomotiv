@@ -1,4 +1,4 @@
-﻿public enum NveauDePriorite
+﻿public enum NiveauDePriorite
 {
     Faible,
     Moyenne,
