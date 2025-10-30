@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
-public abstract class LigneFerroviaire
+public class LigneFerroviaire
 {
     public int Id { get; set; }
 

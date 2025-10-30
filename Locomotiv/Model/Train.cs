@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
-public abstract class Train
+public class Train
 {
     public int Id { get; set; }
 
