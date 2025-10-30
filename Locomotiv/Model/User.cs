@@ -1,43 +1,16 @@
 ﻿public class User
 {
-    public int Id // Clé primaire
-    {
-        get;
+    public int Id { get; set; }
 
-        set;
-    }
+    public string Prenom { get; set; }
 
-    public string Prenom
-    {
-        get;
+    public string Nom { get; set; }
 
-        set;
-    }
+    public string Username { get; set; }
 
-    public string Nom
-    {
-        get;
-        set;
-    }
+    public string Password { get; set; }
 
-    public string Username
-    {
-        get;
+    public bool IsAdmin { get; set; }
 
-        set;
-    }
-
-    public string Password
-    {
-        get;
-
-        set;
-    }
-    public bool IsAdmin
-    {
-        get;
-        set;
-    }
-
-
+    public TypeEmploye Type { get; set; }
 }
