@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Locomotiv.Utils.Services;
+﻿using Locomotiv.Utils.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Locomotiv.Model;
 using System.IO;
-using Seismoscope.Model;
 
 public class ApplicationDbContext : DbContext
 {
@@ -16,18 +17,34 @@ public class ApplicationDbContext : DbContext
         // Configurer le DbContext pour utiliser la chaîne de connexion
         optionsBuilder.UseSqlite(connectionString);
     }
-
     public DbSet<User> Users { get; set; }
+    IConfiguration config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false).Build();
 
     public void SeedData()
     {
+        IConfigurationSection sectionAdmin = config.GetSection("DefaultAdmin");
+
         if (!Users.Any())
         {
             Users.AddRange(
-                new Employe { Prenom = "John", Nom = "Doe", Username = "johndoe", Password = "password123" },
-                new Administrateur { Prenom = "Jane", Nom = "Doe", Username = "janedoe", Password = "password123" }
+                new User
+                {
+                    Prenom = sectionAdmin["Prenom"],
+                    Nom = sectionAdmin["Nom"],
+                    Username = sectionAdmin["Username"],
+                    Password = sectionAdmin["Password"],
+                    IsAdmin = true
+                },
+                new User
+                {
+                    Prenom = "Employe",
+                    Nom = "Standard",
+                    Username = "employe",
+                    Password = "employe"
+                }
             );
             SaveChanges();
         }
+
     }
 }
