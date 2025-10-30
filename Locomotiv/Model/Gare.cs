@@ -12,5 +12,9 @@ public abstract class Gare
 
     public List<Train> Trains { get; set; }
 
+    public List<Train> TrainsEnGare { get; set; }
+
     public List<LigneFerroviaire> LignesFerroviaires { get; set; }
+
+    public List<User> Employes { get; set; }
 }

@@ -8,7 +8,9 @@ public abstract class Train
 
     public decimal Vitesse { get; set; }
 
-    public int NiveauDePriorite { get; set; }
+    public NveauDePriorite NveauDePriorite { get; set; }
 
     public int Capacite { get; set; }
+
+    public EtatTrain Etat { get; set; }
 }
