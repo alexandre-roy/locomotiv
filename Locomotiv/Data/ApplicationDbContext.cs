@@ -18,6 +18,8 @@ public class ApplicationDbContext : DbContext
         optionsBuilder.UseSqlite(connectionString);
     }
     public DbSet<User> Users { get; set; }
+    public DbSet<Train> Trains { get; set; }
+
     IConfiguration config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false).Build();
 
     public void SeedData()
@@ -33,14 +35,75 @@ public class ApplicationDbContext : DbContext
                     Nom = sectionAdmin["Nom"],
                     Username = sectionAdmin["Username"],
                     Password = sectionAdmin["Password"],
-                    IsAdmin = true
+                    IsAdmin = true,
                 },
                 new User
                 {
-                    Prenom = "Employe",
+                    Prenom = "Mecanicien",
                     Nom = "Standard",
-                    Username = "employe",
-                    Password = "employe"
+                    Username = "employe1",
+                    Password = "employe",
+                    Type = TypeEmploye.Mecanicien,
+                },
+                new User
+                {
+                    Prenom = "Conducteur",
+                    Nom = "Standard",
+                    Username = "employe2",
+                    Password = "employe",
+                    Type = TypeEmploye.Conducteur,
+                },
+                new User
+                {
+                    Prenom = "PersonnelAdminstratif",
+                    Nom = "Standard",
+                    Username = "employe3",
+                    Password = "employe",
+                    Type = TypeEmploye.PersonnelAdminstratif,
+                },
+                new User
+                {
+                    Prenom = "ControleurDeTrafic",
+                    Nom = "Standard",
+                    Username = "employe4",
+                    Password = "employe",
+                    Type = TypeEmploye.ControleurDeTrafic,
+                }
+            );
+            SaveChanges();
+        }
+
+        if (!Trains.Any())
+        {
+            Trains.AddRange(
+                
+                new Train
+                {
+                    Type = TypeTrain.Maintenance,
+                    Vitesse = 80,
+                    NiveauDePriorite = 1,
+                    Capacite = 50
+                },
+                new Train
+                {
+                    Type = TypeTrain.Marchandise,
+                    Vitesse = 80,
+                    NiveauDePriorite = 1,
+                    Capacite = 50
+                },
+                new Train
+                {
+                    Type = TypeTrain.Passager,
+                    Vitesse = 80,
+                    NiveauDePriorite = 1,
+                    Capacite = 50
+                },
+                new Train
+                {
+                    Type = TypeTrain.Express,
+                    Vitesse = 80,
+                    NiveauDePriorite = 1,
+                    Capacite = 50
                 }
             );
             SaveChanges();
