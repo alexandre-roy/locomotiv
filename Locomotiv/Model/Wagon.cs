@@ -8,5 +8,5 @@ public abstract class Wagon
 {
     public int Id { get; set; }
 
-    public int Taille { get; set; }
+    public int Size { get; set; }
 }

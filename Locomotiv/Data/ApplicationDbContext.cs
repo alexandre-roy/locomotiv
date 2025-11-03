@@ -19,6 +19,7 @@ public class ApplicationDbContext : DbContext
     }
     public DbSet<User> Users { get; set; }
     public DbSet<Train> Trains { get; set; }
+    public DbSet<Station> Stations { get; set; }
 
     IConfiguration config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false).Build();
 
@@ -43,7 +44,7 @@ public class ApplicationDbContext : DbContext
                     Nom = "Standard",
                     Username = "employe1",
                     Password = "employe",
-                    Type = TypeEmploye.Mecanicien,
+                    Type = EmployeeType.Mecanicien,
                 },
                 new User
                 {
@@ -51,7 +52,7 @@ public class ApplicationDbContext : DbContext
                     Nom = "Standard",
                     Username = "employe2",
                     Password = "employe",
-                    Type = TypeEmploye.Conducteur,
+                    Type = EmployeeType.Conducteur,
                 },
                 new User
                 {
@@ -59,7 +60,7 @@ public class ApplicationDbContext : DbContext
                     Nom = "Standard",
                     Username = "employe3",
                     Password = "employe",
-                    Type = TypeEmploye.PersonnelAdminstratif,
+                    Type = EmployeeType.PersonnelAdminstratif,
                 },
                 new User
                 {
@@ -67,7 +68,7 @@ public class ApplicationDbContext : DbContext
                     Nom = "Standard",
                     Username = "employe4",
                     Password = "employe",
-                    Type = TypeEmploye.ControleurDeTrafic,
+                    Type = EmployeeType.ControleurDeTrafic,
                 }
             );
             SaveChanges();
@@ -79,35 +80,35 @@ public class ApplicationDbContext : DbContext
                 
                 new Train
                 {
-                    TypeDeTrain = TypeTrain.Maintenance,
+                    TypeDeTrain = TrainType.Maintenance,
                     Vitesse = 80,
-                    NiveauDePriorite = NiveauDePriorite.Haute,
+                    NiveauDePriorite = PriorityLevel.Haute,
                     Capacite = 50,
-                    Etat = EtatTrain.EnGare
+                    Etat = TrainState.EnGare
                 },
                 new Train
                 {
-                    TypeDeTrain = TypeTrain.Marchandise,
+                    TypeDeTrain = TrainType.Marchandise,
                     Vitesse = 80,
-                    NiveauDePriorite = NiveauDePriorite.Moyenne,
+                    NiveauDePriorite = PriorityLevel.Moyenne,
                     Capacite = 50,
-                    Etat = EtatTrain.Programme
+                    Etat = TrainState.Programme
                 },
                 new Train
                 {
-                    TypeDeTrain = TypeTrain.Passager,
+                    TypeDeTrain = TrainType.Passager,
                     Vitesse = 80,
-                    NiveauDePriorite = NiveauDePriorite.Faible,
+                    NiveauDePriorite = PriorityLevel.Faible,
                     Capacite = 50,
-                    Etat = EtatTrain.EnTransit
+                    Etat = TrainState.EnTransit
                 },
                 new Train
                 {
-                    TypeDeTrain = TypeTrain.Express,
+                    TypeDeTrain = TrainType.Express,
                     Vitesse = 80,
-                    NiveauDePriorite = NiveauDePriorite.Critique,
+                    NiveauDePriorite = PriorityLevel.Critique,
                     Capacite = 50,
-                    Etat = EtatTrain.EnAttente
+                    Etat = TrainState.EnAttente
                 }
             );
             SaveChanges();

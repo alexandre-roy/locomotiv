@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Locomotiv.Utils;
 
-namespace Locomotiv.ViewModel
+namespace Locomotiv.Model.Interfaces
 {
-    internal class DetailsStationViewModel : BaseViewModel
+    public interface IStationDAL
     {
-
+        Station? FindByName(string name);
     }
 }

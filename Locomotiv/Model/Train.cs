@@ -4,13 +4,13 @@ public class Train
 {
     public int Id { get; set; }
 
-    public TypeTrain TypeDeTrain { get; set; }
+    public TrainType TypeOfTrain { get; set; }
 
-    public decimal Vitesse { get; set; }
+    public decimal Speed { get; set; }
 
-    public NiveauDePriorite NiveauDePriorite { get; set; }
+    public PriorityLevel PriotityLevel { get; set; }
 
-    public int Capacite { get; set; }
+    public int Capacity { get; set; }
 
-    public EtatTrain Etat { get; set; }
+    public TrainState State { get; set; }
 }

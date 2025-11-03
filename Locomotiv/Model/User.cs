@@ -12,5 +12,5 @@
 
     public bool IsAdmin { get; set; }
 
-    public TypeEmploye Type { get; set; }
+    public EmployeeType Type { get; set; }
 }
