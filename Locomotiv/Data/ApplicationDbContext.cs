@@ -44,7 +44,7 @@ public class ApplicationDbContext : DbContext
                     Nom = "Standard",
                     Username = "employe1",
                     Password = "employe",
-                    Type = EmployeeType.Mecanicien,
+                    Type = EmployeeType.Mechanic,
                 },
                 new User
                 {
@@ -52,7 +52,7 @@ public class ApplicationDbContext : DbContext
                     Nom = "Standard",
                     Username = "employe2",
                     Password = "employe",
-                    Type = EmployeeType.Conducteur,
+                    Type = EmployeeType.Conductor,
                 },
                 new User
                 {
@@ -60,7 +60,7 @@ public class ApplicationDbContext : DbContext
                     Nom = "Standard",
                     Username = "employe3",
                     Password = "employe",
-                    Type = EmployeeType.PersonnelAdminstratif,
+                    Type = EmployeeType.AdministrativeStaff,
                 },
                 new User
                 {
@@ -68,7 +68,7 @@ public class ApplicationDbContext : DbContext
                     Nom = "Standard",
                     Username = "employe4",
                     Password = "employe",
-                    Type = EmployeeType.ControleurDeTrafic,
+                    Type = EmployeeType.TrafficController,
                 }
             );
             SaveChanges();
@@ -80,39 +80,146 @@ public class ApplicationDbContext : DbContext
                 
                 new Train
                 {
-                    TypeDeTrain = TrainType.Maintenance,
-                    Vitesse = 80,
-                    NiveauDePriorite = PriorityLevel.Haute,
-                    Capacite = 50,
-                    Etat = TrainState.EnGare
+                    TypeOfTrain = TrainType.Maintenance,
+                    Speed = 80,
+                    PriotityLevel = PriorityLevel.High,
+                    Capacity = 50,
+                    State = TrainState.InStation
                 },
                 new Train
                 {
-                    TypeDeTrain = TrainType.Marchandise,
-                    Vitesse = 80,
-                    NiveauDePriorite = PriorityLevel.Moyenne,
-                    Capacite = 50,
-                    Etat = TrainState.Programme
+                    TypeOfTrain = TrainType.Merchandise,
+                    Speed = 80,
+                    PriotityLevel = PriorityLevel.Medium,
+                    Capacity = 50,
+                    State = TrainState.Programmed
                 },
                 new Train
                 {
-                    TypeDeTrain = TrainType.Passager,
-                    Vitesse = 80,
-                    NiveauDePriorite = PriorityLevel.Faible,
-                    Capacite = 50,
-                    Etat = TrainState.EnTransit
+                    TypeOfTrain = TrainType.Passenger,
+                    Speed = 80,
+                    PriotityLevel = PriorityLevel.Low,
+                    Capacity = 50,
+                    State = TrainState.InTransit
                 },
                 new Train
                 {
-                    TypeDeTrain = TrainType.Express,
-                    Vitesse = 80,
-                    NiveauDePriorite = PriorityLevel.Critique,
-                    Capacite = 50,
-                    Etat = TrainState.EnAttente
+                    TypeOfTrain = TrainType.Express,
+                    Speed = 80,
+                    PriotityLevel = PriorityLevel.Critical,
+                    Capacity = 50,
+                    State = TrainState.Idle
                 }
             );
             SaveChanges();
         }
 
+        if (!Stations.Any())
+        {
+            Stations.AddRange(
+
+                new Station
+                {
+                    Name = "Baie de Beauport",
+                    Longitude = -71.204255,
+                    Latitude = 46.842256,
+                    Trains = new List<Train>(),
+                    TrainsInStation = new List<Train>(),
+                    RalwayLines = new List<RailwayLine>(),
+                    Employees = new List<User>()
+                },
+                new Station
+                {
+                    Name = "Port de Québec",
+                    Longitude = -71.197774,
+                    Latitude = 46.823961,
+                    Trains = new List<Train>(),
+                    TrainsInStation = new List<Train>(),
+                    RalwayLines = new List<RailwayLine>(),
+                    Employees = new List<User>()
+                },
+                new Station
+                {
+                    Name = "Centre de distribution",
+                    Longitude = -71.23208,
+                    Latitude = 46.789962,
+                    Trains = new List<Train>(),
+                    TrainsInStation = new List<Train>(),
+                    RalwayLines = new List<RailwayLine>(),
+                    Employees = new List<User>()
+                },
+                new Station
+                {
+                    Name = "Vers Charlevoix",
+                    Longitude = -71.207817,
+                    Latitude = 46.845779,
+                    Trains = new List<Train>(),
+                    TrainsInStation = new List<Train>(),
+                    RalwayLines = new List<RailwayLine>(),
+                    Employees = new List<User>()
+                },
+                new Station
+                {
+                    Name = "Vers la Rive-Sud",
+                    Longitude = -71.290278,
+                    Latitude = 46.748911,
+                    Trains = new List<Train>(),
+                    TrainsInStation = new List<Train>(),
+                    RalwayLines = new List<RailwayLine>(),
+                    Employees = new List<User>()
+                },
+                new Station
+                {
+                    Name = "Vers Gatineau",
+                    Longitude = -71.428372,
+                    Latitude = 46.771591,
+                    Trains = new List<Train>(),
+                    TrainsInStation = new List<Train>(),
+                    RalwayLines = new List<RailwayLine>(),
+                    Employees = new List<User>()
+                },
+                new Station
+                {
+                    Name = "Vers le Nord",
+                    Longitude = -71.432235,
+                    Latitude = 46.765369,
+                    Trains = new List<Train>(),
+                    TrainsInStation = new List<Train>(),
+                    RalwayLines = new List<RailwayLine>(),
+                    Employees = new List<User>()
+                },
+                new Station
+                {
+                    Name = "Gare du Palais",
+                    Longitude = -71.2139,
+                    Latitude = 46.8174,
+                    Trains = new List<Train>(),
+                    TrainsInStation = new List<Train>(),
+                    RalwayLines = new List<RailwayLine>(),
+                    Employees = new List<User>()
+                },
+                new Station
+                {
+                    Name = "Gare Québec-Gatineau",
+                    Longitude = -71.332752,
+                    Latitude = 46.795569,
+                    Trains = new List<Train>(),
+                    TrainsInStation = new List<Train>(),
+                    RalwayLines = new List<RailwayLine>(),
+                    Employees = new List<User>()
+                },
+                new Station
+                {
+                    Name = "Gare CN",
+                    Longitude = -71.303381,
+                    Latitude = 46.753156,
+                    Trains = new List<Train>(),
+                    TrainsInStation = new List<Train>(),
+                    RalwayLines = new List<RailwayLine>(),
+                    Employees = new List<User>()
+                }
+            );
+            SaveChanges();
+        }
     }
 }

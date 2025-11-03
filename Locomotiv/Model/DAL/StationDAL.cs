@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Locomotiv.Model.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,11 @@ namespace Locomotiv.Model.DAL
         public Station? FindByName(string n)
         {
             return _context.Stations.FirstOrDefault(s => s.Name == n);
+        }
+
+        public IList<Station> GetAll()
+        {
+            return _context.Stations.Include(s => s.Trains).ToList();
         }
     }
 }

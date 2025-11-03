@@ -9,5 +9,7 @@ namespace Locomotiv.Model.Interfaces
     public interface IStationDAL
     {
         Station? FindByName(string name);
+
+        IList<Station> GetAll();
     }
 }

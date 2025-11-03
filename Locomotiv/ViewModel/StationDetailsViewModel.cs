@@ -13,24 +13,22 @@ namespace Locomotiv.ViewModel
 {
     internal class StationDetailsViewModel : BaseViewModel
     {
-        private Station _gare;
+        private Station _station;
 
-        public StationDetailsViewModel(Station gare)
+        public StationDetailsViewModel(Station station)
         {
-            _gare = gare;
+            _station = station;
         }
 
-        public string Location
+        public string Name
         {
-            get => _gare.Location;
-
+            get => _station.Name;
             set
             {
-                if (_gare.Location != value)
+                if (_station.Name != value)
                 {
-                    _gare.Location = value;
-                    OnPropertyChanged(nameof(Location));
-                    ValidateProprety(nameof(Location), value);
+                    _station.Name = value;
+                    OnPropertyChanged();
                 }
             }
         }

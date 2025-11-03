@@ -1,7 +1,7 @@
 ﻿public enum EmployeeType
 {
     Mechanic,
-    Driver,
+    Conductor,
     TrafficController,
     AdministrativeStaff
 }

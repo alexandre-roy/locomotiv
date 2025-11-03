@@ -1,6 +1,6 @@
 ﻿public enum PriorityLevel
 {
-    Waek,
+    Low,
     Medium,
     High,
     Critical

@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Locomotiv.View
 {
     /// <summary>
-    /// Interaction logic for DetailsStation.xaml
+    /// Interaction logic for StationDetails.xaml
     /// </summary>
-    public partial class DetailsStation : Page
+    public partial class StationDetails : UserControl
     {
-        public DetailsStation()
+        public StationDetails()
         {
             InitializeComponent();
         }

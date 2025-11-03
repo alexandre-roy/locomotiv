@@ -1,7 +1,7 @@
 ﻿public enum TrainType
 {
     Maintenance,
-    Freight,
+    Merchandise,
     Passenger,
     Express
 }

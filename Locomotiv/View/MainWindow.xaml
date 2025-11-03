@@ -27,6 +27,10 @@
                     Height="25"
                     Command="{Binding NavigateToConnectUserViewCommand}"
                     Visibility="{Binding UserSessionService.IsUserDisconnected, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            <Button Content="Détails de la gare"
+                    Margin="10"
+                    Height="25"
+                    Command="{Binding NavigateToStationDetailsViewCommand}"/>
         </StackPanel>
         <ContentControl Grid.Column="1" Content="{Binding NavigationService.CurrentView}"></ContentControl>
     </Grid>
