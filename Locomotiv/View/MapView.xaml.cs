@@ -29,8 +29,6 @@ namespace Locomotiv.View
             MapControl.Position = new PointLatLng(46.795817, -71.309985);
             MapControl.Zoom = 12;
             MapControl.DragButton = MouseButton.Left;
-            MapControl.MinZoom = 1;
-            MapControl.MaxZoom = 20;
             MapControl.CanDragMap = true;
             MapControl.ShowCenter = false;
 

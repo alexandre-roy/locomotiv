@@ -176,8 +176,8 @@ public class ApplicationDbContext : DbContext
                 new Station
                 {
                     Name = "Vers Gatineau",
-                    Longitude = -71.428372,
-                    Latitude = 46.771591,
+                    Longitude = -71.428302,
+                    Latitude = 46.770591,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
@@ -187,8 +187,8 @@ public class ApplicationDbContext : DbContext
                 new Station
                 {
                     Name = "Vers le Nord",
-                    Longitude = -71.432235,
-                    Latitude = 46.765369,
+                    Longitude = -71.429804,
+                    Latitude = 46.764212,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
