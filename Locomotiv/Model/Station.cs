@@ -21,4 +21,6 @@ public class Station
     public List<RailwayLine> RalwayLines { get; set; }
 
     public List<User> Employees { get; set; }
+
+    public StationType Type { get; set; }
 }

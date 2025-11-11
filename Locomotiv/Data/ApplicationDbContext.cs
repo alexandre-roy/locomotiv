@@ -20,6 +20,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Train> Trains { get; set; }
     public DbSet<Station> Stations { get; set; }
+    public DbSet<Block> Blocks { get; set; }
 
     IConfiguration config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false).Build();
 
@@ -117,16 +118,16 @@ public class ApplicationDbContext : DbContext
         if (!Stations.Any())
         {
             Stations.AddRange(
-
                 new Station
                 {
                     Name = "Baie de Beauport",
-                    Longitude = -71.204255,
-                    Latitude = 46.842256,
+                    Longitude = -71.204475,
+                    Latitude = 46.833728,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
-                    Employees = new List<User>()
+                    Employees = new List<User>(),
+                    Type = StationType.Point
                 },
                 new Station
                 {
@@ -136,17 +137,19 @@ public class ApplicationDbContext : DbContext
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
-                    Employees = new List<User>()
+                    Employees = new List<User>(),
+                    Type = StationType.Point
                 },
                 new Station
                 {
                     Name = "Centre de distribution",
-                    Longitude = -71.23208,
-                    Latitude = 46.789962,
+                    Longitude = -71.225958,
+                    Latitude = 46.793968,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
-                    Employees = new List<User>()
+                    Employees = new List<User>(),
+                    Type = StationType.Point
                 },
                 new Station
                 {
@@ -156,7 +159,8 @@ public class ApplicationDbContext : DbContext
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
-                    Employees = new List<User>()
+                    Employees = new List<User>(),
+                    Type = StationType.Point
                 },
                 new Station
                 {
@@ -166,7 +170,8 @@ public class ApplicationDbContext : DbContext
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
-                    Employees = new List<User>()
+                    Employees = new List<User>(),
+                    Type = StationType.Point
                 },
                 new Station
                 {
@@ -176,7 +181,8 @@ public class ApplicationDbContext : DbContext
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
-                    Employees = new List<User>()
+                    Employees = new List<User>(),
+                    Type = StationType.Point
                 },
                 new Station
                 {
@@ -186,7 +192,8 @@ public class ApplicationDbContext : DbContext
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
-                    Employees = new List<User>()
+                    Employees = new List<User>(),
+                    Type = StationType.Point
                 },
                 new Station
                 {
@@ -196,7 +203,8 @@ public class ApplicationDbContext : DbContext
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
-                    Employees = new List<User>()
+                    Employees = new List<User>(),
+                    Type = StationType.Station
                 },
                 new Station
                 {
@@ -206,7 +214,8 @@ public class ApplicationDbContext : DbContext
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
-                    Employees = new List<User>()
+                    Employees = new List<User>(),
+                    Type = StationType.Station
                 },
                 new Station
                 {
@@ -216,7 +225,124 @@ public class ApplicationDbContext : DbContext
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
-                    Employees = new List<User>()
+                    Employees = new List<User>(),
+                    Type = StationType.Station
+                }
+
+            );
+            SaveChanges();
+        }
+        if (!Blocks.Any())
+        {
+            Blocks.AddRange(
+
+                new Block
+                {
+                    Id = 1,
+                    Longitude = -71.204255,
+                    Latitude = 46.842256,
+                },
+                new Block
+                {
+                    Id = 2,
+                    Longitude = -71.334879,
+                    Latitude = 46.747842,
+                },
+                new Block
+                {
+                    Id = 3,
+                    Longitude = -71.337711,
+                    Latitude = 46.749053,
+                },
+                new Block
+                {
+                    Id = 4,
+                    Longitude = -71.296210,
+                    Latitude = 46.754409,
+                },
+                new Block
+                {
+                    Id = 5,
+                    Longitude = -71.235611,
+                    Latitude = 46.786403,
+                },
+                new Block
+                {
+                    Id = 6,
+                    Longitude = -71.213773,
+                    Latitude = 46.820117,
+                },
+                new Block
+                {
+                    Id = 7,
+                    Longitude = -71.216567,
+                    Latitude = 46.822044,
+                },
+                new Block
+                {
+                    Id = 8,
+                    Longitude = -71.289502,
+                    Latitude = 46.797511,
+                },
+                new Block
+                {
+                    Id = 9,
+                    Longitude = -71.287356,
+                    Latitude = 46.800243,
+                },
+                new Block
+                {
+                    Id = 10,
+                    Longitude = -71.287764,
+                    Latitude = 46.800625,
+                },
+                new Block
+                {
+                    Id = 11,
+                    Longitude = -71.232142,
+                    Latitude = 46.790461,
+                },
+                new Block
+                {
+                    Id = 12,
+                    Longitude = -71.294171,
+                    Latitude = 46.799669,
+                },
+                new Block
+                {
+                    Id = 13,
+                    Longitude = -71.213549,
+                    Latitude = 46.830895,
+                },
+                new Block
+                {
+                    Id = 14,
+                    Longitude = -71.210308,
+                    Latitude = 46.830998
+                },
+                new Block
+                {
+                    Id = 15,
+                    Longitude = -71.223526,
+                    Latitude = 46.828532
+                },
+                new Block
+                {
+                    Id = 16,
+                    Longitude = -71.218849,
+                    Latitude = 46.826829
+                },
+                new Block
+                {
+                    Id = 17,
+                    Longitude = -71.339884,
+                    Latitude = 46.747778
+                },
+                new Block
+                {
+                    Id = 18,
+                    Longitude = -71.218491,
+                    Latitude = 46.824097
                 }
             );
             SaveChanges();

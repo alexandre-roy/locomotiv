@@ -1,0 +1,25 @@
+﻿using Locomotiv.Model.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Locomotiv.Model.DAL
+{
+    public class BlockDAL : IBlockDAL
+    {
+        private readonly ApplicationDbContext _context;
+
+        public BlockDAL(ApplicationDbContext c)
+        {
+            _context = c;
+        }
+
+
+        public IList<Block> GetAll()
+        {
+            return _context.Blocks.ToList();
+        }
+    }
+}
