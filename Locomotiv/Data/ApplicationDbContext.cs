@@ -28,10 +28,6 @@ public class ApplicationDbContext : DbContext
             .HasMany(s => s.TrainsInStation)
             .WithMany();
 
-        modelBuilder.Entity<Station>()
-            .HasMany(s => s.RalwayLines)
-            .WithMany();
-
         modelBuilder.Entity<User>()
             .HasOne(u => u.Station)
             .WithMany();
@@ -50,8 +46,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<Station> Stations { get; set; }
     public DbSet<Block> Blocks { get; set; }
     public DbSet<BlockPoint> BlockPoints { get; set; }
-
-    public DbSet<RailwayLine> RailwayLines { get; set; }
 
     IConfiguration config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false).Build();
 
@@ -139,8 +133,31 @@ public class ApplicationDbContext : DbContext
         locomotives4.Add(savedLocomotives[9]);
 
         List<Wagon> savedWagons = Wagons.ToList();
+        List<Wagon> wagonsForMerchandiseTrain = new List<Wagon>();
+        for (int i = 0; i <= 9; i++)
+        {
+            wagonsForMerchandiseTrain.Add(savedWagons[i]);
+        }
 
-        if (!Trains.Any() || !Stations.Any())
+        List<Wagon> wagonsForPassengerTrain = new List<Wagon>();
+        for (int i = 10; i <= 19; i++)
+        {
+            wagonsForPassengerTrain.Add(savedWagons[i]);
+        }
+        List<Wagon> wagonsForExpressTrain = new List<Wagon>();
+
+        for (int i = 20; i <= 29; i++)
+        {
+            wagonsForExpressTrain.Add(savedWagons[i]);
+        }
+        List<Wagon> wagonsForMaintenanceTrain = new List<Wagon>();
+        for (int i = 30; i <= 39; i++)
+        {
+            wagonsForMaintenanceTrain.Add(savedWagons[i]);
+        }
+
+
+        if (!Trains.Any())
         {
             Trains.AddRange(
 
@@ -149,7 +166,7 @@ public class ApplicationDbContext : DbContext
                     TypeOfTrain = TrainType.Maintenance,
                     PriotityLevel = PriorityLevel.Low,
                     State = TrainState.Idle,
-                    Wagons = new List<Wagon>(),
+                    Wagons = wagonsForMaintenanceTrain,
                     Locomotives = locomotives1
                 },
                 new Train
@@ -157,7 +174,7 @@ public class ApplicationDbContext : DbContext
                     TypeOfTrain = TrainType.Merchandise,
                     PriotityLevel = PriorityLevel.Medium,
                     State = TrainState.Idle,
-                    Wagons = new List<Wagon>(),
+                    Wagons = wagonsForMerchandiseTrain,
                     Locomotives = locomotives2
                 },
                 new Train
@@ -165,7 +182,7 @@ public class ApplicationDbContext : DbContext
                     TypeOfTrain = TrainType.Passenger,
                     PriotityLevel = PriorityLevel.High,
                     State = TrainState.Idle,
-                    Wagons = new List<Wagon>(),
+                    Wagons = wagonsForPassengerTrain,
                     Locomotives = locomotives3
                 },
                 new Train
@@ -173,333 +190,112 @@ public class ApplicationDbContext : DbContext
                     TypeOfTrain = TrainType.Express,
                     PriotityLevel = PriorityLevel.Critical,
                     State = TrainState.Idle,
-                    Wagons = new List<Wagon>(),
+                    Wagons = wagonsForExpressTrain,
                     Locomotives = locomotives4
                 }
             );
 
             SaveChanges();
 
-            List<Train> savedTrains = Trains.ToList();
-            List<Train> trains = new List<Train>();
-            trains.Add(savedTrains[0]);
-            trains.Add(savedTrains[1]);
-            List<Train> trainsInStation = new List<Train>();
-            trainsInStation.Add(savedTrains[2]);
-            trainsInStation.Add(savedTrains[3]);
+        }
+        List<Train> savedTrains = Trains.ToList();
+        List<Train> trains = new List<Train>();
+        trains.Add(savedTrains[0]);
+        trains.Add(savedTrains[1]);
+        List<Train> trainsInStation = new List<Train>();
+        trainsInStation.Add(savedTrains[2]);
+        trainsInStation.Add(savedTrains[3]);
+        if (!Stations.Any())
+        {
 
-            List<RailwayLine> savedRailwayLines = RailwayLines.ToList();
+
 
 
             Stations.AddRange(
 
-               new Station
-               {
-                   Name = "Baie de Beauport",
-                   Longitude = -71.204255,
-                   Latitude = 46.842256,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-               },
-               new Station
-               {
-                   Name = "Port de Québec",
-                   Longitude = -71.197774,
-                   Latitude = 46.823961,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-               },
-               new Station
-               {
-                   Name = "Centre de distribution",
-                   Longitude = -71.23208,
-                   Latitude = 46.789962,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-               },
-               new Station
-               {
-                   Name = "Vers Charlevoix",
-                   Longitude = -71.207817,
-                   Latitude = 46.845779,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-               },
-               new Station
-               {
-                   Name = "Vers la Rive-Sud",
-                   Longitude = -71.290278,
-                   Latitude = 46.748911,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-               },
-               new Station
-               {
-                   Name = "Vers Gatineau",
-                   Longitude = -71.428372,
-                   Latitude = 46.771591,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-               },
-               new Station
-               {
-                   Name = "Vers le Nord",
-                   Longitude = -71.432235,
-                   Latitude = 46.765369,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-               },
-               new Station
-               {
-                   Name = "Gare du Palais",
-                   Longitude = -71.2139,
-                   Latitude = 46.8174,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-               },
-               new Station
-               {
-                   Name = "Gare Québec-Gatineau",
-                   Longitude = -71.332752,
-                   Latitude = 46.795569,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-               },
-               new Station
-               {
-                   Name = "Gare CN",
-                   Longitude = -71.303381,
-                   Latitude = 46.753156,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-               }
-           );
+   new Station
+   {
+       Name = "Baie de Beauport",
+       Longitude = -71.204255,
+       Latitude = 46.842256,
+       Trains = trains,
+       TrainsInStation = trainsInStation,
+   },
+   new Station
+   {
+       Name = "Port de Québec",
+       Longitude = -71.197774,
+       Latitude = 46.823961,
+       Trains = trains,
+       TrainsInStation = trainsInStation,
+   },
+   new Station
+   {
+       Name = "Centre de distribution",
+       Longitude = -71.23208,
+       Latitude = 46.789962,
+       Trains = trains,
+       TrainsInStation = trainsInStation,
+   },
+   new Station
+   {
+       Name = "Vers Charlevoix",
+       Longitude = -71.207817,
+       Latitude = 46.845779,
+       Trains = trains,
+       TrainsInStation = trainsInStation,
+   },
+   new Station
+   {
+       Name = "Vers la Rive-Sud",
+       Longitude = -71.290278,
+       Latitude = 46.748911,
+       Trains = trains,
+       TrainsInStation = trainsInStation,
+   },
+   new Station
+   {
+       Name = "Vers Gatineau",
+       Longitude = -71.428372,
+       Latitude = 46.771591,
+       Trains = trains,
+       TrainsInStation = trainsInStation,
+   },
+   new Station
+   {
+       Name = "Vers le Nord",
+       Longitude = -71.432235,
+       Latitude = 46.765369,
+       Trains = trains,
+       TrainsInStation = trainsInStation,
+   },
+   new Station
+   {
+       Name = "Gare du Palais",
+       Longitude = -71.2139,
+       Latitude = 46.8174,
+       Trains = trains,
+       TrainsInStation = trainsInStation,
+   },
+   new Station
+   {
+       Name = "Gare Québec-Gatineau",
+       Longitude = -71.332752,
+       Latitude = 46.795569,
+       Trains = trains,
+       TrainsInStation = trainsInStation,
+   },
+   new Station
+   {
+       Name = "Gare CN",
+       Longitude = -71.303381,
+       Latitude = 46.753156,
+       Trains = trains,
+       TrainsInStation = trainsInStation,
+   }
+);
             SaveChanges();
         }
-
-        if (!RailwayLines.Any())
-        {
-            RailwayLines.AddRange(
-                new RailwayLine
-                {
-                    Name = "Ligne Principale",
-                    Color = "black"
-                },
-                new RailwayLine
-                {
-                    Name = "Ligne de Marchandises",
-                    Color = "brown"
-                },
-                new RailwayLine
-                {
-                    Name = "Ligne Express",
-                    Color = "red"
-                },
-                new RailwayLine
-                {
-                    Name = "Ligne de Maintenance",
-                    Color = "blue"
-                }
-                );
-            SaveChanges();
-        }
-        if (!BlockPoints.Any())
-        {
-            BlockPoints.AddRange(
-
-                new BlockPoint
-                {
-                    Id = 1,
-                    Longitude = -71.204255,
-                    Latitude = 46.842256,
-                },
-                new BlockPoint
-                {
-                    Id = 2,
-                    Longitude = -71.334879,
-                    Latitude = 46.747842,
-                },
-                new BlockPoint
-                {
-                    Id = 3,
-                    Longitude = -71.337711,
-                    Latitude = 46.749053,
-                },
-                new BlockPoint
-                {
-                    Id = 4,
-                    Longitude = -71.428566,
-                    Latitude = 46.76423,
-                },
-                new BlockPoint
-                {
-                    Id = 5,
-                    Longitude = -71.235611,
-                    Latitude = 46.786403,
-                },
-                new BlockPoint
-                {
-                    Id = 6,
-                    Longitude = -71.213773,
-                    Latitude = 46.820117,
-                },
-                new BlockPoint
-                {
-                    Id = 7,
-                    Longitude = -71.216567,
-                    Latitude = 46.822044,
-                },
-                new BlockPoint
-                {
-                    Id = 8,
-                    Longitude = -71.289502,
-                    Latitude = 46.797511,
-                },
-                new BlockPoint
-                {
-                    Id = 9,
-                    Longitude = -71.287356,
-                    Latitude = 46.800243,
-                },
-                new BlockPoint
-                {
-                    Id = 10,
-                    Longitude = -71.287764,
-                    Latitude = 46.800625,
-                },
-                new BlockPoint
-                {
-                    Id = 11,
-                    Longitude = -71.232142,
-                    Latitude = 46.790461,
-                },
-                new BlockPoint
-                {
-                    Id = 12,
-                    Longitude = -71.294171,
-                    Latitude = 46.799669,
-                },
-                new BlockPoint
-                {
-                    Id = 13,
-                    Longitude = -71.213549,
-                    Latitude = 46.830895,
-                },
-                new BlockPoint
-                {
-                    Id = 14,
-                    Longitude = -71.210308,
-                    Latitude = 46.830998
-                },
-                new BlockPoint
-                {
-                    Id = 15,
-                    Longitude = -71.223526,
-                    Latitude = 46.828532
-                },
-                new BlockPoint
-                {
-                    Id = 16,
-                    Longitude = -71.218849,
-                    Latitude = 46.826829
-                },
-                new BlockPoint
-                {
-                    Id = 17,
-                    Longitude = -71.339884,
-                    Latitude = 46.747778
-                },
-                new BlockPoint
-                {
-                    Id = 18,
-                    Longitude = -71.218491,
-                    Latitude = 46.824097
-                },
-                new BlockPoint
-                {
-                    Id = 19,
-                    Longitude = -71.320005,
-                    Latitude = 46.796969
-                },
-                new BlockPoint
-                {
-                    Id = 20,
-                    Longitude = -71.351264,
-                    Latitude = 46.792849
-                },
-                new BlockPoint
-                {
-                    Id = 21,
-                    Longitude = -71.31513,
-                    Latitude = 46.751768
-                },
-                new BlockPoint
-                {
-                    Id = 22,
-                    Longitude = -71.297888,
-                    Latitude = 46.754179
-                },
-                new BlockPoint
-                {
-                    Id = 23,
-                    Longitude = -71.228659,
-                    Latitude = 46.792598
-                },
-                new BlockPoint
-                {
-                    Id = 24,
-                    Longitude = -71.22396,
-                    Latitude = 46.794831
-                },
-                new BlockPoint
-                {
-                    Id = 25,
-                    Longitude = -71.19766,
-                    Latitude = 46.836048
-                },
-                new BlockPoint
-                {
-                    Id = 26,
-                    Longitude = -71.195107,
-                    Latitude = 46.832995
-                },
-                new BlockPoint
-                {
-                    Id = 27,
-                    Longitude = -71.197474,
-                    Latitude = 46.823175
-                },
-                new BlockPoint
-                {
-                    Id = 28,
-                    Longitude = -71.207624,
-                    Latitude = 46.845702
-                },
-                new BlockPoint
-                {
-                    Id = 29,
-                    Longitude = -71.284019,
-                    Latitude = 46.802571
-                },
-                new BlockPoint
-                {
-                    Id = 30,
-                    Longitude = -71.428995,
-                    Latitude = 46.770815
-                }
-            );
-            SaveChanges();
-
             IConfigurationSection sectionAdmin = config.GetSection("DefaultAdmin");
 
             if (!Users.Any())
@@ -514,7 +310,6 @@ public class ApplicationDbContext : DbContext
                         Username = sectionAdmin["Username"],
                         Password = sectionAdmin["Password"],
                         IsAdmin = true,
-
                     },
                     new User
                     {
@@ -556,293 +351,483 @@ public class ApplicationDbContext : DbContext
                 SaveChanges();
             }
 
-
-
-        }
-        
-
-        if (!Blocks.Any())
-        {
-            var allPoints = BlockPoints.ToList();
-
-            var block1 = new Block
+                if (!BlockPoints.Any())
             {
-                Points = new List<BlockPoint>
+                BlockPoints.AddRange(
+
+                    new BlockPoint
+                    {
+                        Id = 1,
+                        Longitude = -71.204255,
+                        Latitude = 46.842256,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 2,
+                        Longitude = -71.334879,
+                        Latitude = 46.747842,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 3,
+                        Longitude = -71.337711,
+                        Latitude = 46.749053,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 4,
+                        Longitude = -71.428566,
+                        Latitude = 46.76423,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 5,
+                        Longitude = -71.235611,
+                        Latitude = 46.786403,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 6,
+                        Longitude = -71.213773,
+                        Latitude = 46.820117,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 7,
+                        Longitude = -71.216567,
+                        Latitude = 46.822044,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 8,
+                        Longitude = -71.289502,
+                        Latitude = 46.797511,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 9,
+                        Longitude = -71.287356,
+                        Latitude = 46.800243,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 10,
+                        Longitude = -71.287764,
+                        Latitude = 46.800625,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 11,
+                        Longitude = -71.232142,
+                        Latitude = 46.790461,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 12,
+                        Longitude = -71.294171,
+                        Latitude = 46.799669,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 13,
+                        Longitude = -71.213549,
+                        Latitude = 46.830895,
+                    },
+                    new BlockPoint
+                    {
+                        Id = 14,
+                        Longitude = -71.210308,
+                        Latitude = 46.830998
+                    },
+                    new BlockPoint
+                    {
+                        Id = 15,
+                        Longitude = -71.223526,
+                        Latitude = 46.828532
+                    },
+                    new BlockPoint
+                    {
+                        Id = 16,
+                        Longitude = -71.218849,
+                        Latitude = 46.826829
+                    },
+                    new BlockPoint
+                    {
+                        Id = 17,
+                        Longitude = -71.339884,
+                        Latitude = 46.747778
+                    },
+                    new BlockPoint
+                    {
+                        Id = 18,
+                        Longitude = -71.218491,
+                        Latitude = 46.824097
+                    },
+                    new BlockPoint
+                    {
+                        Id = 19,
+                        Longitude = -71.320005,
+                        Latitude = 46.796969
+                    },
+                    new BlockPoint
+                    {
+                        Id = 20,
+                        Longitude = -71.351264,
+                        Latitude = 46.792849
+                    },
+                    new BlockPoint
+                    {
+                        Id = 21,
+                        Longitude = -71.31513,
+                        Latitude = 46.751768
+                    },
+                    new BlockPoint
+                    {
+                        Id = 22,
+                        Longitude = -71.297888,
+                        Latitude = 46.754179
+                    },
+                    new BlockPoint
+                    {
+                        Id = 23,
+                        Longitude = -71.228659,
+                        Latitude = 46.792598
+                    },
+                    new BlockPoint
+                    {
+                        Id = 24,
+                        Longitude = -71.22396,
+                        Latitude = 46.794831
+                    },
+                    new BlockPoint
+                    {
+                        Id = 25,
+                        Longitude = -71.19766,
+                        Latitude = 46.836048
+                    },
+                    new BlockPoint
+                    {
+                        Id = 26,
+                        Longitude = -71.195107,
+                        Latitude = 46.832995
+                    },
+                    new BlockPoint
+                    {
+                        Id = 27,
+                        Longitude = -71.197474,
+                        Latitude = 46.823175
+                    },
+                    new BlockPoint
+                    {
+                        Id = 28,
+                        Longitude = -71.207624,
+                        Latitude = 46.845702
+                    },
+                    new BlockPoint
+                    {
+                        Id = 29,
+                        Longitude = -71.284019,
+                        Latitude = 46.802571
+                    },
+                    new BlockPoint
+                    {
+                        Id = 30,
+                        Longitude = -71.428995,
+                        Latitude = 46.770815
+                    }
+                );
+                SaveChanges();
+
+
+                if (!Blocks.Any())
+                {
+                    var allPoints = BlockPoints.ToList();
+
+                    var block1 = new Block
+                    {
+                        Points = new List<BlockPoint>
                     {
                         allPoints.First(bp => bp.Id == 19),
                         allPoints.First(bp => bp.Id == 20)
                     }
-            };
+                    };
 
-            var block2 = new Block
-            {
-                Points = new List<BlockPoint>
+                    var block2 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 19),
                     allPoints.First(bp => bp.Id == 12)
                 }
-            };
+                    };
 
-            var block3 = new Block
-            {
-                Points = new List<BlockPoint>
+                    var block3 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 12),
                     allPoints.First(bp => bp.Id == 10)
                 }
-            };
+                    };
 
-            var block4 = new Block
-            {
-                Points = new List<BlockPoint>
+                    var block4 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 12),
                     allPoints.First(bp => bp.Id == 8)
                 }
-            };
+                    };
 
-            var block5 = new Block
-            {
-                Points = new List<BlockPoint>
+                    var block5 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 8),
                     allPoints.First(bp => bp.Id == 9)
                 }
-            };
+                    };
 
-            var block6 = new Block
-            {
-                Points = new List<BlockPoint>
+                    var block6 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 9),
                     allPoints.First(bp => bp.Id == 11)
                 }
-            };
+                    };
 
-            var block7 = new Block
-            {
-                Points = new List<BlockPoint>
+                    var block7 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 11),
                     allPoints.First(bp => bp.Id == 5)
                 }
-            };
+                    };
 
-            var block8 = new Block
-            {
-                Points = new List<BlockPoint>
+                    var block8 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 11),
                     allPoints.First(bp => bp.Id == 23)
                 }
-            };
+                    };
 
-            var block9 = new Block
-            {
-                Points = new List<BlockPoint>
+                    var block9 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 10),
                     allPoints.First(bp => bp.Id == 29)
                 }
-            };
+                    };
 
-            var block10 = new Block
-            {
-                Points = new List<BlockPoint>
+                    var block10 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 9),
                     allPoints.First(bp => bp.Id == 29)
                 }
-            };
+                    };
 
-            var block11 = new Block
-            {
-                Points = new List<BlockPoint>
+                    var block11 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 29),
                     allPoints.First(bp => bp.Id == 15)
                 }
-            };
+                    };
 
-            var block12 = new Block
-            {
-                Points = new List<BlockPoint>
+                    var block12 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 15),
                     allPoints.First(bp => bp.Id == 16)
                 }
-            };
+                    };
 
-            var block13 = new Block
-            {
-                Points = new List<BlockPoint>
+                    var block13 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 15),
                     allPoints.First(bp => bp.Id == 18)
                 }
-            };
-            var block14 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block14 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 18),
                     allPoints.First(bp => bp.Id == 16)
                 }
-            };
-            var block15 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block15 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 18),
                     allPoints.First(bp => bp.Id == 7)
                 }
-            };
-            var block16 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block16 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 7),
                     allPoints.First(bp => bp.Id == 6)
                 }
-            };
-            var block17 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block17 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 6),
                     allPoints.First(bp => bp.Id == 27)
                 }
-            };
-            var block18 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block18 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 16),
                     allPoints.First(bp => bp.Id == 13)
                 }
-            };
-            var block19 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block19 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 13),
                     allPoints.First(bp => bp.Id == 14)
                 }
-            };
-            var block20 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block20 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 14),
                     allPoints.First(bp => bp.Id == 25)
                 }
-            };
-            var block21 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block21 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 14),
                     allPoints.First(bp => bp.Id == 26)
                 }
-            };
-            var block22 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block22 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 13),
                     allPoints.First(bp => bp.Id == 1)
                 }
-            };
-            var block23 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block23 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 16),
                     allPoints.First(bp => bp.Id == 28)
                 }
-            };
-            var block24 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block24 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 22),
                     allPoints.First(bp => bp.Id == 5)
                 }
-            };
-            var block25 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block25 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 21),
                     allPoints.First(bp => bp.Id == 2)
                 }
-            };
-            var block26 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block26 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 2),
                     allPoints.First(bp => bp.Id == 17)
                 }
-            };
-            var block27 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block27 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 2),
                     allPoints.First(bp => bp.Id == 3)
                 }
-            };
-            var block28 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block28 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 17),
                     allPoints.First(bp => bp.Id == 3)
                 }
-            };
-            var block29 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block29 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 3),
                     allPoints.First(bp => bp.Id == 8)
                 }
-            };
-            var block30 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block30 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 21),
                     allPoints.First(bp => bp.Id == 22)
                 }
-            };
-            var block31 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block31 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 20),
                     allPoints.First(bp => bp.Id == 30)
                 }
-            };
-            var block32 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block32 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 17),
                     allPoints.First(bp => bp.Id == 4)
                 }
-            };
-            var block33 = new Block
-            {
-                Points = new List<BlockPoint>
+                    };
+                    var block33 = new Block
+                    {
+                        Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 23),
                     allPoints.First(bp => bp.Id == 24)
                 }
-            };
-            Blocks.AddRange(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24, block25, block26, block27, block28, block29, block30, block31, block32);
-            SaveChanges();
+                    };
+                    Blocks.AddRange(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24, block25, block26, block27, block28, block29, block30, block31, block32);
+                    SaveChanges();
+                }
+
+
+            }
+
         }
-    }
+
+
+    
 }

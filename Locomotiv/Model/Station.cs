@@ -20,7 +20,5 @@ public class Station
 
     public List<Train> TrainsInStation { get; set; }
 
-    public List<RailwayLine> RalwayLines { get; set; }
-
     public StationType Type { get; set; }
 }

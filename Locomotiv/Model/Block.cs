@@ -9,6 +9,5 @@ public class Block
     public int Id { get; set; }
 
     public List<BlockPoint> Points { get; set; } = new List<BlockPoint>();
-
-    public Train CurrentTrain { get; set; }
+    public Train? CurrentTrain { get; set; }
 }
