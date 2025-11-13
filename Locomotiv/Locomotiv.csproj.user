@@ -10,10 +10,10 @@
     <Compile Update="View\ConnectView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\StationDetails.xaml.cs">
+    <Compile Update="View\HomeView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\HomeView.xaml.cs">
+    <Compile Update="View\MapView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

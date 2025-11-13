@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class Wagon
+public class Block
 {
     public int Id { get; set; }
 
-    public string Code { get; set; }
+    public double Latitude { get; set; }
+
+    public double Longitude { get; set; }
+
+    public Train CurrentTrain { get; set; }
 }

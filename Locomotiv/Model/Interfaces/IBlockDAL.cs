@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class Wagon
+namespace Locomotiv.Model.Interfaces
 {
-    public int Id { get; set; }
-
-    public string Code { get; set; }
+    public interface IBlockDAL
+    {
+        IList<Block> GetAll();
+    }
 }

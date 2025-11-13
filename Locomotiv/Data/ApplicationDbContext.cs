@@ -30,11 +30,19 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Station>()
             .HasMany(s => s.RalwayLines)
             .WithMany();
+
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Station)
+            .WithMany();
+
     }
 
-    public DbSet<User> Users { get; set; }
+    public DbSet<Locomotive> Locomotives { get; set; }
+    public DbSet<Wagon> Wagons { get; set; }
     public DbSet<Train> Trains { get; set; }
+    public DbSet<User> Users { get; set; }
     public DbSet<Station> Stations { get; set; }
+    public DbSet<Block> Blocks { get; set; }
 
     public DbSet<RailwayLine> RailwayLines { get; set; }
 
@@ -42,32 +50,89 @@ public class ApplicationDbContext : DbContext
 
     public void SeedData()
     {
-        if (!RailwayLines.Any())
+
+        if (!Locomotives.Any())
         {
-            RailwayLines.AddRange(
-                new RailwayLine
-                {
-                    Name = "Ligne Principale",
-                    Color = "black"
-                },
-                new RailwayLine
-                {
-                    Name = "Ligne de Marchandises",
-                    Color = "brown"
-                },
-                new RailwayLine
-                {
-                    Name = "Ligne Express",
-                    Color = "red"
-                },
-                new RailwayLine
-                {
-                    Name = "Ligne de Maintenance",
-                    Color = "blue"
-                }
-                );
+            Locomotives.AddRange(
+                new Locomotive { Code = "Loco-001" },
+                new Locomotive { Code = "Loco-002" },
+                new Locomotive { Code = "Loco-003" },
+                new Locomotive { Code = "Loco-004" },
+                new Locomotive { Code = "Loco-005" },
+                new Locomotive { Code = "Loco-006" },
+                new Locomotive { Code = "Loco-007" },
+                new Locomotive { Code = "Loco-008" },
+                new Locomotive { Code = "Loco-009" },
+                new Locomotive { Code = "Loco-010" }
+            );
             SaveChanges();
         }
+
+        if (!Wagons.Any())
+        {
+            Wagons.AddRange(
+                new Wagon { Code = "Wagon-001" },
+                new Wagon { Code = "Wagon-002" },
+                new Wagon { Code = "Wagon-003" },
+                new Wagon { Code = "Wagon-004" },
+                new Wagon { Code = "Wagon-005" },
+                new Wagon { Code = "Wagon-006" },
+                new Wagon { Code = "Wagon-007" },
+                new Wagon { Code = "Wagon-008" },
+                new Wagon { Code = "Wagon-009" },
+                new Wagon { Code = "Wagon-010" },
+                new Wagon { Code = "Wagon-011" },
+                new Wagon { Code = "Wagon-012" },
+                new Wagon { Code = "Wagon-013" },
+                new Wagon { Code = "Wagon-014" },
+                new Wagon { Code = "Wagon-015" },
+                new Wagon { Code = "Wagon-016" },
+                new Wagon { Code = "Wagon-017" },
+                new Wagon { Code = "Wagon-018" },
+                new Wagon { Code = "Wagon-019" },
+                new Wagon { Code = "Wagon-020" },
+                new Wagon { Code = "Wagon-021" },
+                new Wagon { Code = "Wagon-022" },
+                new Wagon { Code = "Wagon-023" },
+                new Wagon { Code = "Wagon-024" },
+                new Wagon { Code = "Wagon-025" },
+                new Wagon { Code = "Wagon-026" },
+                new Wagon { Code = "Wagon-027" },
+                new Wagon { Code = "Wagon-028" },
+                new Wagon { Code = "Wagon-029" },
+                new Wagon { Code = "Wagon-030" },
+                new Wagon { Code = "Wagon-031" },
+                new Wagon { Code = "Wagon-032" },
+                new Wagon { Code = "Wagon-033" },
+                new Wagon { Code = "Wagon-034" },
+                new Wagon { Code = "Wagon-035" },
+                new Wagon { Code = "Wagon-036" },
+                new Wagon { Code = "Wagon-037" },
+                new Wagon { Code = "Wagon-038" },
+                new Wagon { Code = "Wagon-039" },
+                new Wagon { Code = "Wagon-040" }
+            );
+            SaveChanges();
+        }
+
+        List<Locomotive> savedLocomotives = Locomotives.ToList();
+        List<Locomotive> locomotives1 = new List<Locomotive>();
+        locomotives1.Add(savedLocomotives[0]);
+        locomotives1.Add(savedLocomotives[1]);
+        List<Locomotive> locomotives2 = new List<Locomotive>();
+        locomotives2.Add(savedLocomotives[2]);
+        locomotives2.Add(savedLocomotives[3]);
+        List<Locomotive> locomotives3 = new List<Locomotive>();
+        locomotives3.Add(savedLocomotives[4]);
+        locomotives3.Add(savedLocomotives[5]);
+        locomotives3.Add(savedLocomotives[6]);
+        List<Locomotive> locomotives4 = new List<Locomotive>();
+        locomotives4.Add(savedLocomotives[7]);
+        locomotives4.Add(savedLocomotives[8]);
+        locomotives4.Add(savedLocomotives[9]);
+
+        List<Wagon> savedWagons = Wagons.ToList();
+
         if (!Trains.Any() || !Stations.Any())
         {
             Trains.AddRange(
@@ -75,34 +140,34 @@ public class ApplicationDbContext : DbContext
                 new Train
                 {
                     TypeOfTrain = TrainType.Maintenance,
-                    Speed = 80,
-                    PriotityLevel = PriorityLevel.High,
-                    Capacity = 50,
-                    State = TrainState.InStation
+                    PriotityLevel = PriorityLevel.Low,
+                    State = TrainState.Idle,
+                    Wagons = new List<Wagon>(),
+                    Locomotives = locomotives1
                 },
                 new Train
                 {
                     TypeOfTrain = TrainType.Merchandise,
-                    Speed = 80,
                     PriotityLevel = PriorityLevel.Medium,
-                    Capacity = 50,
-                    State = TrainState.Programmed
+                    State = TrainState.Idle,
+                    Wagons = new List<Wagon>(),
+                    Locomotives = locomotives2
                 },
                 new Train
                 {
                     TypeOfTrain = TrainType.Passenger,
-                    Speed = 80,
-                    PriotityLevel = PriorityLevel.Low,
-                    Capacity = 50,
-                    State = TrainState.InTransit
+                    PriotityLevel = PriorityLevel.High,
+                    State = TrainState.Idle,
+                    Wagons = new List<Wagon>(),
+                    Locomotives = locomotives3
                 },
                 new Train
                 {
                     TypeOfTrain = TrainType.Express,
-                    Speed = 80,
                     PriotityLevel = PriorityLevel.Critical,
-                    Capacity = 50,
-                    State = TrainState.Idle
+                    State = TrainState.Idle,
+                    Wagons = new List<Wagon>(),
+                    Locomotives = locomotives4
                 }
             );
 
@@ -215,63 +280,210 @@ public class ApplicationDbContext : DbContext
             SaveChanges();
         }
 
-        IConfigurationSection sectionAdmin = config.GetSection("DefaultAdmin");
-
-        if (!Users.Any())
+        if (!RailwayLines.Any())
         {
-            List<Station> savedStations = Stations.ToList();
-
-            Users.AddRange(
-                new User
+            RailwayLines.AddRange(
+                new RailwayLine
                 {
-                    Prenom = sectionAdmin["Prenom"],
-                    Nom = sectionAdmin["Nom"],
-                    Username = sectionAdmin["Username"],
-                    Password = sectionAdmin["Password"],
-                    IsAdmin = true,
-
+                    Name = "Ligne Principale",
+                    Color = "black"
                 },
-                new User
+                new RailwayLine
                 {
-                    Prenom = "Mecanicien",
-                    Nom = "Standard",
-                    Username = "employe1",
-                    Password = "employe",
-                    Type = EmployeeType.Mechanic,
-                    Station = savedStations[0],
+                    Name = "Ligne de Marchandises",
+                    Color = "brown"
                 },
-                new User
+                new RailwayLine
                 {
-                    Prenom = "Conducteur",
-                    Nom = "Standard",
-                    Username = "employe2",
-                    Password = "employe",
-                    Type = EmployeeType.Conductor,
-                    Station = savedStations[1],
+                    Name = "Ligne Express",
+                    Color = "red"
                 },
-                new User
+                new RailwayLine
                 {
-                    Prenom = "PersonnelAdminstratif",
-                    Nom = "Standard",
-                    Username = "employe3",
-                    Password = "employe",
-                    Type = EmployeeType.AdministrativeStaff,
-                    Station = savedStations[2],
-                },
-                new User
-                {
-                    Prenom = "ControleurDeTrafic",
-                    Nom = "Standard",
-                    Username = "employe4",
-                    Password = "employe",
-                    Type = EmployeeType.TrafficController,
-                    Station = savedStations[3],
+                    Name = "Ligne de Maintenance",
+                    Color = "blue"
                 }
-            );
+                );
             SaveChanges();
         }
 
 
-       
+     
+
+
+        if (!Blocks.Any())
+        {
+            Blocks.AddRange(
+
+                new Block
+                {
+                    Id = 1,
+                    Longitude = -71.204255,
+                    Latitude = 46.842256,
+                },
+                new Block
+                {
+                    Id = 2,
+                    Longitude = -71.334879,
+                    Latitude = 46.747842,
+                },
+                new Block
+                {
+                    Id = 3,
+                    Longitude = -71.337711,
+                    Latitude = 46.749053,
+                },
+                new Block
+                {
+                    Id = 4,
+                    Longitude = -71.296210,
+                    Latitude = 46.754409,
+                },
+                new Block
+                {
+                    Id = 5,
+                    Longitude = -71.235611,
+                    Latitude = 46.786403,
+                },
+                new Block
+                {
+                    Id = 6,
+                    Longitude = -71.213773,
+                    Latitude = 46.820117,
+                },
+                new Block
+                {
+                    Id = 7,
+                    Longitude = -71.216567,
+                    Latitude = 46.822044,
+                },
+                new Block
+                {
+                    Id = 8,
+                    Longitude = -71.289502,
+                    Latitude = 46.797511,
+                },
+                new Block
+                {
+                    Id = 9,
+                    Longitude = -71.287356,
+                    Latitude = 46.800243,
+                },
+                new Block
+                {
+                    Id = 10,
+                    Longitude = -71.287764,
+                    Latitude = 46.800625,
+                },
+                new Block
+                {
+                    Id = 11,
+                    Longitude = -71.232142,
+                    Latitude = 46.790461,
+                },
+                new Block
+                {
+                    Id = 12,
+                    Longitude = -71.294171,
+                    Latitude = 46.799669,
+                },
+                new Block
+                {
+                    Id = 13,
+                    Longitude = -71.213549,
+                    Latitude = 46.830895,
+                },
+                new Block
+                {
+                    Id = 14,
+                    Longitude = -71.210308,
+                    Latitude = 46.830998
+                },
+                new Block
+                {
+                    Id = 15,
+                    Longitude = -71.223526,
+                    Latitude = 46.828532
+                },
+                new Block
+                {
+                    Id = 16,
+                    Longitude = -71.218849,
+                    Latitude = 46.826829
+                },
+                new Block
+                {
+                    Id = 17,
+                    Longitude = -71.339884,
+                    Latitude = 46.747778
+                },
+                new Block
+                {
+                    Id = 18,
+                    Longitude = -71.218491,
+                    Latitude = 46.824097
+                }
+            );
+            SaveChanges();
+
+            IConfigurationSection sectionAdmin = config.GetSection("DefaultAdmin");
+
+            if (!Users.Any())
+            {
+                List<Station> savedStations = Stations.ToList();
+
+                Users.AddRange(
+                    new User
+                    {
+                        Prenom = sectionAdmin["Prenom"],
+                        Nom = sectionAdmin["Nom"],
+                        Username = sectionAdmin["Username"],
+                        Password = sectionAdmin["Password"],
+                        IsAdmin = true,
+
+                    },
+                    new User
+                    {
+                        Prenom = "Mecanicien",
+                        Nom = "Standard",
+                        Username = "employe1",
+                        Password = "employe",
+                        Type = EmployeeType.Mechanic,
+                        Station = savedStations[0],
+                    },
+                    new User
+                    {
+                        Prenom = "Conducteur",
+                        Nom = "Standard",
+                        Username = "employe2",
+                        Password = "employe",
+                        Type = EmployeeType.Conductor,
+                        Station = savedStations[1],
+                    },
+                    new User
+                    {
+                        Prenom = "PersonnelAdminstratif",
+                        Nom = "Standard",
+                        Username = "employe3",
+                        Password = "employe",
+                        Type = EmployeeType.AdministrativeStaff,
+                        Station = savedStations[2],
+                    },
+                    new User
+                    {
+                        Prenom = "ControleurDeTrafic",
+                        Nom = "Standard",
+                        Username = "employe4",
+                        Password = "employe",
+                        Type = EmployeeType.TrafficController,
+                        Station = savedStations[3],
+                    }
+                );
+                SaveChanges();
+            }
+
+
+
+        }
     }
 }

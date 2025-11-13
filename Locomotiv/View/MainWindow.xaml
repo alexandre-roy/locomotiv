@@ -31,6 +31,11 @@
                     Margin="10"
                     Height="25"
                     Command="{Binding NavigateToStationDetailsViewCommand}"/>
+            <Button Content="Map"
+                    Margin="10"
+                    Height="25"
+                    Command="{Binding NavigateToMapViewCommand}"
+                    Visibility="{Binding UserSessionService.IsUserDisconnected, Converter={StaticResource BoolToVisibilityConverter}}"/>
         </StackPanel>
         <ContentControl Grid.Column="1" Content="{Binding NavigationService.CurrentView}"></ContentControl>
     </Grid>

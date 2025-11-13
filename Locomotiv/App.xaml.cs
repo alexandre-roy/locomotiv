@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using Locomotiv.Utils;
 using Locomotiv.ViewModel;
+using Locomotiv.Model;
+using Locomotiv.View;
 using Microsoft.Extensions.DependencyInjection;
 using Locomotiv.Model.Interfaces;
 using Locomotiv.Model.DAL;
@@ -32,8 +34,12 @@ namespace Locomotiv
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<HomeViewModel>();
             services.AddSingleton<ConnectUserViewModel>();
+            services.AddSingleton<MapViewModel>();
 
             services.AddSingleton<IUserDAL, UserDAL>();
+            services.AddSingleton<IStationDAL, StationDAL>();
+            services.AddSingleton<IBlockDAL, BlockDAL>();
+
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IUserSessionService, Service>();
             services.AddSingleton<MainViewModel>();
