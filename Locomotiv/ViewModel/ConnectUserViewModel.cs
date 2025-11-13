@@ -14,7 +14,7 @@ using Locomotiv.Utils.Services;
 
 namespace Locomotiv.ViewModel
 {
-    class ConnectUserViewModel : BaseViewModel
+    public class ConnectUserViewModel : BaseViewModel
     {
         private readonly IUserDAL _userDAL;
         private INavigationService _navigationService;

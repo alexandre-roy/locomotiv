@@ -559,7 +559,7 @@ public class ApplicationDbContext : DbContext
 
 
         }
-        }
+        
 
         if (!Blocks.Any())
         {
