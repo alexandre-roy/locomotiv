@@ -47,7 +47,6 @@ namespace Locomotiv.ViewModel
             NavigateToConnectUserViewCommand = new RelayCommand(() => NavigationService.NavigateTo<ConnectUserViewModel>());
             NavigateToHomeViewCommand = new RelayCommand(() => NavigationService.NavigateTo<HomeViewModel>());
             NavigateToMapViewCommand = new RelayCommand(() => NavigationService.NavigateTo<MapViewModel>());
-            NavigateToStationDetailsViewCommand = new RelayCommand(() => NavigationService.NavigateTo<StationDetailsViewModel>());
             DisconnectCommand = new RelayCommand(Disconnect, () => UserSessionService.IsUserConnected);
 
             NavigationService.NavigateTo<HomeViewModel>();
