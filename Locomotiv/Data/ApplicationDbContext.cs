@@ -29,6 +29,8 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<Locomotive> Locomotives { get; set; }
+    public DbSet<Wagon> Wagons { get; set; }
     public DbSet<Train> Trains { get; set; }
     public DbSet<Station> Stations { get; set; }
     public DbSet<Block> Blocks { get; set; }
@@ -87,44 +89,106 @@ public class ApplicationDbContext : DbContext
             SaveChanges();
         }
 
+        if (!Locomotives.Any())
+        {
+            Locomotives.AddRange(
+                new Locomotive { Code = "Loco-001" },
+                new Locomotive { Code = "Loco-002" },
+                new Locomotive { Code = "Loco-003" },
+                new Locomotive { Code = "Loco-004" },
+                new Locomotive { Code = "Loco-005" },
+                new Locomotive { Code = "Loco-006" },
+                new Locomotive { Code = "Loco-007" },
+                new Locomotive { Code = "Loco-008" },
+                new Locomotive { Code = "Loco-009" },
+                new Locomotive { Code = "Loco-010" }
+            );
+            SaveChanges();
+        }
+
+        if (!Wagons.Any())
+        {
+            Wagons.AddRange(
+                new Wagon { Code = "Wagon-001" },
+                new Wagon { Code = "Wagon-002" },
+                new Wagon { Code = "Wagon-003" },
+                new Wagon { Code = "Wagon-004" },
+                new Wagon { Code = "Wagon-005" },
+                new Wagon { Code = "Wagon-006" },
+                new Wagon { Code = "Wagon-007" },
+                new Wagon { Code = "Wagon-008" },
+                new Wagon { Code = "Wagon-009" },
+                new Wagon { Code = "Wagon-010" },
+                new Wagon { Code = "Wagon-011" },
+                new Wagon { Code = "Wagon-012" },
+                new Wagon { Code = "Wagon-013" },
+                new Wagon { Code = "Wagon-014" },
+                new Wagon { Code = "Wagon-015" },
+                new Wagon { Code = "Wagon-016" },
+                new Wagon { Code = "Wagon-017" },
+                new Wagon { Code = "Wagon-018" },
+                new Wagon { Code = "Wagon-019" },
+                new Wagon { Code = "Wagon-020" },
+                new Wagon { Code = "Wagon-021" },
+                new Wagon { Code = "Wagon-022" },
+                new Wagon { Code = "Wagon-023" },
+                new Wagon { Code = "Wagon-024" },
+                new Wagon { Code = "Wagon-025" },
+                new Wagon { Code = "Wagon-026" },
+                new Wagon { Code = "Wagon-027" },
+                new Wagon { Code = "Wagon-028" },
+                new Wagon { Code = "Wagon-029" },
+                new Wagon { Code = "Wagon-030" },
+                new Wagon { Code = "Wagon-031" },
+                new Wagon { Code = "Wagon-032" },
+                new Wagon { Code = "Wagon-033" },
+                new Wagon { Code = "Wagon-034" },
+                new Wagon { Code = "Wagon-035" },
+                new Wagon { Code = "Wagon-036" },
+                new Wagon { Code = "Wagon-037" },
+                new Wagon { Code = "Wagon-038" },
+                new Wagon { Code = "Wagon-039" },
+                new Wagon { Code = "Wagon-040" }
+            );
+            SaveChanges();
+        }
+
         if (!Trains.Any())
         {
             Trains.AddRange(
-                
                 new Train
                 {
                     TypeOfTrain = TrainType.Maintenance,
-                    Speed = 80,
-                    PriotityLevel = PriorityLevel.High,
-                    Capacity = 50,
-                    State = TrainState.InStation
+                    PriotityLevel = PriorityLevel.Low,
+                    State = TrainState.Idle,
+                    Wagons = new List<Wagon>(),
+                    Locomotives = new List<Locomotive>()
                 },
                 new Train
                 {
                     TypeOfTrain = TrainType.Merchandise,
-                    Speed = 80,
                     PriotityLevel = PriorityLevel.Medium,
-                    Capacity = 50,
-                    State = TrainState.Programmed
+                    State = TrainState.Idle,
+                    Wagons = new List<Wagon>(),
+                    Locomotives = new List<Locomotive>()
                 },
                 new Train
                 {
                     TypeOfTrain = TrainType.Passenger,
-                    Speed = 80,
-                    PriotityLevel = PriorityLevel.Low,
-                    Capacity = 50,
-                    State = TrainState.InTransit
+                    PriotityLevel = PriorityLevel.High,
+                    State = TrainState.Idle,
+                    Wagons = new List<Wagon>(),
+                    Locomotives = new List<Locomotive>()
                 },
                 new Train
                 {
                     TypeOfTrain = TrainType.Express,
-                    Speed = 80,
                     PriotityLevel = PriorityLevel.Critical,
-                    Capacity = 50,
-                    State = TrainState.Idle
+                    State = TrainState.Idle,
+                    Wagons = new List<Wagon>(),
+                    Locomotives = new List<Locomotive>()
                 }
             );
-            SaveChanges();
         }
 
         if (!Stations.Any())
@@ -135,6 +199,7 @@ public class ApplicationDbContext : DbContext
                     Name = "Baie de Beauport",
                     Longitude = -71.204475,
                     Latitude = 46.833728,
+                    Capacity = 5,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
@@ -146,6 +211,7 @@ public class ApplicationDbContext : DbContext
                     Name = "Port de Québec",
                     Longitude = -71.197774,
                     Latitude = 46.823961,
+                    Capacity = 2,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
@@ -157,6 +223,7 @@ public class ApplicationDbContext : DbContext
                     Name = "Centre de distribution",
                     Longitude = -71.225958,
                     Latitude = 46.793968,
+                    Capacity = 3,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
@@ -168,6 +235,7 @@ public class ApplicationDbContext : DbContext
                     Name = "Vers Charlevoix",
                     Longitude = -71.207817,
                     Latitude = 46.845779,
+                    Capacity = 4,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
@@ -179,6 +247,7 @@ public class ApplicationDbContext : DbContext
                     Name = "Vers la Rive-Sud",
                     Longitude = -71.290278,
                     Latitude = 46.748911,
+                    Capacity = 1,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
@@ -190,6 +259,7 @@ public class ApplicationDbContext : DbContext
                     Name = "Vers Gatineau",
                     Longitude = -71.428302,
                     Latitude = 46.770591,
+                    Capacity = 2,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
@@ -201,6 +271,7 @@ public class ApplicationDbContext : DbContext
                     Name = "Vers le Nord",
                     Longitude = -71.429804,
                     Latitude = 46.764212,
+                    Capacity = 3,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
@@ -212,6 +283,7 @@ public class ApplicationDbContext : DbContext
                     Name = "Gare du Palais",
                     Longitude = -71.2139,
                     Latitude = 46.8174,
+                    Capacity = 10,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
@@ -223,6 +295,7 @@ public class ApplicationDbContext : DbContext
                     Name = "Gare Québec-Gatineau",
                     Longitude = -71.332752,
                     Latitude = 46.795569,
+                    Capacity = 8,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),
@@ -234,6 +307,7 @@ public class ApplicationDbContext : DbContext
                     Name = "Gare CN",
                     Longitude = -71.303381,
                     Latitude = 46.753156,
+                    Capacity = 6,
                     Trains = new List<Train>(),
                     TrainsInStation = new List<Train>(),
                     RalwayLines = new List<RailwayLine>(),

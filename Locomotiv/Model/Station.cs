@@ -14,6 +14,8 @@ public class Station
 
     public double Longitude { get; set; }
 
+    public int Capacity { get; set; }
+
     public List<Train> Trains { get; set; }
 
     public List<Train> TrainsInStation { get; set; }

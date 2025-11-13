@@ -6,11 +6,11 @@ public class Train
 
     public TrainType TypeOfTrain { get; set; }
 
-    public decimal Speed { get; set; }
-
     public PriorityLevel PriotityLevel { get; set; }
 
-    public int Capacity { get; set; }
-
     public TrainState State { get; set; }
+
+    public List<Wagon> Wagons { get; set; }
+
+    public List<Locomotive> Locomotives { get; set; }
 }
