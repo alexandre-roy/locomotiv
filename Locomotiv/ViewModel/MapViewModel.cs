@@ -16,13 +16,15 @@ namespace Locomotiv.ViewModel
     {
         private readonly IStationDAL _stationDal;
         private readonly IBlockDAL _blockDal;
+        private readonly IBlockPointDAL _blockPointDal;
 
         public ObservableCollection<GMapMarker> Markers { get; set; }
 
-        public MapViewModel(IStationDAL stationDal, IBlockDAL blockDal)
+        public MapViewModel(IStationDAL stationDal, IBlockDAL blockDal, IBlockPointDAL blockPointDal)
         {
             _stationDal = stationDal;
             _blockDal = blockDal;
+            _blockPointDal = blockPointDal;
 
             Markers = new ObservableCollection<GMapMarker>();
 
@@ -32,11 +34,11 @@ namespace Locomotiv.ViewModel
         private void LoadPoints()
         {
 
-            foreach (var block in _blockDal.GetAll())
-                CreatePoint(block,
-                    label: "🛤️",
-                    color: Brushes.Yellow,
-                    infoText: GetBlockInfo(block));
+            foreach (var blockPoint in _blockPointDal.GetAll())
+                CreatePoint(blockPoint,
+                    label: $"🛤️{blockPoint.Id}",
+                    color: Brushes.Black,
+                    infoText: GetBlockInfo(blockPoint));
 
             foreach (var station in _stationDal.GetAll())
                 CreatePoint(station,
@@ -134,9 +136,27 @@ namespace Locomotiv.ViewModel
                 "  - Train 205 (Québec → Ottawa)";
         }
 
-        private string GetBlockInfo(Block block)
+        private string GetBlockInfo(BlockPoint blockPoint)
         {
-            return $"Block ID : {block.Id}\n\nAucune autre info pour le moment.";
+            var blocks = _blockDal.GetAll();
+            List<string> connectedBlocks = new List<string>();
+
+            foreach (Block block in blocks)
+            {
+                if (block.Points.Any(p => p.Id == blockPoint.Id))
+                {
+                    var otherPoint = block.Points.FirstOrDefault(p => p.Id != blockPoint.Id);
+
+                    if (otherPoint != null)
+                        connectedBlocks.Add($" - Block {block.Id} → vers BlockPoint {otherPoint.Id}");
+                    else
+                        connectedBlocks.Add($" - Block {block.Id} → (point unique)");
+                }
+            }
+
+            string blocksInfo = string.Join("\n", connectedBlocks);
+
+            return $"🛤️ BlockPoint {blockPoint.Id}\n\nBlocs connectés :\n{blocksInfo}";
         }
     }
 }

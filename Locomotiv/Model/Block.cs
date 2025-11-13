@@ -8,7 +8,6 @@ public class Block
 {
     public int Id { get; set; }
 
-    public double Latitude { get; set; }
+    public List<BlockPoint> Points { get; set; } = new List<BlockPoint>();
 
-    public double Longitude { get; set; }
 }

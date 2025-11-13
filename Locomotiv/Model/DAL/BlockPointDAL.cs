@@ -1,5 +1,4 @@
 ﻿using Locomotiv.Model.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,21 +7,19 @@ using System.Threading.Tasks;
 
 namespace Locomotiv.Model.DAL
 {
-    public class BlockDAL : IBlockDAL
+    public class BlockPointDAL : IBlockPointDAL
     {
         private readonly ApplicationDbContext _context;
 
-        public BlockDAL(ApplicationDbContext c)
+        public BlockPointDAL(ApplicationDbContext c)
         {
             _context = c;
         }
 
 
-        public IList<Block> GetAll()
+        public IList<BlockPoint> GetAll()
         {
-            return _context.Blocks
-                .Include(b => b.Points)
-                .ToList();
+            return _context.BlockPoints.ToList();
         }
     }
 }

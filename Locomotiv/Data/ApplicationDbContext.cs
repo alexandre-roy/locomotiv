@@ -1,8 +1,9 @@
-﻿using Locomotiv.Utils.Services;
+﻿using Locomotiv.Model;
+using Locomotiv.Utils.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Locomotiv.Model;
 using System.IO;
+using System.Windows.Documents;
 
 public class ApplicationDbContext : DbContext
 {
@@ -17,10 +18,21 @@ public class ApplicationDbContext : DbContext
         // Configurer le DbContext pour utiliser la chaîne de connexion
         optionsBuilder.UseSqlite(connectionString);
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Block>()
+            .HasMany(b => b.Points)
+            .WithMany(bp => bp.Blocks);
+    }
+
     public DbSet<User> Users { get; set; }
     public DbSet<Train> Trains { get; set; }
     public DbSet<Station> Stations { get; set; }
     public DbSet<Block> Blocks { get; set; }
+    public DbSet<BlockPoint> BlockPoints { get; set; }
 
     IConfiguration config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false).Build();
 
@@ -232,119 +244,475 @@ public class ApplicationDbContext : DbContext
             );
             SaveChanges();
         }
-        if (!Blocks.Any())
+        if (!BlockPoints.Any())
         {
-            Blocks.AddRange(
+            BlockPoints.AddRange(
 
-                new Block
+                new BlockPoint
                 {
                     Id = 1,
                     Longitude = -71.204255,
                     Latitude = 46.842256,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 2,
                     Longitude = -71.334879,
                     Latitude = 46.747842,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 3,
                     Longitude = -71.337711,
                     Latitude = 46.749053,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 4,
-                    Longitude = -71.296210,
-                    Latitude = 46.754409,
+                    Longitude = -71.428566,
+                    Latitude = 46.76423,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 5,
                     Longitude = -71.235611,
                     Latitude = 46.786403,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 6,
                     Longitude = -71.213773,
                     Latitude = 46.820117,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 7,
                     Longitude = -71.216567,
                     Latitude = 46.822044,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 8,
                     Longitude = -71.289502,
                     Latitude = 46.797511,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 9,
                     Longitude = -71.287356,
                     Latitude = 46.800243,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 10,
                     Longitude = -71.287764,
                     Latitude = 46.800625,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 11,
                     Longitude = -71.232142,
                     Latitude = 46.790461,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 12,
                     Longitude = -71.294171,
                     Latitude = 46.799669,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 13,
                     Longitude = -71.213549,
                     Latitude = 46.830895,
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 14,
                     Longitude = -71.210308,
                     Latitude = 46.830998
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 15,
                     Longitude = -71.223526,
                     Latitude = 46.828532
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 16,
                     Longitude = -71.218849,
                     Latitude = 46.826829
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 17,
                     Longitude = -71.339884,
                     Latitude = 46.747778
                 },
-                new Block
+                new BlockPoint
                 {
                     Id = 18,
                     Longitude = -71.218491,
                     Latitude = 46.824097
+                },
+                new BlockPoint
+                {
+                    Id = 19,
+                    Longitude = -71.320005,
+                    Latitude = 46.796969
+                },
+                new BlockPoint
+                {
+                    Id = 20,
+                    Longitude = -71.351264,
+                    Latitude = 46.792849
+                },
+                new BlockPoint
+                {
+                    Id = 21,
+                    Longitude = -71.31513,
+                    Latitude = 46.751768
+                },
+                new BlockPoint
+                {
+                    Id = 22,
+                    Longitude = -71.297888,
+                    Latitude = 46.754179
+                },
+                new BlockPoint
+                {
+                    Id = 23,
+                    Longitude = -71.228659,
+                    Latitude = 46.792598
+                },
+                new BlockPoint
+                {
+                    Id = 24,
+                    Longitude = -71.22396,
+                    Latitude = 46.794831
+                },
+                new BlockPoint
+                {
+                    Id = 25,
+                    Longitude = -71.19766,
+                    Latitude = 46.836048
+                },
+                new BlockPoint
+                {
+                    Id = 26,
+                    Longitude = -71.195107,
+                    Latitude = 46.832995
+                },
+                new BlockPoint
+                {
+                    Id = 27,
+                    Longitude = -71.197474,
+                    Latitude = 46.823175
+                },
+                new BlockPoint
+                {
+                    Id = 28,
+                    Longitude = -71.207624,
+                    Latitude = 46.845702
+                },
+                new BlockPoint
+                {
+                    Id = 29,
+                    Longitude = -71.284019,
+                    Latitude = 46.802571
+                },
+                new BlockPoint
+                {
+                    Id = 30,
+                    Longitude = -71.428995,
+                    Latitude = 46.770815
                 }
             );
+            SaveChanges();
+        }
+
+        if (!Blocks.Any())
+        {
+            var allPoints = BlockPoints.ToList();
+
+            var block1 = new Block
+            {
+                Points = new List<BlockPoint>
+                    {
+                        allPoints.First(bp => bp.Id == 19),
+                        allPoints.First(bp => bp.Id == 20)
+                    }
+            };
+
+            var block2 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 19),
+                    allPoints.First(bp => bp.Id == 12)
+                }
+            };
+
+            var block3 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 12),
+                    allPoints.First(bp => bp.Id == 10)
+                }
+            };
+
+            var block4 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 12),
+                    allPoints.First(bp => bp.Id == 8)
+                }
+            };
+
+            var block5 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 8),
+                    allPoints.First(bp => bp.Id == 9)
+                }
+            };
+
+            var block6 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 9),
+                    allPoints.First(bp => bp.Id == 11)
+                }
+            };
+
+            var block7 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 11),
+                    allPoints.First(bp => bp.Id == 5)
+                }
+            };
+
+            var block8 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 11),
+                    allPoints.First(bp => bp.Id == 23)
+                }
+            };
+
+            var block9 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 10),
+                    allPoints.First(bp => bp.Id == 29)
+                }
+            };
+
+            var block10 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 9),
+                    allPoints.First(bp => bp.Id == 29)
+                }
+            };
+
+            var block11 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 29),
+                    allPoints.First(bp => bp.Id == 15)
+                }
+            };
+
+            var block12 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 15),
+                    allPoints.First(bp => bp.Id == 16)
+                }
+            };
+
+            var block13 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 15),
+                    allPoints.First(bp => bp.Id == 18)
+                }
+            };
+            var block14 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 18),
+                    allPoints.First(bp => bp.Id == 16)
+                }
+            };
+            var block15 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 18),
+                    allPoints.First(bp => bp.Id == 7)
+                }
+            };
+            var block16 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 7),
+                    allPoints.First(bp => bp.Id == 6)
+                }
+            };
+            var block17 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 6),
+                    allPoints.First(bp => bp.Id == 27)
+                }
+            };
+            var block18 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 16),
+                    allPoints.First(bp => bp.Id == 13)
+                }
+            };
+            var block19 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 13),
+                    allPoints.First(bp => bp.Id == 14)
+                }
+            };
+            var block20 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 14),
+                    allPoints.First(bp => bp.Id == 25)
+                }
+            };
+            var block21 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 14),
+                    allPoints.First(bp => bp.Id == 26)
+                }
+            };
+            var block22 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 13),
+                    allPoints.First(bp => bp.Id == 1)
+                }
+            };
+            var block23 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 16),
+                    allPoints.First(bp => bp.Id == 28)
+                }
+            };
+            var block24 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 22),
+                    allPoints.First(bp => bp.Id == 5)
+                }
+            };
+            var block25 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 21),
+                    allPoints.First(bp => bp.Id == 2)
+                }
+            };
+            var block26 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 2),
+                    allPoints.First(bp => bp.Id == 17)
+                }
+            };
+            var block27 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 2),
+                    allPoints.First(bp => bp.Id == 3)
+                }
+            };
+            var block28 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 17),
+                    allPoints.First(bp => bp.Id == 3)
+                }
+            };
+            var block29 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 3),
+                    allPoints.First(bp => bp.Id == 8)
+                }
+            };
+            var block30 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 21),
+                    allPoints.First(bp => bp.Id == 22)
+                }
+            };
+            var block31 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 20),
+                    allPoints.First(bp => bp.Id == 30)
+                }
+            };
+            var block32 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 17),
+                    allPoints.First(bp => bp.Id == 4)
+                }
+            };
+            var block33 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 23),
+                    allPoints.First(bp => bp.Id == 24)
+                }
+            };
+            Blocks.AddRange(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24, block25, block26, block27, block28, block29, block30, block31, block32);
             SaveChanges();
         }
     }

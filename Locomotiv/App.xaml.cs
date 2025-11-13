@@ -39,6 +39,7 @@ namespace Locomotiv
             services.AddSingleton<IUserDAL, UserDAL>();
             services.AddSingleton<IStationDAL, StationDAL>();
             services.AddSingleton<IBlockDAL, BlockDAL>();
+            services.AddSingleton<IBlockPointDAL, BlockPointDAL>();
 
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IUserSessionService, Service>();
