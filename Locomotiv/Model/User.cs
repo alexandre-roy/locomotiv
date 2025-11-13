@@ -12,5 +12,7 @@
 
     public bool IsAdmin { get; set; }
 
+    public Station Station { get; set; }
+
     public EmployeeType Type { get; set; }
 }

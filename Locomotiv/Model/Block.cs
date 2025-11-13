@@ -10,4 +10,5 @@ public class Block
 
     public List<BlockPoint> Points { get; set; } = new List<BlockPoint>();
 
+    public Train CurrentTrain { get; set; }
 }
