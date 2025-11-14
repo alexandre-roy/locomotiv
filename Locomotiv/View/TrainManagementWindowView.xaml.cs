@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Locomotiv.View
 {
     /// <summary>
-    /// Logique d'interaction pour HomeView.xaml
+    /// Interaction logic for TrainManagementWindowView.xaml
     /// </summary>
-    public partial class HomeView : UserControl
+    public partial class TrainManagementWindowView : Window
     {
-        public HomeView()
+        public TrainManagementWindowView()
         {
             InitializeComponent();
         }

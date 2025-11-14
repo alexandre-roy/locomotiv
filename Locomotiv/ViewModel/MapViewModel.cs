@@ -9,6 +9,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Locomotiv.View;
+using Locomotiv.Utils.Commands;
 
 namespace Locomotiv.ViewModel
 {
@@ -17,6 +19,7 @@ namespace Locomotiv.ViewModel
         private readonly IStationDAL _stationDal;
         private readonly IBlockDAL _blockDal;
         private readonly IBlockPointDAL _blockPointDal;
+        public ICommand OpenTrainManagementCommand { get; }
 
         public ObservableCollection<GMapMarker> Markers { get; set; }
 
@@ -28,9 +31,15 @@ namespace Locomotiv.ViewModel
 
             Markers = new ObservableCollection<GMapMarker>();
 
+            OpenTrainManagementCommand = new RelayCommand(OpenTrainManagementWindow);
+
             LoadPoints();
         }
-
+        private void OpenTrainManagementWindow()
+        {
+            var window = new TrainManagementWindowView();
+            window.ShowDialog();
+        }
         private void LoadPoints()
         {
 
@@ -71,7 +80,7 @@ namespace Locomotiv.ViewModel
                 Cursor = Cursors.Hand
             };
 
-            var infoPanel = CreateInfoPanel(infoText);
+            var infoPanel = CreateInfoPanel(infoText, obj is Station);
 
             mainMarker.Shape = button;
             infoMarker.Shape = infoPanel;
@@ -87,7 +96,7 @@ namespace Locomotiv.ViewModel
             Markers.Add(infoMarker);
         }
 
-        private Border CreateInfoPanel(string text)
+        private Border CreateInfoPanel(string text, bool isStation)
         {
             var panel = new Border
             {
@@ -106,23 +115,44 @@ namespace Locomotiv.ViewModel
             {
                 Text = text,
                 FontWeight = FontWeights.Bold,
-                Margin = new Thickness(0, 0, 0, 5)
+                Margin = new Thickness(0, 0, 0, 10),
+                TextWrapping = TextWrapping.Wrap
             });
+
+            if (isStation)
+            {
+                var addRemoveTrainBtn = new Button
+                {
+                    Content = "Ajouter/Supprimer un train",
+                    Width = 200,
+                    Margin = new Thickness(0, 0, 0, 10),
+                    HorizontalAlignment = HorizontalAlignment.Left
+                };
+
+                addRemoveTrainBtn.Click += (s, e) =>
+                {
+                    OpenTrainManagementCommand.Execute(null);
+                };
+
+                stack.Children.Add(addRemoveTrainBtn);
+            }
 
             var closeBtn = new Button
             {
                 Content = "Fermer",
-                Width = 60,
+                Width = 80,
                 HorizontalAlignment = HorizontalAlignment.Right
             };
 
             closeBtn.Click += (s, e) => panel.Visibility = Visibility.Hidden;
 
             stack.Children.Add(closeBtn);
+
             panel.Child = stack;
 
             return panel;
         }
+
         private string GetStationInfo(Station st)
         {
             return
