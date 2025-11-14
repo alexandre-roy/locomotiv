@@ -13,7 +13,6 @@ namespace LocomotivTests.ViewModel
         private readonly ConnectUserViewModel _viewmodel;
         private readonly User _user;
 
-
         public ConnectUserViewModelTest()
         {
             _userDALMock = new Mock<IUserDAL>();
@@ -111,6 +110,25 @@ namespace LocomotivTests.ViewModel
         }
 
         [Fact]
+        public void Connect_InValidUsernameOrPassword_AddsError()
+        {
+            // Arrange
+            _viewmodel.Username = "testuser";
+            _viewmodel.Password = "password1234";
+
+            _userDALMock.Setup(
+                d => d.FindByUsernameAndPassword(
+                _viewmodel.Username, _viewmodel.Password)
+            ).Returns((User?)null);
+
+            // Act
+            _viewmodel.ConnectCommand.Execute(null);
+
+            // Assert: should have errors
+            Assert.True(_viewmodel.HasErrors);
+        }
+
+        [Fact]
         public void CanConnect_NotEmptyUsernameAndPassword_ReturnsTrue()
         {
             // Arrange
@@ -120,7 +138,7 @@ namespace LocomotivTests.ViewModel
             // Act
             var canConnect = _viewmodel.ConnectCommand.CanExecute(null);
 
-            // Assert
+            // Assert: should be able to connect
             Assert.True(canConnect);
         }
 
@@ -134,7 +152,7 @@ namespace LocomotivTests.ViewModel
             // Act
             var canConnect = _viewmodel.ConnectCommand.CanExecute(null);
 
-            // Assert
+            // Asser: should not be able to connect
             Assert.False(canConnect);
         }
 
@@ -148,7 +166,7 @@ namespace LocomotivTests.ViewModel
             // Act
             var hasErrors = _viewmodel.HasErrors;
 
-            // Assert
+            // Assert: should not have errors
             Assert.False(hasErrors);
         }
 
@@ -162,7 +180,7 @@ namespace LocomotivTests.ViewModel
             // Act
             var hasErrors = _viewmodel.HasErrors;
 
-            // Assert
+            // Assert: should have errors
             Assert.True(hasErrors);
         }
 
@@ -176,7 +194,7 @@ namespace LocomotivTests.ViewModel
             // Act
             var hasErrors = _viewmodel.HasErrors;
 
-            // Assert
+            // Assert: should have errors
             Assert.True(hasErrors);
         }
 
@@ -190,7 +208,7 @@ namespace LocomotivTests.ViewModel
             // Act
             var hasErrors = _viewmodel.HasErrors;
 
-            // Assert
+            // Assert: should have errors
             Assert.True(hasErrors);
         }
     }
