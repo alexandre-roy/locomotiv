@@ -15,7 +15,7 @@ namespace Locomotiv.Model.DAL
             _context = c;
         }
 
-        public Station? FindByName(string n)
+        public Station? FindById(int id)
         {
       return _context.Stations
           .Include(s => s.Trains)
@@ -26,7 +26,7 @@ namespace Locomotiv.Model.DAL
               .ThenInclude(t => t.Locomotives)
           .Include(s => s.TrainsInStation)
               .ThenInclude(t => t.Wagons)
-          .FirstOrDefault(s => s.Name == n);        }
+          .FirstOrDefault(s => s.Id == id);        }
 
         public IList<Station> GetAll()
         {
@@ -42,15 +42,9 @@ namespace Locomotiv.Model.DAL
           .ToList();
         }
 
-        public void Update(Station station)
-        {
-            _context.Stations.Update(station);
-            _context.SaveChanges();
-        }
-
         public IList<Train> GetTrainsForStation(int stationId)
         {
-            var station = _context.Stations
+            Station? station = _context.Stations
                 .Include(s => s.Trains)
                     .ThenInclude(t => t.Locomotives)
                 .Include(s => s.Trains)
@@ -62,7 +56,7 @@ namespace Locomotiv.Model.DAL
 
         public IList<Train> GetTrainsInStation(int stationId)
         {
-            var station = _context.Stations
+            Station? station = _context.Stations
                 .Include(s => s.TrainsInStation)
                     .ThenInclude(t => t.Locomotives)
                 .Include(s => s.TrainsInStation)
@@ -74,14 +68,14 @@ namespace Locomotiv.Model.DAL
 
         public void RemoveTrainFromStation(int stationId, int trainId)
         {
-            var station = _context.Stations
+            Station? station = _context.Stations
                 .Include(s => s.Trains)
                 .Include(s => s.TrainsInStation)
                 .FirstOrDefault(s => s.Id == stationId);
 
             if (station != null)
             {
-                var trainToRemove = _context.Trains.Find(trainId);
+                Train? trainToRemove = _context.Trains.Find(trainId);
                 if (trainToRemove != null)
                 {
                     if (station.Trains != null && station.Trains.Contains(trainToRemove))
@@ -92,6 +86,15 @@ namespace Locomotiv.Model.DAL
                     if (station.TrainsInStation != null && station.TrainsInStation.Contains(trainToRemove))
                     {
                         station.TrainsInStation.Remove(trainToRemove);
+
+                        if (station.Trains == null)
+                        {
+                            station.Trains = new List<Train>();
+                        }
+                        if (!station.Trains.Contains(trainToRemove))
+                        {
+                            station.Trains.Add(trainToRemove);
+                        }
                     }
 
                     _context.SaveChanges();
@@ -101,14 +104,14 @@ namespace Locomotiv.Model.DAL
 
         public void AddTrainToStation(int stationId, int trainId, bool addToTrainsInStation)
         {
-            var station = _context.Stations
+            Station? station = _context.Stations
                 .Include(s => s.Trains)
                 .Include(s => s.TrainsInStation)
                 .FirstOrDefault(s => s.Id == stationId);
 
             if (station != null)
             {
-                var train = _context.Trains.Find(trainId);
+                Train? train = _context.Trains.Find(trainId);
                 if (train != null)
                 {
                     if (addToTrainsInStation)
@@ -120,6 +123,11 @@ namespace Locomotiv.Model.DAL
                         if (!station.TrainsInStation.Contains(train))
                         {
                             station.TrainsInStation.Add(train);
+                        }
+
+                        if (station.Trains != null && station.Trains.Contains(train))
+                        {
+                            station.Trains.Remove(train);
                         }
                     }
                     else

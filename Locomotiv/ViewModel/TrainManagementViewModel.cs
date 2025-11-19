@@ -10,16 +10,14 @@ namespace Locomotiv.ViewModel
 {
     public class TrainManagementViewModel : BaseViewModel
     {
-        private readonly ITrainDAL _trainDAL;
-        private readonly ILocomotiveDAL _locomotiveDAL;
-        private readonly IWagonDAL _wagonDAL;
         private readonly IStationDAL _stationDAL;
         private readonly IStationContextService _stationContextService;
+        private readonly INavigationService _navigationService;
         private Station? _currentStation;
 
         public ObservableCollection<Train> Trains { get; set; }
-        public ObservableCollection<Locomotive> AvailableLocomotives { get; set; }
-        public ObservableCollection<Wagon> AvailableWagons { get; set; }
+        public ObservableCollection<Train> AvailableTrains { get; set; }
+
         private Train? _selectedTrain;
         public Train? SelectedTrain
         {
@@ -31,105 +29,44 @@ namespace Locomotiv.ViewModel
             }
         }
 
-        private TrainType _newTrainType;
-        public TrainType NewTrainType
+        private Train? _selectedAvailableTrain;
+        public Train? SelectedAvailableTrain
         {
-            get => _newTrainType;
+            get => _selectedAvailableTrain;
             set
             {
-                _newTrainType = value;
+                _selectedAvailableTrain = value;
                 OnPropertyChanged();
             }
         }
-
-        private PriorityLevel _newTrainPriority;
-        public PriorityLevel NewTrainPriority
-        {
-            get => _newTrainPriority;
-            set
-            {
-                _newTrainPriority = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private TrainState _newTrainState;
-        public TrainState NewTrainState
-        {
-            get => _newTrainState;
-            set
-            {
-                _newTrainState = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ObservableCollection<Locomotive> SelectedLocomotives { get; set; }
-        public ObservableCollection<Wagon> SelectedWagons { get; set; }
-
-        public Array TrainTypes => Enum.GetValues(typeof(TrainType));
-        public Array PriorityLevels => Enum.GetValues(typeof(PriorityLevel));
-        public Array TrainStates => Enum.GetValues(typeof(TrainState));
 
         public ICommand AddTrainCommand { get; set; }
         public ICommand DeleteTrainCommand { get; set; }
-        public ICommand AddLocomotiveToTrainCommand { get; set; }
-        public ICommand AddWagonToTrainCommand { get; set; }
+        public ICommand CloseCommand { get; set; }
 
         public TrainManagementViewModel(
-            ITrainDAL trainDAL,
-            ILocomotiveDAL locomotiveDAL,
-            IWagonDAL wagonDAL,
             IStationDAL stationDAL,
-            IStationContextService stationContextService)
+            IStationContextService stationContextService,
+            INavigationService navigationService)
         {
-            _trainDAL = trainDAL;
-            _locomotiveDAL = locomotiveDAL;
-            _wagonDAL = wagonDAL;
             _stationDAL = stationDAL;
             _stationContextService = stationContextService;
+            _navigationService = navigationService;
 
             Trains = new ObservableCollection<Train>();
-            AvailableLocomotives = new ObservableCollection<Locomotive>();
-            AvailableWagons = new ObservableCollection<Wagon>();
-            SelectedLocomotives = new ObservableCollection<Locomotive>();
-            SelectedWagons = new ObservableCollection<Wagon>();
+            AvailableTrains = new ObservableCollection<Train>();
 
             AddTrainCommand = new RelayCommand(AddTrain, CanAddTrain);
             DeleteTrainCommand = new RelayCommand(DeleteTrain, CanDeleteTrain);
-            AddLocomotiveToTrainCommand = new RelayCommand(AddLocomotiveToTrain);
-            AddWagonToTrainCommand = new RelayCommand(AddWagonToTrain);
-
-            NewTrainType = TrainType.Passenger;
-            NewTrainPriority = PriorityLevel.Medium;
-            NewTrainState = TrainState.InStation;
-            if (_currentStation == null)
-                _currentStation = _stationContextService.CurrentStation;
-
-            if (_currentStation != null)
-                _currentStation = _stationDAL.FindByName(_currentStation.Name);
-
+            CloseCommand = new RelayCommand(Close);
 
             LoadData();
         }
 
         private void LoadData()
         {
-            var locomotives = _locomotiveDAL.GetAll();
-            AvailableLocomotives.Clear();
-            foreach (var loco in locomotives)
-            {
-                AvailableLocomotives.Add(loco);
-            }
-
-            var wagons = _wagonDAL.GetAll();
-            AvailableWagons.Clear();
-            foreach (var wagon in wagons)
-            {
-                AvailableWagons.Add(wagon);
-            }
-
             LoadTrainsForStation();
+            LoadAvailableTrains();
         }
 
         private void LoadTrainsForStation()
@@ -140,73 +77,77 @@ namespace Locomotiv.ViewModel
 
             if (_currentStation != null)
             {
-                var trainsInStation = _stationDAL.GetTrainsInStation(_currentStation.Id);
+                IList<Train> trainsInStation = _stationDAL.GetTrainsInStation(_currentStation.Id);
 
-                foreach (var train in trainsInStation)
+                foreach (Train train in trainsInStation)
                 {
                     Trains.Add(train);
                 }
+            }
+        }
 
+        private void LoadAvailableTrains()
+        {
+            AvailableTrains.Clear();
+
+            _currentStation = _stationContextService.CurrentStation;
+
+            if (_currentStation != null)
+            {
+                IList<Train> availableTrains = _stationDAL.GetTrainsForStation(_currentStation.Id);
+
+                foreach (Train train in availableTrains)
+                {
+                    AvailableTrains.Add(train);
+                }
             }
         }
 
         private void AddTrain()
         {
-            _currentStation = _stationDAL.FindByName(_currentStation.Name);
-
-            var newTrain = new Train
+            if (SelectedAvailableTrain != null && _currentStation != null)
             {
-                TypeOfTrain = NewTrainType,
-                PriotityLevel = NewTrainPriority,
-                State = NewTrainState,
-                Locomotives = new List<Locomotive>(SelectedLocomotives),
-                Wagons = new List<Wagon>(SelectedWagons)
-            };
+                _currentStation = _stationDAL.FindById(_currentStation.Id);
 
-            _trainDAL.Add(newTrain);
+                if (_currentStation != null)
+                {
+                    _stationDAL.AddTrainToStation(_currentStation.Id, SelectedAvailableTrain.Id, addToTrainsInStation: true);
 
-            if (_currentStation != null)
-            {
-                _stationDAL.AddTrainToStation(_currentStation.Id, newTrain.Id, addToTrainsInStation: true);
+                    LoadData();
+                    SelectedAvailableTrain = null;
+                }
             }
-
-            SelectedLocomotives.Clear();
-            SelectedWagons.Clear();
-
-            LoadTrainsForStation();
         }
 
-        private bool CanAddTrain()
-        {
-            return SelectedLocomotives.Count > 0;
-        }
+
 
         private void DeleteTrain()
         {
-            _currentStation = _stationDAL.FindByName(_currentStation.Name);
+            _currentStation = _stationDAL.FindById(_currentStation.Id);
 
             if (SelectedTrain != null && _currentStation != null)
             {
                 _stationDAL.RemoveTrainFromStation(_currentStation.Id, SelectedTrain.Id);
 
-                LoadTrainsForStation();
+                LoadData();
                 SelectedTrain = null;
             }
         }
+
+        private bool CanAddTrain()
+        {
+            return SelectedAvailableTrain != null;
+        }
+
 
         private bool CanDeleteTrain()
         {
             return SelectedTrain != null;
         }
 
-        private void AddLocomotiveToTrain()
+        private void Close()
         {
-            // This will be handled by the UI with multi-select
-        }
-
-        private void AddWagonToTrain()
-        {
-            // This will be handled by the UI with multi-select
+            _navigationService.NavigateTo<MapViewModel>();
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Locomotiv.ViewModel
         private readonly IBlockPointDAL _blockPointDal;
         private readonly INavigationService _navigationService;
         private readonly IStationContextService _stationContextService;
+        private readonly IUserSessionService _userSessionService;
         public ObservableCollection<GMapMarker> Markers { get; set; }
 
         public MapViewModel(
@@ -29,13 +30,15 @@ namespace Locomotiv.ViewModel
             IBlockDAL blockDal,
             IBlockPointDAL blockPointDal,
             INavigationService navigationService,
-            IStationContextService stationContextService)
+            IStationContextService stationContextService,
+            IUserSessionService userSessionService)
         {
             _stationDal = stationDal;
             _blockDal = blockDal;
             _blockPointDal = blockPointDal;
             _navigationService = navigationService;
             _stationContextService = stationContextService;
+            _userSessionService = userSessionService;
 
             Markers = new ObservableCollection<GMapMarker>();
 
@@ -52,17 +55,31 @@ namespace Locomotiv.ViewModel
         private void LoadPoints()
         {
 
-            foreach (var blockPoint in _blockPointDal.GetAll())
+            foreach (BlockPoint blockPoint in _blockPointDal.GetAll())
                 CreatePoint(blockPoint,
                     label: $"🛤️{blockPoint.Id}",
                     color: Brushes.Black,
                     infoText: GetBlockInfo(blockPoint));
-
-            foreach (var station in _stationDal.GetAll())
-                CreatePoint(station,
-                    label: station.Name,
-                    color: station.Type == StationType.Station ? Brushes.Red : Brushes.Green,
-                    infoText: GetStationInfo(station));
+            if (_userSessionService.ConnectedUser?.IsAdmin == true)
+            {
+                foreach (Station station in _stationDal.GetAll())
+                {
+                    CreatePoint(station,
+                        label: station.Name,
+                        color: station.Type == StationType.Station ? Brushes.Red : Brushes.Green,
+                        infoText: GetStationInfo(station));
+                }
+            }
+            else
+            {
+                foreach (Station station in _stationDal.GetAll().Where(s => s.Id == _userSessionService.ConnectedUser?.Station?.Id))
+                {
+                    CreatePoint(station,
+                        label: station.Name,
+                        color: Brushes.Red,
+                        infoText: GetStationInfo(station));
+                }
+            }
         }
 
         private void CreatePoint(dynamic obj, string label, Brush color, string infoText)
@@ -70,17 +87,17 @@ namespace Locomotiv.ViewModel
             double lat = obj.Latitude;
             double lng = obj.Longitude;
 
-            var mainMarker = new GMapMarker(new PointLatLng(lat, lng))
+            GMapMarker mainMarker = new GMapMarker(new PointLatLng(lat, lng))
             {
                 Offset = new Point(-16, -32)
             };
 
-            var infoMarker = new GMapMarker(new PointLatLng(lat, lng))
+            GMapMarker infoMarker = new GMapMarker(new PointLatLng(lat, lng))
             {
                 Offset = new Point(-100, -120)
             };
 
-            var button = new Button
+            Button button = new Button
             {
                 Content = label,
                 Background = color,
@@ -89,7 +106,7 @@ namespace Locomotiv.ViewModel
                 Cursor = Cursors.Hand
             };
 
-            var infoPanel = CreateInfoPanel(
+            Border infoPanel = CreateInfoPanel(
                             infoText,
                             obj is Station,
                             obj as Station);
@@ -110,7 +127,7 @@ namespace Locomotiv.ViewModel
 
         private Border CreateInfoPanel(string text, bool isStation, Station station = null)
         {
-            var panel = new Border
+            Border panel = new Border
             {
                 Background = Brushes.White,
                 BorderBrush = Brushes.Black,
@@ -121,7 +138,7 @@ namespace Locomotiv.ViewModel
                 Visibility = Visibility.Hidden
             };
 
-            var stack = new StackPanel();
+            StackPanel stack = new StackPanel();
 
             stack.Children.Add(new TextBlock
             {
@@ -131,9 +148,9 @@ namespace Locomotiv.ViewModel
                 TextWrapping = TextWrapping.Wrap
             });
 
-            if (isStation && station != null)
+            if (isStation && station != null && _userSessionService.ConnectedUser?.IsAdmin == true)
             {
-                var addRemoveTrainBtn = new Button
+                Button addRemoveTrainBtn = new Button
                 {
                     Content = "Ajouter/Supprimer un train",
                     Width = 200,
@@ -144,15 +161,15 @@ namespace Locomotiv.ViewModel
 
                 addRemoveTrainBtn.Click += (s, e) =>
                 {
-                    var btn = s as Button;
-                    var currentStation = btn.Tag as Station;
+                    Button btn = s as Button;
+                    Station currentStation = btn.Tag as Station;
                     OpenTrainManagementWindow(currentStation);
                 };
 
                 stack.Children.Add(addRemoveTrainBtn);
             }
 
-            var closeBtn = new Button
+            Button closeBtn = new Button
             {
                 Content = "Fermer",
                 Width = 80,
@@ -183,14 +200,14 @@ namespace Locomotiv.ViewModel
 
         private string GetBlockInfo(BlockPoint blockPoint)
         {
-            var blocks = _blockDal.GetAll();
+            IList<Block> blocks = _blockDal.GetAll();
             List<string> connectedBlocks = new List<string>();
 
             foreach (Block block in blocks)
             {
                 if (block.Points.Any(p => p.Id == blockPoint.Id))
                 {
-                    var otherPoint = block.Points.FirstOrDefault(p => p.Id != blockPoint.Id);
+                    BlockPoint otherPoint = block.Points.FirstOrDefault(p => p.Id != blockPoint.Id);
 
                     if (otherPoint != null)
                         connectedBlocks.Add($" - Block {block.Id} → vers BlockPoint {otherPoint.Id}");
