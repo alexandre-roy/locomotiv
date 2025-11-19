@@ -5,6 +5,7 @@ using Locomotiv.Utils.Commands;
 using Locomotiv.Utils.Services.Interfaces;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Windows;
 
 namespace Locomotiv.ViewModel
 {
@@ -37,6 +38,19 @@ namespace Locomotiv.ViewModel
             {
                 _selectedAvailableTrain = value;
                 OnPropertyChanged();
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
+        public string CapacityText
+        {
+            get
+            {
+                if (_currentStation == null)
+                {
+                    return "0/0";
+                }
+                return $"{Trains.Count}/{_currentStation.Capacity}";
             }
         }
 
@@ -67,6 +81,10 @@ namespace Locomotiv.ViewModel
         {
             LoadTrainsForStation();
             LoadAvailableTrains();
+
+            OnPropertyChanged(nameof(CapacityText));
+
+            CommandManager.InvalidateRequerySuggested();
         }
 
         private void LoadTrainsForStation()
@@ -77,11 +95,16 @@ namespace Locomotiv.ViewModel
 
             if (_currentStation != null)
             {
-                IList<Train> trainsInStation = _stationDAL.GetTrainsInStation(_currentStation.Id);
+                _currentStation = _stationDAL.FindById(_currentStation.Id);
 
-                foreach (Train train in trainsInStation)
+                if (_currentStation != null)
                 {
-                    Trains.Add(train);
+                    IList<Train> trainsInStation = _stationDAL.GetTrainsInStation(_currentStation.Id);
+
+                    foreach (Train train in trainsInStation)
+                    {
+                        Trains.Add(train);
+                    }
                 }
             }
         }
@@ -89,8 +112,6 @@ namespace Locomotiv.ViewModel
         private void LoadAvailableTrains()
         {
             AvailableTrains.Clear();
-
-            _currentStation = _stationContextService.CurrentStation;
 
             if (_currentStation != null)
             {
@@ -136,7 +157,12 @@ namespace Locomotiv.ViewModel
 
         private bool CanAddTrain()
         {
-            return SelectedAvailableTrain != null;
+            if (SelectedAvailableTrain == null || _currentStation == null)
+            {
+                return false;
+            }
+
+            return Trains.Count < _currentStation.Capacity;
         }
 
 
