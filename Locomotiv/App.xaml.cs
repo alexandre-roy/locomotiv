@@ -35,14 +35,19 @@ namespace Locomotiv
             services.AddSingleton<HomeViewModel>();
             services.AddSingleton<ConnectUserViewModel>();
             services.AddSingleton<MapViewModel>();
+            services.AddSingleton<TrainManagementViewModel>();
 
             services.AddSingleton<IUserDAL, UserDAL>();
             services.AddSingleton<IStationDAL, StationDAL>();
             services.AddSingleton<IBlockDAL, BlockDAL>();
             services.AddSingleton<IBlockPointDAL, BlockPointDAL>();
+            services.AddSingleton<ITrainDAL, TrainDAL>();
+            services.AddSingleton<ILocomotiveDAL, LocomotiveDAL>();
+            services.AddSingleton<IWagonDAL, WagonDAL>();
 
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IUserSessionService, Service>();
+            services.AddSingleton<IStationContextService, StationContextService>();
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<Func<Type, BaseViewModel>>(serviceProvider =>
             {

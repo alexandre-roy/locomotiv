@@ -4,6 +4,7 @@ using Locomotiv.Model;
 using Locomotiv.Model.DAL;
 using Locomotiv.Model.Interfaces;
 using Locomotiv.Utils;
+using Locomotiv.Utils.Services.Interfaces;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,13 +20,22 @@ namespace Locomotiv.ViewModel
         private readonly IStationDAL _stationDal;
         private readonly IBlockDAL _blockDal;
         private readonly IBlockPointDAL _blockPointDal;
+        private readonly INavigationService _navigationService;
+        private readonly IStationContextService _stationContextService;
         public ObservableCollection<GMapMarker> Markers { get; set; }
 
-        public MapViewModel(IStationDAL stationDal, IBlockDAL blockDal, IBlockPointDAL blockPointDal)
+        public MapViewModel(
+            IStationDAL stationDal,
+            IBlockDAL blockDal,
+            IBlockPointDAL blockPointDal,
+            INavigationService navigationService,
+            IStationContextService stationContextService)
         {
             _stationDal = stationDal;
             _blockDal = blockDal;
             _blockPointDal = blockPointDal;
+            _navigationService = navigationService;
+            _stationContextService = stationContextService;
 
             Markers = new ObservableCollection<GMapMarker>();
 
@@ -35,8 +45,9 @@ namespace Locomotiv.ViewModel
         {
             if (station == null) return;
 
-            var window = new TrainManagementWindowView(station);
-            window.ShowDialog();
+            _stationContextService.CurrentStation = station;
+
+            _navigationService.NavigateTo<TrainManagementViewModel>();
         }
         private void LoadPoints()
         {
