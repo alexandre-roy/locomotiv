@@ -20,10 +20,40 @@ namespace Locomotiv.Model.DAL
 
         public IList<Train> GetAll()
         {
-return _context.Trains
-          .Include(t => t.Locomotives)
-          .Include(t => t.Wagons)
-          .ToList();
+            return _context.Trains
+                .Include(t => t.Locomotives)
+                .Include(t => t.Wagons)
+                .ToList();
+        }
+
+        public Train? GetById(int id)
+        {
+            return _context.Trains
+                .Include(t => t.Locomotives)
+                .Include(t => t.Wagons)
+                .FirstOrDefault(t => t.Id == id);
+        }
+
+        public void Add(Train train)
+        {
+            _context.Trains.Add(train);
+            _context.SaveChanges();
+        }
+
+        public void Update(Train train)
+        {
+            _context.Trains.Update(train);
+            _context.SaveChanges();
+        }
+
+        public void Delete(int id)
+        {
+            var train = _context.Trains.Find(id);
+            if (train != null)
+            {
+                _context.Trains.Remove(train);
+                _context.SaveChanges();
+            }
         }
     }
 }
