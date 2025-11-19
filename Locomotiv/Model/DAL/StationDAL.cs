@@ -17,12 +17,29 @@ namespace Locomotiv.Model.DAL
 
         public Station? FindByName(string n)
         {
-            return _context.Stations.FirstOrDefault(s => s.Name == n);
-        }
+      return _context.Stations
+          .Include(s => s.Trains)
+              .ThenInclude(t => t.Locomotives)
+          .Include(s => s.Trains)
+              .ThenInclude(t => t.Wagons)
+          .Include(s => s.TrainsInStation)
+              .ThenInclude(t => t.Locomotives)
+          .Include(s => s.TrainsInStation)
+              .ThenInclude(t => t.Wagons)
+          .FirstOrDefault(s => s.Name == n);        }
 
         public IList<Station> GetAll()
         {
-            return _context.Stations.Include(s => s.Trains).ToList();
+      return _context.Stations
+          .Include(s => s.Trains)
+              .ThenInclude(t => t.Locomotives)
+          .Include(s => s.Trains)
+              .ThenInclude(t => t.Wagons)
+          .Include(s => s.TrainsInStation)
+              .ThenInclude(t => t.Locomotives)
+          .Include(s => s.TrainsInStation)
+              .ThenInclude(t => t.Wagons)
+          .ToList();
         }
     }
 }

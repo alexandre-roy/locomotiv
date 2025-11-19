@@ -36,6 +36,14 @@ public class ApplicationDbContext : DbContext
             .HasMany(b => b.Points)
             .WithMany(bp => bp.Blocks);
 
+        modelBuilder.Entity<Train>()
+            .HasMany(t => t.Locomotives)
+            .WithMany();
+
+        modelBuilder.Entity<Train>()
+            .HasMany(t => t.Wagons)
+            .WithMany();
+
     }
 
 

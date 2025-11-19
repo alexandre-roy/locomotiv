@@ -10,7 +10,7 @@ public class Train
 
     public TrainState State { get; set; }
 
-    public List<Wagon> Wagons { get; set; }
+    public ICollection<Wagon> Wagons { get; set; }
 
-    public List<Locomotive> Locomotives { get; set; }
+    public ICollection<Locomotive> Locomotives { get; set; }
 }
