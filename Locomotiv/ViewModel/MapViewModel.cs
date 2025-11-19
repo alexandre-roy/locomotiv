@@ -30,6 +30,7 @@ namespace Locomotiv.ViewModel
             IBlockPointDAL blockPointDal,
             INavigationService navigationService,
             IStationContextService stationContextService)
+        public MapViewModel(IStationDAL stationDal, IBlockDAL blockDal, IBlockPointDAL blockPointDal, bool loadPointsOnStartup = true)
         {
             _stationDal = stationDal;
             _blockDal = blockDal;
@@ -39,7 +40,9 @@ namespace Locomotiv.ViewModel
 
             Markers = new ObservableCollection<GMapMarker>();
 
-            LoadPoints();
+
+            if (loadPointsOnStartup)
+                LoadPoints();
         }
         private void OpenTrainManagementWindow(Station station)
         {
@@ -65,7 +68,7 @@ namespace Locomotiv.ViewModel
                     infoText: GetStationInfo(station));
         }
 
-        private void CreatePoint(dynamic obj, string label, Brush color, string infoText)
+        public void CreatePoint(dynamic obj, string label, Brush color, string infoText)
         {
             double lat = obj.Latitude;
             double lng = obj.Longitude;
@@ -167,8 +170,7 @@ namespace Locomotiv.ViewModel
 
             return panel;
         }
-
-        private string GetStationInfo(Station st)
+        internal string GetStationInfo(Station st)
         {
             return
                 $"Station : {st.Name}\n" +
@@ -181,7 +183,7 @@ namespace Locomotiv.ViewModel
                 "  - Train 205 (Québec → Ottawa)";
         }
 
-        private string GetBlockInfo(BlockPoint blockPoint)
+        internal string GetBlockInfo(BlockPoint blockPoint)
         {
             var blocks = _blockDal.GetAll();
             List<string> connectedBlocks = new List<string>();
