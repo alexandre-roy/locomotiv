@@ -8,6 +8,7 @@ namespace LocomotivTests.ViewModel
     public class HomeViewModelTest
     {
         private readonly Mock<IUserDAL> _userDALMock;
+        private readonly Mock<IStationDAL> _stationDALMock;
         private readonly Mock<INavigationService> _navigationServiceMock;
         private readonly Mock<IUserSessionService> _userSessionServiceMock;
         private readonly HomeViewModel _viewmodel;
@@ -15,13 +16,15 @@ namespace LocomotivTests.ViewModel
         public HomeViewModelTest()
         {
             _userDALMock = new Mock<IUserDAL>();
+            _stationDALMock = new Mock<IStationDAL>();
             _navigationServiceMock = new Mock<INavigationService>();
             _userSessionServiceMock = new Mock<IUserSessionService>();
 
             _viewmodel = new HomeViewModel(
                 _userDALMock.Object,
                 _navigationServiceMock.Object,
-                _userSessionServiceMock.Object
+                _userSessionServiceMock.Object,
+                _stationDALMock.Object
             );
         }
 
