@@ -16,11 +16,9 @@ public class Station
 
     public int Capacity { get; set; }
 
-    public List<Train> Trains { get; set; }
+    public ICollection<Train> Trains { get; set; }
 
-    public List<Train> TrainsInStation { get; set; }
-
-    public List<RailwayLine> RalwayLines { get; set; }
+    public ICollection<Train> TrainsInStation { get; set; }
 
     public StationType Type { get; set; }
 }

@@ -4,11 +4,14 @@ using Locomotiv.Model;
 using Locomotiv.Model.DAL;
 using Locomotiv.Model.Interfaces;
 using Locomotiv.Utils;
+using Locomotiv.Utils.Services.Interfaces;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Locomotiv.View;
+using Locomotiv.Utils.Commands;
 
 namespace Locomotiv.ViewModel
 {
@@ -17,38 +20,70 @@ namespace Locomotiv.ViewModel
         private readonly IStationDAL _stationDal;
         private readonly IBlockDAL _blockDal;
         private readonly IBlockPointDAL _blockPointDal;
-
+        private readonly INavigationService _navigationService;
+        private readonly IStationContextService _stationContextService;
+        private readonly IUserSessionService _userSessionService;
         public ObservableCollection<GMapMarker> Markers { get; set; }
 
-        public MapViewModel(IStationDAL stationDal, IBlockDAL blockDal, IBlockPointDAL blockPointDal)
+        public MapViewModel(
+            IStationDAL stationDal,
+            IBlockDAL blockDal,
+            IBlockPointDAL blockPointDal,
+            INavigationService navigationService,
+            IStationContextService stationContextService,
+            IUserSessionService userSessionService)
         {
             _stationDal = stationDal;
             _blockDal = blockDal;
             _blockPointDal = blockPointDal;
+            _navigationService = navigationService;
+            _stationContextService = stationContextService;
+            _userSessionService = userSessionService;
 
             Markers = new ObservableCollection<GMapMarker>();
 
             LoadPoints();
         }
+        private void OpenTrainManagementWindow(Station station)
+        {
+            if (station == null) return;
 
+            _stationContextService.CurrentStation = station;
+
+            _navigationService.NavigateTo<TrainManagementViewModel>();
+        }
         private void LoadPoints()
         {
 
-            foreach (var blockPoint in _blockPointDal.GetAll())
+            foreach (BlockPoint blockPoint in _blockPointDal.GetAll())
                 CreatePoint(blockPoint,
                     label: $"🛤️{blockPoint.Id}",
                     color: Brushes.Black,
                     infoText: GetBlockInfo(blockPoint));
-
-            foreach (var station in _stationDal.GetAll())
-                CreatePoint(station,
-                    label: station.Name,
-                    color: station.Type == StationType.Station ? Brushes.Red : Brushes.Green,
-                    infoText: GetStationInfo(station));
+            if (_userSessionService.ConnectedUser?.IsAdmin == true)
+            {
+                foreach (Station station in _stationDal.GetAll())
+                {
+                    CreatePoint(station,
+                        label: station.Name,
+                        color: station.Type == StationType.Station ? Brushes.Red : Brushes.Green,
+                        infoText: GetStationInfo(station));
+                }
+            }
+            else
+            {
+                foreach (Station station in _stationDal.GetAll().Where(s => s.Id == _userSessionService.ConnectedUser?.Station?.Id))
+                {
+                    CreatePoint(station,
+                        label: station.Name,
+                        color: Brushes.Red,
+                        infoText: GetStationInfo(station));
+                }
+            }
 
             foreach (var block in _blockDal.GetAll())
             {
-                if(block.CurrentTrain is not null)
+                if (block.CurrentTrain is not null)
                     CreatePoint(block,
                        label: $"🚆{block.CurrentTrain.Id}",
                        color: Brushes.Blue,
@@ -61,17 +96,17 @@ namespace Locomotiv.ViewModel
             double lat = obj.Latitude;
             double lng = obj.Longitude;
 
-            var mainMarker = new GMapMarker(new PointLatLng(lat, lng))
+            GMapMarker mainMarker = new GMapMarker(new PointLatLng(lat, lng))
             {
                 Offset = new Point(-16, -32)
             };
 
-            var infoMarker = new GMapMarker(new PointLatLng(lat, lng))
+            GMapMarker infoMarker = new GMapMarker(new PointLatLng(lat, lng))
             {
                 Offset = new Point(-100, -120)
             };
 
-            var button = new Button
+            Button button = new Button
             {
                 Content = label,
                 Background = color,
@@ -80,7 +115,10 @@ namespace Locomotiv.ViewModel
                 Cursor = Cursors.Hand
             };
 
-            var infoPanel = CreateInfoPanel(infoText);
+            Border infoPanel = CreateInfoPanel(
+                            infoText,
+                            obj is Station,
+                            obj as Station);
 
             mainMarker.Shape = button;
             infoMarker.Shape = infoPanel;
@@ -96,9 +134,9 @@ namespace Locomotiv.ViewModel
             Markers.Add(infoMarker);
         }
 
-        private Border CreateInfoPanel(string text)
+        private Border CreateInfoPanel(string text, bool isStation, Station station = null)
         {
-            var panel = new Border
+            Border panel = new Border
             {
                 Background = Brushes.White,
                 BorderBrush = Brushes.Black,
@@ -109,29 +147,53 @@ namespace Locomotiv.ViewModel
                 Visibility = Visibility.Hidden
             };
 
-            var stack = new StackPanel();
+            StackPanel stack = new StackPanel();
 
             stack.Children.Add(new TextBlock
             {
                 Text = text,
                 FontWeight = FontWeights.Bold,
-                Margin = new Thickness(0, 0, 0, 5)
+                Margin = new Thickness(0, 0, 0, 10),
+                TextWrapping = TextWrapping.Wrap
             });
 
-            var closeBtn = new Button
+            if (isStation && station != null && _userSessionService.ConnectedUser?.IsAdmin == true)
+            {
+                Button addRemoveTrainBtn = new Button
+                {
+                    Content = "Ajouter/Supprimer un train",
+                    Width = 200,
+                    Margin = new Thickness(0, 0, 0, 10),
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    Tag = station
+                };
+
+                addRemoveTrainBtn.Click += (s, e) =>
+                {
+                    Button btn = s as Button;
+                    Station currentStation = btn.Tag as Station;
+                    OpenTrainManagementWindow(currentStation);
+                };
+
+                stack.Children.Add(addRemoveTrainBtn);
+            }
+
+            Button closeBtn = new Button
             {
                 Content = "Fermer",
-                Width = 60,
+                Width = 80,
                 HorizontalAlignment = HorizontalAlignment.Right
             };
 
             closeBtn.Click += (s, e) => panel.Visibility = Visibility.Hidden;
 
             stack.Children.Add(closeBtn);
+
             panel.Child = stack;
 
             return panel;
         }
+
         private string GetStationInfo(Station st)
         {
             string header =
@@ -165,14 +227,14 @@ namespace Locomotiv.ViewModel
 
         private string GetBlockInfo(BlockPoint blockPoint)
         {
-            var blocks = _blockDal.GetAll();
+            IList<Block> blocks = _blockDal.GetAll();
             List<string> connectedBlocks = new List<string>();
 
             foreach (Block block in blocks)
             {
                 if (block.Points.Any(p => p.Id == blockPoint.Id))
                 {
-                    var otherPoint = block.Points.FirstOrDefault(p => p.Id != blockPoint.Id);
+                    BlockPoint otherPoint = block.Points.FirstOrDefault(p => p.Id != blockPoint.Id);
 
                     if (otherPoint != null)
                         connectedBlocks.Add($" - Block {block.Id} → vers BlockPoint {otherPoint.Id}");

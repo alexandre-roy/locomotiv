@@ -6,7 +6,6 @@
              Loaded="UserControl_Loaded">
 
     <Grid>
-        <!-- Carte GMap.NET -->
         <gmap:GMapControl x:Name="MapControl"
                           Zoom="12"
                           MinZoom="2"

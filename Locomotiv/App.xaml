@@ -17,6 +17,9 @@
             <DataTemplate DataType="{x:Type viewModel:MapViewModel}">
                 <view:MapView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:TrainManagementViewModel}">
+                <view:TrainManagementWindowView/>
+            </DataTemplate>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         </ResourceDictionary>
     </Application.Resources>

@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Locomotiv"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Locomotiv - Gestion des Trains"
+        Height="800"
+        Width="1400"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -31,7 +35,7 @@
                     Margin="10"
                     Height="25"
                     Command="{Binding NavigateToMapViewCommand}"
-                    Visibility="{Binding UserSessionService.IsUserDisconnected, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    Visibility="{Binding UserSessionService.IsUserConnected, Converter={StaticResource BoolToVisibilityConverter}}"/>
         </StackPanel>
         <ContentControl Grid.Column="1" Content="{Binding NavigationService.CurrentView}"></ContentControl>
     </Grid>

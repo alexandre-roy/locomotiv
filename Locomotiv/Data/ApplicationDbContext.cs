@@ -28,10 +28,6 @@ public class ApplicationDbContext : DbContext
             .HasMany(s => s.TrainsInStation)
             .WithMany();
 
-        modelBuilder.Entity<Station>()
-            .HasMany(s => s.RalwayLines)
-            .WithMany();
-
         modelBuilder.Entity<User>()
             .HasOne(u => u.Station)
             .WithMany();
@@ -39,6 +35,14 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Block>()
             .HasMany(b => b.Points)
             .WithMany(bp => bp.Blocks);
+
+        modelBuilder.Entity<Train>()
+            .HasMany(t => t.Locomotives)
+            .WithMany();
+
+        modelBuilder.Entity<Train>()
+            .HasMany(t => t.Wagons)
+            .WithMany();
 
     }
 
@@ -50,8 +54,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<Station> Stations { get; set; }
     public DbSet<Block> Blocks { get; set; }
     public DbSet<BlockPoint> BlockPoints { get; set; }
-
-    public DbSet<RailwayLine> RailwayLines { get; set; }
 
     IConfiguration config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false).Build();
 
@@ -70,7 +72,37 @@ public class ApplicationDbContext : DbContext
                 new Locomotive { Code = "Loco-007" },
                 new Locomotive { Code = "Loco-008" },
                 new Locomotive { Code = "Loco-009" },
-                new Locomotive { Code = "Loco-010" }
+                new Locomotive { Code = "Loco-010" },
+                new Locomotive { Code = "Loco-011" },
+                new Locomotive { Code = "Loco-012" },
+                new Locomotive { Code = "Loco-013" },
+                new Locomotive { Code = "Loco-014" },
+                new Locomotive { Code = "Loco-015" },
+                new Locomotive { Code = "Loco-016" },
+                new Locomotive { Code = "Loco-017" },
+                new Locomotive { Code = "Loco-018" },
+                new Locomotive { Code = "Loco-019" },
+                new Locomotive { Code = "Loco-020" },
+                new Locomotive { Code = "Loco-021" },
+                new Locomotive { Code = "Loco-022" },
+                new Locomotive { Code = "Loco-023" },
+                new Locomotive { Code = "Loco-024" },
+                new Locomotive { Code = "Loco-025" },
+                new Locomotive { Code = "Loco-026" },
+                new Locomotive { Code = "Loco-027" },
+                new Locomotive { Code = "Loco-028" },
+                new Locomotive { Code = "Loco-029" },
+                new Locomotive { Code = "Loco-030" },
+                new Locomotive { Code = "Loco-031" },
+                new Locomotive { Code = "Loco-032" },
+                new Locomotive { Code = "Loco-033" },
+                new Locomotive { Code = "Loco-034" },
+                new Locomotive { Code = "Loco-035" },
+                new Locomotive { Code = "Loco-036" },
+                new Locomotive { Code = "Loco-037" },
+                new Locomotive { Code = "Loco-038" },
+                new Locomotive { Code = "Loco-039" },
+                new Locomotive { Code = "Loco-040" }
             );
             SaveChanges();
         }
@@ -123,206 +155,220 @@ public class ApplicationDbContext : DbContext
         }
 
         List<Locomotive> savedLocomotives = Locomotives.ToList();
-        List<Locomotive> locomotives1 = new List<Locomotive>();
-        locomotives1.Add(savedLocomotives[0]);
-        locomotives1.Add(savedLocomotives[1]);
-        List<Locomotive> locomotives2 = new List<Locomotive>();
-        locomotives2.Add(savedLocomotives[2]);
-        locomotives2.Add(savedLocomotives[3]);
-        List<Locomotive> locomotives3 = new List<Locomotive>();
-        locomotives3.Add(savedLocomotives[4]);
-        locomotives3.Add(savedLocomotives[5]);
-        locomotives3.Add(savedLocomotives[6]);
-        List<Locomotive> locomotives4 = new List<Locomotive>();
-        locomotives4.Add(savedLocomotives[7]);
-        locomotives4.Add(savedLocomotives[8]);
-        locomotives4.Add(savedLocomotives[9]);
-
         List<Wagon> savedWagons = Wagons.ToList();
 
-        if (!Trains.Any() || !Stations.Any())
+        if (!Trains.Any())
         {
             Trains.AddRange(
-
-                new Train
-                {
-                    TypeOfTrain = TrainType.Maintenance,
-                    PriotityLevel = PriorityLevel.Low,
-                    State = TrainState.Idle,
-                    Wagons = new List<Wagon>(),
-                    Locomotives = locomotives1
-                },
-                new Train
-                {
-                    TypeOfTrain = TrainType.Merchandise,
-                    PriotityLevel = PriorityLevel.Medium,
-                    State = TrainState.Idle,
-                    Wagons = new List<Wagon>(),
-                    Locomotives = locomotives2
-                },
-                new Train
-                {
-                    TypeOfTrain = TrainType.Passenger,
-                    PriotityLevel = PriorityLevel.High,
-                    State = TrainState.Idle,
-                    Wagons = new List<Wagon>(),
-                    Locomotives = locomotives3
-                },
-                new Train
-                {
-                    TypeOfTrain = TrainType.Express,
-                    PriotityLevel = PriorityLevel.Critical,
-                    State = TrainState.Idle,
-                    Wagons = new List<Wagon>(),
-                    Locomotives = locomotives4
-                }
+                new Train { TypeOfTrain = TrainType.Maintenance, PriotityLevel = PriorityLevel.Low, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[0] }, Locomotives = new List<Locomotive> { savedLocomotives[0] } },
+                new Train { TypeOfTrain = TrainType.Merchandise, PriotityLevel = PriorityLevel.Medium, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[1] }, Locomotives = new List<Locomotive> { savedLocomotives[1] } },
+                new Train { TypeOfTrain = TrainType.Passenger, PriotityLevel = PriorityLevel.High, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[2] }, Locomotives = new List<Locomotive> { savedLocomotives[2] } },
+                new Train { TypeOfTrain = TrainType.Express, PriotityLevel = PriorityLevel.Critical, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[3] }, Locomotives = new List<Locomotive> { savedLocomotives[3] } },
+                new Train { TypeOfTrain = TrainType.Maintenance, PriotityLevel = PriorityLevel.Low, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[4] }, Locomotives = new List<Locomotive> { savedLocomotives[4] } },
+                new Train { TypeOfTrain = TrainType.Merchandise, PriotityLevel = PriorityLevel.Medium, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[5] }, Locomotives = new List<Locomotive> { savedLocomotives[5] } },
+                new Train { TypeOfTrain = TrainType.Passenger, PriotityLevel = PriorityLevel.High, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[6] }, Locomotives = new List<Locomotive> { savedLocomotives[6] } },
+                new Train { TypeOfTrain = TrainType.Express, PriotityLevel = PriorityLevel.Critical, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[7] }, Locomotives = new List<Locomotive> { savedLocomotives[7] } },
+                new Train { TypeOfTrain = TrainType.Maintenance, PriotityLevel = PriorityLevel.Low, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[8] }, Locomotives = new List<Locomotive> { savedLocomotives[8] } },
+                new Train { TypeOfTrain = TrainType.Merchandise, PriotityLevel = PriorityLevel.Medium, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[9] }, Locomotives = new List<Locomotive> { savedLocomotives[9] } },
+                new Train { TypeOfTrain = TrainType.Passenger, PriotityLevel = PriorityLevel.High, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[10] }, Locomotives = new List<Locomotive> { savedLocomotives[10] } },
+                new Train { TypeOfTrain = TrainType.Express, PriotityLevel = PriorityLevel.Critical, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[11] }, Locomotives = new List<Locomotive> { savedLocomotives[11] } },
+                new Train { TypeOfTrain = TrainType.Maintenance, PriotityLevel = PriorityLevel.Low, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[12] }, Locomotives = new List<Locomotive> { savedLocomotives[12] } },
+                new Train { TypeOfTrain = TrainType.Merchandise, PriotityLevel = PriorityLevel.Medium, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[13] }, Locomotives = new List<Locomotive> { savedLocomotives[13] } },
+                new Train { TypeOfTrain = TrainType.Passenger, PriotityLevel = PriorityLevel.High, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[14] }, Locomotives = new List<Locomotive> { savedLocomotives[14] } },
+                new Train { TypeOfTrain = TrainType.Express, PriotityLevel = PriorityLevel.Critical, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[15] }, Locomotives = new List<Locomotive> { savedLocomotives[15] } },
+                new Train { TypeOfTrain = TrainType.Maintenance, PriotityLevel = PriorityLevel.Low, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[16] }, Locomotives = new List<Locomotive> { savedLocomotives[16] } },
+                new Train { TypeOfTrain = TrainType.Merchandise, PriotityLevel = PriorityLevel.Medium, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[17] }, Locomotives = new List<Locomotive> { savedLocomotives[17] } },
+                new Train { TypeOfTrain = TrainType.Passenger, PriotityLevel = PriorityLevel.High, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[18] }, Locomotives = new List<Locomotive> { savedLocomotives[18] } },
+                new Train { TypeOfTrain = TrainType.Express, PriotityLevel = PriorityLevel.Critical, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[19] }, Locomotives = new List<Locomotive> { savedLocomotives[19] } },
+                new Train { TypeOfTrain = TrainType.Maintenance, PriotityLevel = PriorityLevel.Low, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[20] }, Locomotives = new List<Locomotive> { savedLocomotives[20] } },
+                new Train { TypeOfTrain = TrainType.Merchandise, PriotityLevel = PriorityLevel.Medium, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[21] }, Locomotives = new List<Locomotive> { savedLocomotives[21] } },
+                new Train { TypeOfTrain = TrainType.Passenger, PriotityLevel = PriorityLevel.High, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[22] }, Locomotives = new List<Locomotive> { savedLocomotives[22] } },
+                new Train { TypeOfTrain = TrainType.Express, PriotityLevel = PriorityLevel.Critical, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[23] }, Locomotives = new List<Locomotive> { savedLocomotives[23] } },
+                new Train { TypeOfTrain = TrainType.Maintenance, PriotityLevel = PriorityLevel.Low, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[24] }, Locomotives = new List<Locomotive> { savedLocomotives[24] } },
+                new Train { TypeOfTrain = TrainType.Merchandise, PriotityLevel = PriorityLevel.Medium, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[25] }, Locomotives = new List<Locomotive> { savedLocomotives[25] } },
+                new Train { TypeOfTrain = TrainType.Passenger, PriotityLevel = PriorityLevel.High, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[26] }, Locomotives = new List<Locomotive> { savedLocomotives[26] } },
+                new Train { TypeOfTrain = TrainType.Express, PriotityLevel = PriorityLevel.Critical, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[27] }, Locomotives = new List<Locomotive> { savedLocomotives[27] } },
+                new Train { TypeOfTrain = TrainType.Maintenance, PriotityLevel = PriorityLevel.Low, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[28] }, Locomotives = new List<Locomotive> { savedLocomotives[28] } },
+                new Train { TypeOfTrain = TrainType.Merchandise, PriotityLevel = PriorityLevel.Medium, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[29] }, Locomotives = new List<Locomotive> { savedLocomotives[29] } },
+                new Train { TypeOfTrain = TrainType.Passenger, PriotityLevel = PriorityLevel.High, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[30] }, Locomotives = new List<Locomotive> { savedLocomotives[30] } },
+                new Train { TypeOfTrain = TrainType.Express, PriotityLevel = PriorityLevel.Critical, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[31] }, Locomotives = new List<Locomotive> { savedLocomotives[31] } },
+                new Train { TypeOfTrain = TrainType.Maintenance, PriotityLevel = PriorityLevel.Low, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[32] }, Locomotives = new List<Locomotive> { savedLocomotives[32] } },
+                new Train { TypeOfTrain = TrainType.Merchandise, PriotityLevel = PriorityLevel.Medium, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[33] }, Locomotives = new List<Locomotive> { savedLocomotives[33] } },
+                new Train { TypeOfTrain = TrainType.Passenger, PriotityLevel = PriorityLevel.High, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[34] }, Locomotives = new List<Locomotive> { savedLocomotives[34] } },
+                new Train { TypeOfTrain = TrainType.Express, PriotityLevel = PriorityLevel.Critical, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[35] }, Locomotives = new List<Locomotive> { savedLocomotives[35] } },
+                new Train { TypeOfTrain = TrainType.Maintenance, PriotityLevel = PriorityLevel.Low, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[36] }, Locomotives = new List<Locomotive> { savedLocomotives[36] } },
+                new Train { TypeOfTrain = TrainType.Merchandise, PriotityLevel = PriorityLevel.Medium, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[37] }, Locomotives = new List<Locomotive> { savedLocomotives[37] } },
+                new Train { TypeOfTrain = TrainType.Passenger, PriotityLevel = PriorityLevel.High, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[38] }, Locomotives = new List<Locomotive> { savedLocomotives[38] } },
+                new Train { TypeOfTrain = TrainType.Express, PriotityLevel = PriorityLevel.Critical, State = TrainState.Idle, Wagons = new List<Wagon> { savedWagons[39] }, Locomotives = new List<Locomotive> { savedLocomotives[39] } }
             );
 
             SaveChanges();
 
-            List<Train> savedTrains = Trains.ToList();
-            List<Train> trains = new List<Train>();
-            trains.Add(savedTrains[0]);
-            trains.Add(savedTrains[1]);
-            List<Train> trainsInStation = new List<Train>();
-            trainsInStation.Add(savedTrains[2]);
-            trainsInStation.Add(savedTrains[3]);
+        }
+        List<Train> savedTrains = Trains.ToList();
 
-            List<RailwayLine> savedRailwayLines = RailwayLines.ToList();
-
-
+        if (!Stations.Any())
+        {
             Stations.AddRange(
 
-               new Station
-               {
-                   Name = "Baie de Beauport",
-                   Longitude = -71.204255,
-                   Latitude = 46.842256,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-                   Type = StationType.Point
-               },
-               new Station
-               {
-                   Name = "Port de Québec",
-                   Longitude = -71.197774,
-                   Latitude = 46.823961,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-                   Type = StationType.Point
-               },
-               new Station
-               {
-                   Name = "Centre de distribution",
-                   Longitude = -71.23208,
-                   Latitude = 46.789962,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-                   Type = StationType.Point
-               },
-               new Station
-               {
-                   Name = "Vers Charlevoix",
-                   Longitude = -71.207817,
-                   Latitude = 46.845779,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-                   Type = StationType.Point
-               },
-               new Station
-               {
-                   Name = "Vers la Rive-Sud",
-                   Longitude = -71.290278,
-                   Latitude = 46.748911,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-                   Type = StationType.Point
-               },
-               new Station
-               {
-                   Name = "Vers Gatineau",
-                   Longitude = -71.428372,
-                   Latitude = 46.771591,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-                   Type = StationType.Point
-               },
-               new Station
-               {
-                   Name = "Vers le Nord",
-                   Longitude = -71.432235,
-                   Latitude = 46.765369,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-                   Type = StationType.Point
-               },
-               new Station
-               {
-                   Name = "Gare du Palais",
-                   Longitude = -71.2139,
-                   Latitude = 46.8174,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-                   Type = StationType.Station
-               },
-               new Station
-               {
-                   Name = "Gare Québec-Gatineau",
-                   Longitude = -71.332752,
-                   Latitude = 46.795569,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-                   Type = StationType.Station
-               },
-               new Station
-               {
-                   Name = "Gare CN",
-                   Longitude = -71.303381,
-                   Latitude = 46.753156,
-                   Trains = trains,
-                   TrainsInStation = trainsInStation,
-                   RalwayLines = savedRailwayLines,
-                   Type = StationType.Station
-               }
-           );
+            new Station
+            {
+                Name = "Baie de Beauport",
+                Longitude = -71.204255,
+                Latitude = 46.842256,
+                Capacity = 2,
+                Trains = new List<Train> { savedTrains[0], savedTrains[1] },
+                TrainsInStation = new List<Train> { savedTrains[2], savedTrains[3] },
+                Type = StationType.Point
+            },
+            new Station
+            {
+                Name = "Port de Québec",
+                Longitude = -71.197774,
+                Latitude = 46.823961,
+                Capacity = 2,
+                Trains = new List<Train> { savedTrains[4], savedTrains[5] },
+                TrainsInStation = new List<Train> { savedTrains[6], savedTrains[7] },
+                Type = StationType.Point
+            },
+            new Station
+            {
+                Name = "Centre de distribution",
+                Longitude = -71.23208,
+                Latitude = 46.789962,
+                Capacity = 2,
+                Trains = new List<Train> { savedTrains[8], savedTrains[9] },
+                TrainsInStation = new List<Train> { savedTrains[10], savedTrains[11] },
+                Type = StationType.Point
+            },
+            new Station
+            {
+                Name = "Vers Charlevoix",
+                Longitude = -71.207817,
+                Latitude = 46.845779,
+                Capacity = 2,
+                Trains = new List<Train> { savedTrains[12], savedTrains[13] },
+                TrainsInStation = new List<Train> { savedTrains[14], savedTrains[15] },
+                Type = StationType.Point
+            },
+            new Station
+            {
+                Name = "Vers la Rive-Sud",
+                Longitude = -71.290278,
+                Latitude = 46.748911,
+                Capacity = 2,
+                Trains = new List<Train> { savedTrains[16], savedTrains[17] },
+                TrainsInStation = new List<Train> { savedTrains[18], savedTrains[19] },
+                Type = StationType.Point
+            },
+            new Station
+            {
+                Name = "Vers Gatineau",
+                Longitude = -71.428372,
+                Latitude = 46.771591,
+                Capacity = 2,
+                Trains = new List<Train> { savedTrains[20], savedTrains[21] },
+                TrainsInStation = new List<Train> { savedTrains[22], savedTrains[23] },
+                Type = StationType.Point
+            },
+            new Station
+            {
+                Name = "Vers le Nord",
+                Longitude = -71.432235,
+                Latitude = 46.765369,
+                Capacity = 2,
+                Trains = new List<Train> { savedTrains[24], savedTrains[25] },
+                TrainsInStation = new List<Train> { savedTrains[26], savedTrains[27] },
+                Type = StationType.Point
+            },
+            new Station
+            {
+                Name = "Gare du Palais",
+                Longitude = -71.2139,
+                Latitude = 46.8174,
+                Capacity = 2,
+                Trains = new List<Train> { savedTrains[28], savedTrains[29] },
+                TrainsInStation = new List<Train> { savedTrains[30], savedTrains[31] },
+                Type = StationType.Station
+            },
+            new Station
+            {
+                Name = "Gare Québec-Gatineau",
+                Longitude = -71.332752,
+                Latitude = 46.795569,
+                Capacity = 2,
+                Trains = new List<Train> { savedTrains[32], savedTrains[33] },
+                TrainsInStation = new List<Train> { savedTrains[34], savedTrains[35] },
+                Type = StationType.Station
+            },
+            new Station
+            {
+                Name = "Gare CN",
+                Longitude = -71.303381,
+                Latitude = 46.753156,
+                Capacity = 2,
+                Trains = new List<Train> { savedTrains[36], savedTrains[37] },
+                TrainsInStation = new List<Train> { savedTrains[38], savedTrains[39] },
+                Type = StationType.Station
+            }
+            );
+            SaveChanges();
+        }
+        IConfigurationSection sectionAdmin = config.GetSection("DefaultAdmin");
+
+        if (!Users.Any())
+        {
+            List<Station> savedStations = Stations.ToList();
+
+            Users.AddRange(
+                new User
+                {
+                    Prenom = sectionAdmin["Prenom"],
+                    Nom = sectionAdmin["Nom"],
+                    Username = sectionAdmin["Username"],
+                    Password = sectionAdmin["Password"],
+                    IsAdmin = true,
+                },
+                new User
+                {
+                    Prenom = "Mecanicien",
+                    Nom = "Standard",
+                    Username = "employe1",
+                    Password = "employe",
+                    Type = EmployeeType.Mechanic,
+                    Station = savedStations[0],
+                },
+                new User
+                {
+                    Prenom = "Conducteur",
+                    Nom = "Standard",
+                    Username = "employe2",
+                    Password = "employe",
+                    Type = EmployeeType.Conductor,
+                    Station = savedStations[1],
+                },
+                new User
+                {
+                    Prenom = "PersonnelAdminstratif",
+                    Nom = "Standard",
+                    Username = "employe3",
+                    Password = "employe",
+                    Type = EmployeeType.AdministrativeStaff,
+                    Station = savedStations[2],
+                },
+                new User
+                {
+                    Prenom = "ControleurDeTrafic",
+                    Nom = "Standard",
+                    Username = "employe4",
+                    Password = "employe",
+                    Type = EmployeeType.TrafficController,
+                    Station = savedStations[3],
+                }
+            );
             SaveChanges();
         }
 
-        if (!RailwayLines.Any())
-        {
-            RailwayLines.AddRange(
-                new RailwayLine
-                {
-                    Name = "Ligne Principale",
-                    Color = "black"
-                },
-                new RailwayLine
-                {
-                    Name = "Ligne de Marchandises",
-                    Color = "brown"
-                },
-                new RailwayLine
-                {
-                    Name = "Ligne Express",
-                    Color = "red"
-                },
-                new RailwayLine
-                {
-                    Name = "Ligne de Maintenance",
-                    Color = "blue"
-                }
-                );
-            SaveChanges();
-        }
         if (!BlockPoints.Any())
         {
             BlockPoints.AddRange(
@@ -524,7 +570,6 @@ public class ApplicationDbContext : DbContext
                         Username = sectionAdmin["Username"],
                         Password = sectionAdmin["Password"],
                         IsAdmin = true,
-                        Station = savedStations[0],
 
                     },
                     new User
@@ -566,154 +611,155 @@ public class ApplicationDbContext : DbContext
                 );
                 SaveChanges();
             }
-        }
+
+
 
         if (!Blocks.Any())
         {
             List<Train> savedTrains = Trains.ToList();
 
             var allPoints = BlockPoints.ToList();
+        if (!Blocks.Any())
+        {
+            var allPoints = BlockPoints.ToList();
 
-            var block1 = new Block
-            {
-                Points = new List<BlockPoint>
-                    {
-                        allPoints.First(bp => bp.Id == 19),
-                        allPoints.First(bp => bp.Id == 20)
+                var block1 = new Block
+                {
+                    Points = new List<BlockPoint>
                     },
                 Longitude = -71.34591,
                 Latitude = 46.79385,
                 CurrentTrain = savedTrains[0]
             };
+                        allPoints.First(bp => bp.Id == 20)
+                    }
+            };
 
-            var block2 = new Block
-            {
-                Points = new List<BlockPoint>
+                var block2 = new Block
                 {
-                    allPoints.First(bp => bp.Id == 19),
-                    allPoints.First(bp => bp.Id == 12)
+                    Points = new List<BlockPoint>
                 },
                 Longitude = -71.307474,
                 Latitude = 46.79831
 
             };
+                    allPoints.First(bp => bp.Id == 12)
+                }
+            };
 
-            var block3 = new Block
-            {
-                Points = new List<BlockPoint>
+                var block3 = new Block
                 {
-                    allPoints.First(bp => bp.Id == 12),
-                    allPoints.First(bp => bp.Id == 10)
+                    Points = new List<BlockPoint>
                 },
                 Longitude = -71.291513,
                 Latitude = 46.800103
             };
+                    allPoints.First(bp => bp.Id == 10)
+                }
+            };
 
-            var block4 = new Block
-            {
-                Points = new List<BlockPoint>
+                var block4 = new Block
                 {
-                    allPoints.First(bp => bp.Id == 12),
-                    allPoints.First(bp => bp.Id == 8)
+                    Points = new List<BlockPoint>
                 },
                 Longitude = -71.290609,
                 Latitude = 46.799643
             };
+                    allPoints.First(bp => bp.Id == 8)
+                }
+            };
 
-            var block5 = new Block
-            {
-                Points = new List<BlockPoint>
+                var block5 = new Block
                 {
-                    allPoints.First(bp => bp.Id == 8),
-                    allPoints.First(bp => bp.Id == 9)
+                    Points = new List<BlockPoint>
                 },
                 Longitude = -71.288359,
                 Latitude = 46.799439
             };
+                    allPoints.First(bp => bp.Id == 9)
+                }
+            };
 
-            var block6 = new Block
-            {
-                Points = new List<BlockPoint>
+                var block6 = new Block
                 {
-                    allPoints.First(bp => bp.Id == 9),
-                    allPoints.First(bp => bp.Id == 11)
+                    Points = new List<BlockPoint>
                 },
                 Longitude = -71.28113,
                 Latitude = 46.801149
             };
+                    allPoints.First(bp => bp.Id == 11)
+                }
+            };
 
-            var block7 = new Block
-            {
-                Points = new List<BlockPoint>
+                var block7 = new Block
                 {
-                    allPoints.First(bp => bp.Id == 11),
-                    allPoints.First(bp => bp.Id == 5)
+                    Points = new List<BlockPoint>
                 },
                 Longitude = 71.235029,
                 Latitude = 46.786981
             };
+                    allPoints.First(bp => bp.Id == 5)
+                }
+            };
 
-            var block8 = new Block
-            {
-                Points = new List<BlockPoint>
+                var block8 = new Block
                 {
-                    allPoints.First(bp => bp.Id == 11),
-                    allPoints.First(bp => bp.Id == 23)
+                    Points = new List<BlockPoint>
                 },
                 Longitude = -71.228921,
                 Latitude = 46.792441
             };
+                    allPoints.First(bp => bp.Id == 23)
+                }
+            };
 
-            var block9 = new Block
-            {
-                Points = new List<BlockPoint>
+                var block9 = new Block
                 {
-                    allPoints.First(bp => bp.Id == 10),
-                    allPoints.First(bp => bp.Id == 29)
+                    Points = new List<BlockPoint>
                 },
                 Longitude = -71.285551,
                 Latitude = 46.801491
             };
-
-            var block10 = new Block
-            {
-                Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 9),
                     allPoints.First(bp => bp.Id == 29)
+                }
+            };
+
+                var block10 = new Block
+                {
+                    Points = new List<BlockPoint>
                 },
                 Longitude = -71.307474,
                 Latitude = 46.79831
             };
+                    allPoints.First(bp => bp.Id == 29)
+                }
+            };
 
-            var block11 = new Block
-            {
-                Points = new List<BlockPoint>
+                var block11 = new Block
                 {
-                    allPoints.First(bp => bp.Id == 29),
-                    allPoints.First(bp => bp.Id == 15)
+                    Points = new List<BlockPoint>
                 },
                 Longitude = -71.256704,
                 Latitude = 46.824494
             };
+                    allPoints.First(bp => bp.Id == 15)
+                }
+            };
 
-            var block12 = new Block
-            {
-                Points = new List<BlockPoint>
+                var block12 = new Block
                 {
-                    allPoints.First(bp => bp.Id == 15),
-                    allPoints.First(bp => bp.Id == 16)
+                    Points = new List<BlockPoint>
                 },
                 Longitude = -71.220531,
                 Latitude = 46.826927
             };
+                    allPoints.First(bp => bp.Id == 16)
+                }
+            };
 
-            var block13 = new Block
-            {
-                Points = new List<BlockPoint>
+                var block13 = new Block
                 {
-                    allPoints.First(bp => bp.Id == 15),
-                    allPoints.First(bp => bp.Id == 18)
+                    Points = new List<BlockPoint>
                 },
                 Longitude = -71.220579,
                 Latitude = 46.825947
@@ -721,9 +767,9 @@ public class ApplicationDbContext : DbContext
             var block14 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 18),
-                    allPoints.First(bp => bp.Id == 16)
+            var block14 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.219592,
                 Latitude = 46.826274
@@ -731,9 +777,9 @@ public class ApplicationDbContext : DbContext
             var block15 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 18),
-                    allPoints.First(bp => bp.Id == 7)
+            var block15 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.217863,
                 Latitude = 46.823377
@@ -741,9 +787,9 @@ public class ApplicationDbContext : DbContext
             var block16 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 7),
-                    allPoints.First(bp => bp.Id == 6)
+            var block16 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.21435,
                 Latitude = 46.820183
@@ -751,9 +797,9 @@ public class ApplicationDbContext : DbContext
             var block17 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 6),
-                    allPoints.First(bp => bp.Id == 27)
+            var block17 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.209355,
                 Latitude = 46.820637
@@ -761,9 +807,9 @@ public class ApplicationDbContext : DbContext
             var block18 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 16),
-                    allPoints.First(bp => bp.Id == 13)
+            var block18 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.21474,
                 Latitude = 46.829571
@@ -771,9 +817,9 @@ public class ApplicationDbContext : DbContext
             var block19 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 13),
-                    allPoints.First(bp => bp.Id == 14)
+            var block19 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.211696,
                 Latitude = 46.831275
@@ -781,9 +827,9 @@ public class ApplicationDbContext : DbContext
             var block20 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 14),
-                    allPoints.First(bp => bp.Id == 25)
+            var block20 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.203122,
                 Latitude = 46.833609
@@ -791,9 +837,9 @@ public class ApplicationDbContext : DbContext
             var block21 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 14),
-                    allPoints.First(bp => bp.Id == 26)
+            var block21 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.200375,
                 Latitude = 46.830724
@@ -801,9 +847,9 @@ public class ApplicationDbContext : DbContext
             var block22 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 13),
-                    allPoints.First(bp => bp.Id == 1)
+            var block22 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.307474,
                 Latitude = 46.79831
@@ -811,9 +857,9 @@ public class ApplicationDbContext : DbContext
             var block23 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 16),
-                    allPoints.First(bp => bp.Id == 28)
+            var block23 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.212456,
                 Latitude = 46.840691
@@ -821,9 +867,9 @@ public class ApplicationDbContext : DbContext
             var block24 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 22),
-                    allPoints.First(bp => bp.Id == 5)
+            var block24 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.280914,
                 Latitude = 46.755228
@@ -831,9 +877,9 @@ public class ApplicationDbContext : DbContext
             var block25 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 21),
-                    allPoints.First(bp => bp.Id == 2)
+            var block25 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.326776,
                 Latitude = 46.749941
@@ -841,9 +887,9 @@ public class ApplicationDbContext : DbContext
             var block26 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 2),
-                    allPoints.First(bp => bp.Id == 17)
+            var block26 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.337484,
                 Latitude = 46.747471
@@ -851,9 +897,9 @@ public class ApplicationDbContext : DbContext
             var block27 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 2),
-                    allPoints.First(bp => bp.Id == 3)
+            var block27 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.337041,
                 Latitude = 46.748059
@@ -861,9 +907,9 @@ public class ApplicationDbContext : DbContext
             var block28 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 17),
-                    allPoints.First(bp => bp.Id == 3)
+            var block28 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.33818,
                 Latitude = 46.748129
@@ -871,9 +917,9 @@ public class ApplicationDbContext : DbContext
             var block29 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 3),
-                    allPoints.First(bp => bp.Id == 8)
+            var block29 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.319399,
                 Latitude = 46.782033
@@ -881,9 +927,9 @@ public class ApplicationDbContext : DbContext
             var block30 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 21),
-                    allPoints.First(bp => bp.Id == 22)
+            var block30 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.324144,
                 Latitude = 46.750423
@@ -891,9 +937,9 @@ public class ApplicationDbContext : DbContext
             var block31 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 20),
-                    allPoints.First(bp => bp.Id == 30)
+            var block31 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.378468,
                 Latitude = 46.774911,
@@ -902,9 +948,9 @@ public class ApplicationDbContext : DbContext
             var block32 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 17),
-                    allPoints.First(bp => bp.Id == 4)
+            var block32 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.375443,
                 Latitude = 46.758048
@@ -912,9 +958,9 @@ public class ApplicationDbContext : DbContext
             var block33 = new Block
             {
                 Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 23),
-                    allPoints.First(bp => bp.Id == 24)
+            var block33 = new Block
+            {
+                Points = new List<BlockPoint>
                 },
                 Longitude = -71.224993,
                 Latitude = 46.794413
@@ -922,5 +968,11 @@ public class ApplicationDbContext : DbContext
             Blocks.AddRange(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24, block25, block26, block27, block28, block29, block30, block31, block32, block33);
             SaveChanges();
         }
+            Blocks.AddRange(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24, block25, block26, block27, block28, block29, block30, block31, block32);
+            SaveChanges();
+        }
     }
+
+
+
 }
