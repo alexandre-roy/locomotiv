@@ -626,7 +626,6 @@ public class ApplicationDbContext : DbContext
                     },
                 Longitude = -71.34591,
                 Latitude = 46.79385,
-                CurrentTrain = savedTrains[0]
             };
 
             var block2 = new Block
@@ -637,8 +636,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 12)
                 },
                 Longitude = -71.307474,
-                Latitude = 46.79831
-
+                Latitude = 46.79831,
             };
 
             var block3 = new Block
@@ -649,7 +647,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 10)
                 },
                 Longitude = -71.291513,
-                Latitude = 46.800103
+                Latitude = 46.800103,
             };
 
             var block4 = new Block
@@ -660,7 +658,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 8)
                 },
                 Longitude = -71.290609,
-                Latitude = 46.799643
+                Latitude = 46.799643,
             };
 
             var block5 = new Block
@@ -671,7 +669,7 @@ public class ApplicationDbContext : DbContext
                 allPoints.First(bp => bp.Id == 9)
             },
                 Longitude = -71.288359,
-                Latitude = 46.799439
+                Latitude = 46.799439,
             };
 
             var block6 = new Block
@@ -682,7 +680,7 @@ public class ApplicationDbContext : DbContext
                 allPoints.First(bp => bp.Id == 11)
             },
                 Longitude = -71.28113,
-                Latitude = 46.801149
+                Latitude = 46.801149,
             };
 
             var block7 = new Block
@@ -692,8 +690,8 @@ public class ApplicationDbContext : DbContext
                 allPoints.First(bp => bp.Id == 11),
                 allPoints.First(bp => bp.Id == 5)
             },
-                Longitude = 71.235029,
-                Latitude = 46.786981
+                Longitude = -71.23357,
+                Latitude = 46.788501,
             };
 
             var block8 = new Block
@@ -704,7 +702,7 @@ public class ApplicationDbContext : DbContext
                 allPoints.First(bp => bp.Id == 23)
             },
                 Longitude = -71.228921,
-                Latitude = 46.792441
+                Latitude = 46.792441,
             };
 
             var block9 = new Block
@@ -715,7 +713,7 @@ public class ApplicationDbContext : DbContext
                 allPoints.First(bp => bp.Id == 29)
             },
                 Longitude = -71.285551,
-                Latitude = 46.801491
+                Latitude = 46.801491,
             };
 
             var block10 = new Block
@@ -726,7 +724,7 @@ public class ApplicationDbContext : DbContext
                 allPoints.First(bp => bp.Id == 29)
             },
                 Longitude = -71.307474,
-                Latitude = 46.79831
+                Latitude = 46.79831,
             };
 
             var block11 = new Block
@@ -737,7 +735,7 @@ public class ApplicationDbContext : DbContext
                 allPoints.First(bp => bp.Id == 15)
             },
                 Longitude = -71.256704,
-                Latitude = 46.824494
+                Latitude = 46.824494,
             };
 
             var block12 = new Block
@@ -748,7 +746,7 @@ public class ApplicationDbContext : DbContext
                 allPoints.First(bp => bp.Id == 16)
             },
                 Longitude = -71.220531,
-                Latitude = 46.826927
+                Latitude = 46.826927,
             };
 
             var block13 = new Block
@@ -759,7 +757,7 @@ public class ApplicationDbContext : DbContext
                 allPoints.First(bp => bp.Id == 18)
             },
                 Longitude = -71.220579,
-                Latitude = 46.825947
+                Latitude = 46.825947,
             };
 
             var block14 = new Block
@@ -770,7 +768,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 16)
                 },
                 Longitude = -71.219592,
-                Latitude = 46.826274
+                Latitude = 46.826274,
             };
             var block15 = new Block
             {
@@ -780,7 +778,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 7)
                 },
                 Longitude = -71.217863,
-                Latitude = 46.823377
+                Latitude = 46.823377,
             };
             var block16 = new Block
             {
@@ -790,7 +788,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 6)
                 },
                 Longitude = -71.21435,
-                Latitude = 46.820183
+                Latitude = 46.820183,
             };
             var block17 = new Block
             {
@@ -800,7 +798,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 27)
                 },
                 Longitude = -71.209355,
-                Latitude = 46.820637
+                Latitude = 46.820637,
             };
             var block18 = new Block
             {
@@ -810,7 +808,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 13)
                 },
                 Longitude = -71.21474,
-                Latitude = 46.829571
+                Latitude = 46.829571,
             };
             var block19 = new Block
             {
@@ -820,7 +818,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 14)
                 },
                 Longitude = -71.211696,
-                Latitude = 46.831275
+                Latitude = 46.831275,
             };
             var block20 = new Block
             {
@@ -830,7 +828,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 25)
                 },
                 Longitude = -71.203122,
-                Latitude = 46.833609
+                Latitude = 46.833609,
             };
             var block21 = new Block
             {
@@ -840,7 +838,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 26)
                 },
                 Longitude = -71.200375,
-                Latitude = 46.830724
+                Latitude = 46.830724,
             };
             var block22 = new Block
             {
@@ -850,7 +848,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 1)
                 },
                 Longitude = -71.307474,
-                Latitude = 46.79831
+                Latitude = 46.79831,
             };
             var block23 = new Block
             {
@@ -860,7 +858,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 28)
                 },
                 Longitude = -71.212456,
-                Latitude = 46.840691
+                Latitude = 46.840691,
             };
             var block24 = new Block
             {
@@ -870,7 +868,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 5)
                 },
                 Longitude = -71.280914,
-                Latitude = 46.755228
+                Latitude = 46.755228,
             };
             var block25 = new Block
             {
@@ -880,7 +878,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 2)
                 },
                 Longitude = -71.326776,
-                Latitude = 46.749941
+                Latitude = 46.749941,
             };
             var block26 = new Block
             {
@@ -890,7 +888,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 17)
                 },
                 Longitude = -71.337484,
-                Latitude = 46.747471
+                Latitude = 46.747471,
             };
             var block27 = new Block
             {
@@ -900,7 +898,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 3)
                 },
                 Longitude = -71.337041,
-                Latitude = 46.748059
+                Latitude = 46.748059,
             };
             var block28 = new Block
             {
@@ -910,7 +908,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 3)
                 },
                 Longitude = -71.33818,
-                Latitude = 46.748129
+                Latitude = 46.748129,
             };
             var block29 = new Block
             {
@@ -920,7 +918,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 8)
                 },
                 Longitude = -71.319399,
-                Latitude = 46.782033
+                Latitude = 46.782033,
             };
             var block30 = new Block
             {
@@ -929,8 +927,8 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 21),
                     allPoints.First(bp => bp.Id == 22)
                 },
-                Longitude = -71.324144,
-                Latitude = 46.750423
+                Longitude = -71.308737,
+                Latitude = 46.752576,
             };
             var block31 = new Block
             {
@@ -941,7 +939,6 @@ public class ApplicationDbContext : DbContext
                 },
                 Longitude = -71.378468,
                 Latitude = 46.774911,
-                CurrentTrain = savedTrains[1]
             };
             var block32 = new Block
             {
@@ -951,7 +948,8 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 4)
                 },
                 Longitude = -71.375443,
-                Latitude = 46.758048
+                Latitude = 46.758048,
+                CurrentTrain = savedTrains[0]
             };
             var block33 = new Block
             {
@@ -961,7 +959,7 @@ public class ApplicationDbContext : DbContext
                     allPoints.First(bp => bp.Id == 24)
                 },
                 Longitude = -71.224993,
-                Latitude = 46.794413
+                Latitude = 46.794413,
             };
             Blocks.AddRange(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24, block25, block26, block27, block28, block29, block30, block31, block32, block33);
             SaveChanges();

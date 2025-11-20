@@ -85,7 +85,7 @@ namespace Locomotiv.ViewModel
                 }
             }
 
-            foreach (var block in _blockDal.GetAll())
+            foreach (Block block in _blockDal.GetAll())
             {
                 if (block.CurrentTrain is not null)
                     CreatePoint(block,
@@ -234,10 +234,22 @@ namespace Locomotiv.ViewModel
                 {
                     BlockPoint otherPoint = block.Points.FirstOrDefault(p => p.Id != blockPoint.Id);
 
+                    string status = block.CurrentTrain != null
+                        ? "Train présent"
+                        : "Libre";
+
                     if (otherPoint != null)
-                        connectedBlocks.Add($" - Block {block.Id} → vers BlockPoint {otherPoint.Id}");
+                    {
+                        connectedBlocks.Add(
+                            $" - Block {block.Id} ({status}) → vers BlockPoint {otherPoint.Id}"
+                        );
+                    }
                     else
-                        connectedBlocks.Add($" - Block {block.Id} → (point unique)");
+                    {
+                        connectedBlocks.Add(
+                            $" - Block {block.Id} ({status}) → (point unique)"
+                        );
+                    }
                 }
             }
 

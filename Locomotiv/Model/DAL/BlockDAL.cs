@@ -22,6 +22,7 @@ namespace Locomotiv.Model.DAL
         {
             return _context.Blocks
                 .Include(b => b.Points)
+                .Include(b => b.CurrentTrain)
                 .ToList();
         }
     }
