@@ -87,7 +87,7 @@ namespace Locomotiv.ViewModel
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private void LoadTrainsForStation()
+        internal void LoadTrainsForStation()
         {
             Trains.Clear();
 
@@ -109,7 +109,7 @@ namespace Locomotiv.ViewModel
             }
         }
 
-        private void LoadAvailableTrains()
+        internal void LoadAvailableTrains()
         {
             AvailableTrains.Clear();
 
@@ -124,7 +124,7 @@ namespace Locomotiv.ViewModel
             }
         }
 
-        private void AddTrain()
+        internal void AddTrain()
         {
             if (SelectedAvailableTrain != null && _currentStation != null)
             {
@@ -142,7 +142,7 @@ namespace Locomotiv.ViewModel
 
 
 
-        private void DeleteTrain()
+        internal void DeleteTrain()
         {
             _currentStation = _stationDAL.FindById(_currentStation.Id);
 
@@ -155,7 +155,7 @@ namespace Locomotiv.ViewModel
             }
         }
 
-        private bool CanAddTrain()
+        internal bool CanAddTrain()
         {
             if (SelectedAvailableTrain == null || _currentStation == null)
             {
@@ -166,12 +166,12 @@ namespace Locomotiv.ViewModel
         }
 
 
-        private bool CanDeleteTrain()
+        internal bool CanDeleteTrain()
         {
             return SelectedTrain != null;
         }
 
-        private void Close()
+        internal void Close()
         {
             _navigationService.NavigateTo<MapViewModel>();
         }
