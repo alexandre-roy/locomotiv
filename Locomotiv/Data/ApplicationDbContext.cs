@@ -219,6 +219,7 @@ public class ApplicationDbContext : DbContext
                 Capacity = 2,
                 Trains = new List<Train> { savedTrains[0], savedTrains[1] },
                 TrainsInStation = new List<Train> { savedTrains[2], savedTrains[3] },
+                Type = StationType.Point
             },
             new Station
             {
@@ -228,6 +229,7 @@ public class ApplicationDbContext : DbContext
                 Capacity = 2,
                 Trains = new List<Train> { savedTrains[4], savedTrains[5] },
                 TrainsInStation = new List<Train> { savedTrains[6], savedTrains[7] },
+                Type = StationType.Point
             },
             new Station
             {
@@ -237,6 +239,7 @@ public class ApplicationDbContext : DbContext
                 Capacity = 2,
                 Trains = new List<Train> { savedTrains[8], savedTrains[9] },
                 TrainsInStation = new List<Train> { savedTrains[10], savedTrains[11] },
+                Type = StationType.Point
             },
             new Station
             {
@@ -246,6 +249,7 @@ public class ApplicationDbContext : DbContext
                 Capacity = 2,
                 Trains = new List<Train> { savedTrains[12], savedTrains[13] },
                 TrainsInStation = new List<Train> { savedTrains[14], savedTrains[15] },
+                Type = StationType.Point
             },
             new Station
             {
@@ -255,6 +259,7 @@ public class ApplicationDbContext : DbContext
                 Capacity = 2,
                 Trains = new List<Train> { savedTrains[16], savedTrains[17] },
                 TrainsInStation = new List<Train> { savedTrains[18], savedTrains[19] },
+                Type = StationType.Point
             },
             new Station
             {
@@ -264,6 +269,7 @@ public class ApplicationDbContext : DbContext
                 Capacity = 2,
                 Trains = new List<Train> { savedTrains[20], savedTrains[21] },
                 TrainsInStation = new List<Train> { savedTrains[22], savedTrains[23] },
+                Type = StationType.Point
             },
             new Station
             {
@@ -273,6 +279,7 @@ public class ApplicationDbContext : DbContext
                 Capacity = 2,
                 Trains = new List<Train> { savedTrains[24], savedTrains[25] },
                 TrainsInStation = new List<Train> { savedTrains[26], savedTrains[27] },
+                Type = StationType.Point
             },
             new Station
             {
@@ -282,6 +289,7 @@ public class ApplicationDbContext : DbContext
                 Capacity = 2,
                 Trains = new List<Train> { savedTrains[28], savedTrains[29] },
                 TrainsInStation = new List<Train> { savedTrains[30], savedTrains[31] },
+                Type = StationType.Station
             },
             new Station
             {
@@ -291,6 +299,7 @@ public class ApplicationDbContext : DbContext
                 Capacity = 2,
                 Trains = new List<Train> { savedTrains[32], savedTrains[33] },
                 TrainsInStation = new List<Train> { savedTrains[34], savedTrains[35] },
+                Type = StationType.Station
             },
             new Station
             {
@@ -300,6 +309,7 @@ public class ApplicationDbContext : DbContext
                 Capacity = 2,
                 Trains = new List<Train> { savedTrains[36], savedTrains[37] },
                 TrainsInStation = new List<Train> { savedTrains[38], savedTrains[39] },
+                Type = StationType.Station
             }
             );
             SaveChanges();
@@ -546,296 +556,415 @@ public class ApplicationDbContext : DbContext
             );
             SaveChanges();
 
-
-            if (!Blocks.Any())
+            if (!Users.Any())
             {
-                var allPoints = BlockPoints.ToList();
+                List<Station> savedStations = Stations.ToList();
 
-                var block1 = new Block
-                {
-                    Points = new List<BlockPoint>
+                Users.AddRange(
+                    new User
+                    {
+                        Prenom = sectionAdmin["Prenom"],
+                        Nom = sectionAdmin["Nom"],
+                        Username = sectionAdmin["Username"],
+                        Password = sectionAdmin["Password"],
+                        IsAdmin = true,
+
+                    },
+                    new User
+                    {
+                        Prenom = "Mecanicien",
+                        Nom = "Standard",
+                        Username = "employe1",
+                        Password = "employe",
+                        Type = EmployeeType.Mechanic,
+                        Station = savedStations[0],
+                    },
+                    new User
+                    {
+                        Prenom = "Conducteur",
+                        Nom = "Standard",
+                        Username = "employe2",
+                        Password = "employe",
+                        Type = EmployeeType.Conductor,
+                        Station = savedStations[1],
+                    },
+                    new User
+                    {
+                        Prenom = "PersonnelAdminstratif",
+                        Nom = "Standard",
+                        Username = "employe3",
+                        Password = "employe",
+                        Type = EmployeeType.AdministrativeStaff,
+                        Station = savedStations[2],
+                    },
+                    new User
+                    {
+                        Prenom = "ControleurDeTrafic",
+                        Nom = "Standard",
+                        Username = "employe4",
+                        Password = "employe",
+                        Type = EmployeeType.TrafficController,
+                        Station = savedStations[3],
+                    }
+                );
+                SaveChanges();
+            }
+        }
+
+
+
+        if (!Blocks.Any())
+        {
+            var allPoints = BlockPoints.ToList();
+
+            var block1 = new Block
+            {
+                Points = new List<BlockPoint>
                     {
                         allPoints.First(bp => bp.Id == 19),
                         allPoints.First(bp => bp.Id == 20)
-                    }
-                };
+                    },
+                Longitude = -71.34591,
+                Latitude = 46.79385,
+                CurrentTrain = savedTrains[0]
+            };
 
-                var block2 = new Block
-                {
-                    Points = new List<BlockPoint>
+            var block2 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 19),
                     allPoints.First(bp => bp.Id == 12)
-                }
-                };
+                },
+                Longitude = -71.307474,
+                Latitude = 46.79831
 
-                var block3 = new Block
-                {
-                    Points = new List<BlockPoint>
+            };
+
+            var block3 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 12),
                     allPoints.First(bp => bp.Id == 10)
-                }
-                };
+                },
+                Longitude = -71.291513,
+                Latitude = 46.800103
+            };
 
-                var block4 = new Block
-                {
-                    Points = new List<BlockPoint>
-                {
+            var block4 = new Block
+            {
+                Points = new List<BlockPoint>
+                                {
                     allPoints.First(bp => bp.Id == 12),
                     allPoints.First(bp => bp.Id == 8)
-                }
-                };
+                },
+                Longitude = -71.290609,
+                Latitude = 46.799643
+            };
 
-                var block5 = new Block
-                {
-                    Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 8),
-                    allPoints.First(bp => bp.Id == 9)
-                }
-                };
+            var block5 = new Block
+            {
+                Points = new List<BlockPoint>
+                            {
+                allPoints.First(bp => bp.Id == 8),
+                allPoints.First(bp => bp.Id == 9)
+            },
+                Longitude = -71.288359,
+                Latitude = 46.799439
+            };
 
-                var block6 = new Block
-                {
-                    Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 9),
-                    allPoints.First(bp => bp.Id == 11)
-                }
-                };
+            var block6 = new Block
+            {
+                Points = new List<BlockPoint>
+                            {
+                allPoints.First(bp => bp.Id == 9),
+                allPoints.First(bp => bp.Id == 11)
+            },
+                Longitude = -71.28113,
+                Latitude = 46.801149
+            };
 
-                var block7 = new Block
-                {
-                    Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 11),
-                    allPoints.First(bp => bp.Id == 5)
-                }
-                };
+            var block7 = new Block
+            {
+                Points = new List<BlockPoint>
+            {
+                allPoints.First(bp => bp.Id == 11),
+                allPoints.First(bp => bp.Id == 5)
+            },
+                Longitude = 71.235029,
+                Latitude = 46.786981
+            };
 
-                var block8 = new Block
-                {
-                    Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 11),
-                    allPoints.First(bp => bp.Id == 23)
-                }
-                };
+            var block8 = new Block
+            {
+                Points = new List<BlockPoint>
+            {
+                allPoints.First(bp => bp.Id == 11),
+                allPoints.First(bp => bp.Id == 23)
+            },
+                Longitude = -71.228921,
+                Latitude = 46.792441
+            };
 
-                var block9 = new Block
-                {
-                    Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 10),
-                    allPoints.First(bp => bp.Id == 29)
-                }
-                };
+            var block9 = new Block
+            {
+                Points = new List<BlockPoint>
+                            {
+                allPoints.First(bp => bp.Id == 10),
+                allPoints.First(bp => bp.Id == 29)
+            },
+                Longitude = -71.285551,
+                Latitude = 46.801491
+            };
 
-                var block10 = new Block
-                {
-                    Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 9),
-                    allPoints.First(bp => bp.Id == 29)
-                }
-                };
+            var block10 = new Block
+            {
+                Points = new List<BlockPoint>
+            {
+                allPoints.First(bp => bp.Id == 9),
+                allPoints.First(bp => bp.Id == 29)
+            },
+                Longitude = -71.307474,
+                Latitude = 46.79831
+            };
 
-                var block11 = new Block
-                {
-                    Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 29),
-                    allPoints.First(bp => bp.Id == 15)
-                }
-                };
+            var block11 = new Block
+            {
+                Points = new List<BlockPoint>
+            {
+                allPoints.First(bp => bp.Id == 29),
+                allPoints.First(bp => bp.Id == 15)
+            },
+                Longitude = -71.256704,
+                Latitude = 46.824494
+            };
 
-                var block12 = new Block
-                {
-                    Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 15),
-                    allPoints.First(bp => bp.Id == 16)
-                }
-                };
+            var block12 = new Block
+            {
+                Points = new List<BlockPoint>
+            {
+                allPoints.First(bp => bp.Id == 15),
+                allPoints.First(bp => bp.Id == 16)
+            },
+                Longitude = -71.220531,
+                Latitude = 46.826927
+            };
 
-                var block13 = new Block
-                {
-                    Points = new List<BlockPoint>
-                {
-                    allPoints.First(bp => bp.Id == 15),
-                    allPoints.First(bp => bp.Id == 18)
-                }
-                };
-                var block14 = new Block
-                {
-                    Points = new List<BlockPoint>
+            var block13 = new Block
+            {
+                Points = new List<BlockPoint>
+            {
+                allPoints.First(bp => bp.Id == 15),
+                allPoints.First(bp => bp.Id == 18)
+            },
+                Longitude = -71.220579,
+                Latitude = 46.825947
+            };
+
+            var block14 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 18),
                     allPoints.First(bp => bp.Id == 16)
-                }
-                };
-                var block15 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.219592,
+                Latitude = 46.826274
+            };
+            var block15 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 18),
                     allPoints.First(bp => bp.Id == 7)
-                }
-                };
-                var block16 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.217863,
+                Latitude = 46.823377
+            };
+            var block16 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 7),
                     allPoints.First(bp => bp.Id == 6)
-                }
-                };
-                var block17 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.21435,
+                Latitude = 46.820183
+            };
+            var block17 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 6),
                     allPoints.First(bp => bp.Id == 27)
-                }
-                };
-                var block18 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.209355,
+                Latitude = 46.820637
+            };
+            var block18 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 16),
                     allPoints.First(bp => bp.Id == 13)
-                }
-                };
-                var block19 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.21474,
+                Latitude = 46.829571
+            };
+            var block19 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 13),
                     allPoints.First(bp => bp.Id == 14)
-                }
-                };
-                var block20 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.211696,
+                Latitude = 46.831275
+            };
+            var block20 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 14),
                     allPoints.First(bp => bp.Id == 25)
-                }
-                };
-                var block21 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.203122,
+                Latitude = 46.833609
+            };
+            var block21 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 14),
                     allPoints.First(bp => bp.Id == 26)
-                }
-                };
-                var block22 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.200375,
+                Latitude = 46.830724
+            };
+            var block22 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 13),
                     allPoints.First(bp => bp.Id == 1)
-                }
-                };
-                var block23 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.307474,
+                Latitude = 46.79831
+            };
+            var block23 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 16),
                     allPoints.First(bp => bp.Id == 28)
-                }
-                };
-                var block24 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.212456,
+                Latitude = 46.840691
+            };
+            var block24 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 22),
                     allPoints.First(bp => bp.Id == 5)
-                }
-                };
-                var block25 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.280914,
+                Latitude = 46.755228
+            };
+            var block25 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 21),
                     allPoints.First(bp => bp.Id == 2)
-                }
-                };
-                var block26 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.326776,
+                Latitude = 46.749941
+            };
+            var block26 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 2),
                     allPoints.First(bp => bp.Id == 17)
-                }
-                };
-                var block27 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.337484,
+                Latitude = 46.747471
+            };
+            var block27 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 2),
                     allPoints.First(bp => bp.Id == 3)
-                }
-                };
-                var block28 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.337041,
+                Latitude = 46.748059
+            };
+            var block28 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 17),
                     allPoints.First(bp => bp.Id == 3)
-                }
-                };
-                var block29 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.33818,
+                Latitude = 46.748129
+            };
+            var block29 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 3),
                     allPoints.First(bp => bp.Id == 8)
-                }
-                };
-                var block30 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.319399,
+                Latitude = 46.782033
+            };
+            var block30 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 21),
                     allPoints.First(bp => bp.Id == 22)
-                }
-                };
-                var block31 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.324144,
+                Latitude = 46.750423
+            };
+            var block31 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 20),
                     allPoints.First(bp => bp.Id == 30)
-                }
-                };
-                var block32 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.378468,
+                Latitude = 46.774911,
+                CurrentTrain = savedTrains[1]
+            };
+            var block32 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 17),
                     allPoints.First(bp => bp.Id == 4)
-                }
-                };
-                var block33 = new Block
-                {
-                    Points = new List<BlockPoint>
+                },
+                Longitude = -71.375443,
+                Latitude = 46.758048
+            };
+            var block33 = new Block
+            {
+                Points = new List<BlockPoint>
                 {
                     allPoints.First(bp => bp.Id == 23),
                     allPoints.First(bp => bp.Id == 24)
-                }
-                };
-                Blocks.AddRange(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24, block25, block26, block27, block28, block29, block30, block31, block32);
-                SaveChanges();
-            }
-
-
+                },
+                Longitude = -71.224993,
+                Latitude = 46.794413
+            };
+            Blocks.AddRange(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24, block25, block26, block27, block28, block29, block30, block31, block32, block33);
+            SaveChanges();
         }
-
     }
-
-
-
 }

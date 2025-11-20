@@ -12,5 +12,10 @@ public class Train
 
     public ICollection<Wagon> Wagons { get; set; }
 
+
+    public double Latitude { get; set; }
+
+    public double Longitude { get; set; }
+
     public ICollection<Locomotive> Locomotives { get; set; }
 }
