@@ -16,7 +16,11 @@ namespace Locomotiv.Model.DAL
             _context = c;
         }
 
-
+/// <summary>
+/// Retrieves all block points from the data source.
+/// </summary>
+/// <returns>A list of <see cref="BlockPoint"/> objects representing all block points in the data source. The list will be empty
+/// if no block points are found.</returns>
         public IList<BlockPoint> GetAll()
         {
             return _context.BlockPoints.ToList();
