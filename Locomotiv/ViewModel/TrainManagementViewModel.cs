@@ -56,6 +56,7 @@ namespace Locomotiv.ViewModel
 
         public ICommand AddTrainCommand { get; set; }
         public ICommand DeleteTrainCommand { get; set; }
+        public ICommand NavigateToCreateTrainForStationViewCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
         public TrainManagementViewModel(
@@ -71,6 +72,7 @@ namespace Locomotiv.ViewModel
             AvailableTrains = new ObservableCollection<Train>();
 
             AddTrainCommand = new RelayCommand(AddTrain, CanAddTrain);
+            NavigateToCreateTrainForStationViewCommand = new RelayCommand(CreateTrain, CanCreateTrain);
             DeleteTrainCommand = new RelayCommand(DeleteTrain, CanDeleteTrain);
             CloseCommand = new RelayCommand(Close);
 
@@ -123,7 +125,17 @@ namespace Locomotiv.ViewModel
                 }
             }
         }
+        private void CreateTrain()
+        {
+            _stationContextService.CurrentStation = _currentStation;
 
+            _navigationService.NavigateTo<CreateTrainForStationViewModel>();
+        }
+
+        private bool CanCreateTrain()
+        {
+            return _currentStation != null;
+        }
         private void AddTrain()
         {
             if (SelectedAvailableTrain != null && _currentStation != null)

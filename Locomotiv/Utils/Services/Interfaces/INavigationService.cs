@@ -9,6 +9,8 @@ namespace Locomotiv.Utils.Services.Interfaces
     public interface INavigationService
     {
         BaseViewModel CurrentView { get; }
+
+        void NavigateBack();
         void NavigateTo<T>() where T : BaseViewModel;
     }
 }
