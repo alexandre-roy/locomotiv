@@ -260,6 +260,29 @@ namespace LocomotivTests.ViewModel
         }
 
         [Fact]
+        public void CreateTrain_Anytime_NavigatesToCreateTrainView()
+        {
+            // Arrange
+            _stationContextServiceMock.SetupGet(s => s.CurrentStation)
+                 .Returns(_station);
+            _stationDALMock.Setup(d => d.FindById(_station.Id))
+                .Returns(_station);
+            _stationDALMock.Setup(d => d.GetTrainsInStation(_station.Id))
+                .Returns(_station.TrainsInStation.ToList());
+            _stationDALMock.Setup(d => d.GetTrainsForStation(_station.Id))
+                .Returns(_station.Trains.ToList());
+
+            // Act
+            _viewmodel.NavigateToCreateTrainForStationViewCommand.Execute(null);
+
+            // Assert
+            _navigationServiceMock.Verify(
+                n => n.NavigateTo<CreateTrainForStationViewModel>(),
+                Times.Once
+            );
+        }
+
+        [Fact]
         public void CanAddTrain_SelectedAvailableTrain_ReturnsTrue()
         {
             // Arrange
@@ -363,7 +386,50 @@ namespace LocomotivTests.ViewModel
         }
 
         [Fact]
-        public void Close_Anytime_NavigatesToMap()
+        public void CanCreateTrain_SelectedStation_ReturnsTrue()
+        {
+            // Arrange
+            _stationContextServiceMock.SetupGet(s => s.CurrentStation)
+                .Returns(_station);
+            _stationDALMock.Setup(d => d.FindById(_station.Id))
+                .Returns(_station);
+            _stationDALMock.Setup(d => d.GetTrainsInStation(_station.Id))
+                .Returns(_station.TrainsInStation.ToList());
+            _stationDALMock.Setup(d => d.GetTrainsForStation(_station.Id))
+                .Returns(_station.Trains.ToList());
+
+            _viewmodel.LoadTrainsForStation();
+            _viewmodel.LoadAvailableTrains();
+
+            // Act
+            var canCreateTrain = _viewmodel.NavigateToCreateTrainForStationViewCommand.CanExecute(null);
+
+            // Assert
+            Assert.True(canCreateTrain);
+        }
+
+        [Fact]
+        public void CanCreateTrain_NoSelectedStation_ReturnsFalse()
+        {
+            // Arrange
+            _stationContextServiceMock.SetupGet(s => s.CurrentStation)
+                .Returns(_station);
+            _stationDALMock.Setup(d => d.FindById(_station.Id))
+                .Returns(_station);
+            _stationDALMock.Setup(d => d.GetTrainsInStation(_station.Id))
+                .Returns(_station.TrainsInStation.ToList());
+            _stationDALMock.Setup(d => d.GetTrainsForStation(_station.Id))
+                .Returns(_station.Trains.ToList());
+
+            // Act
+            var canCreateTrain = _viewmodel.NavigateToCreateTrainForStationViewCommand.CanExecute(null);
+
+            // Assert
+            Assert.False(canCreateTrain);
+        }
+
+        [Fact]
+        public void Close_Anytime_NavigatesBack()
         {
             // Arrange
             _stationContextServiceMock.SetupGet(s => s.CurrentStation)
@@ -383,7 +449,7 @@ namespace LocomotivTests.ViewModel
 
             // Assert
             _navigationServiceMock.Verify(
-                n => n.NavigateTo<MapViewModel>(),
+                n => n.NavigateBack(),
                 Times.Once
             );
         }
