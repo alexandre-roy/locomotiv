@@ -13,4 +13,6 @@ public class Train
     public List<Wagon> Wagons { get; set; }
 
     public List<Locomotive> Locomotives { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 }

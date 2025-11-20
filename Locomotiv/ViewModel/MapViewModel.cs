@@ -45,6 +45,15 @@ namespace Locomotiv.ViewModel
                     label: station.Name,
                     color: station.Type == StationType.Station ? Brushes.Red : Brushes.Green,
                     infoText: GetStationInfo(station));
+
+            foreach (var block in _blockDal.GetAll())
+            {
+                if(block.CurrentTrain is not null)
+                    CreatePoint(block,
+                       label: $"🚆{block.CurrentTrain.Id}",
+                       color: Brushes.Blue,
+                       infoText: GetTrainInfo(block.CurrentTrain));
+            }
         }
 
         private void CreatePoint(dynamic obj, string label, Brush color, string infoText)
@@ -125,15 +134,33 @@ namespace Locomotiv.ViewModel
         }
         private string GetStationInfo(Station st)
         {
+            string header =
+                $"🏢 Station : {st.Name}\n" +
+                $"📍 Localisation : ({st.Latitude}, {st.Longitude})";
+
+            string assignedTrains =
+                st.Trains != null && st.Trains.Count > 0
+                ? string.Join("\n", st.Trains.Select(t => $"   • 🚉 Train {t.Id}"))
+                : "   Aucun train attribué";
+
+            string trainsInStation =
+                st.TrainsInStation != null && st.TrainsInStation.Count > 0
+                ? string.Join("\n", st.TrainsInStation.Select(t => $"   • 🚉 Train {t.Id}"))
+                : "   Aucun train actuellement en gare";
+
+            string lines =
+                st.RalwayLines != null && st.RalwayLines.Count > 0
+                ? string.Join("\n", st.RalwayLines.Select(l => $"   • 🛤️ Ligne {l.Id} – {l.Name}"))
+                : "   Aucune voie / quai associé";
+
+            string signals = "   Aucun signal enregistré";
+
             return
-                $"Station : {st.Name}\n" +
-                "Arrivés :\n" +
-                "  - Train 101 (Montréal → Québec)\n" +
-                "  - Train 205 (Québec → Ottawa)\n" +
-                "\n" +
-                "Départs :\n" +
-                "  - Train 101 (Montréal → Québec)\n" +
-                "  - Train 205 (Québec → Ottawa)";
+                $"{header}\n\n" +
+                $"🚆 Trains attribués :\n{assignedTrains}\n\n" +
+                $"🚉 Trains en gare :\n{trainsInStation}\n\n" +
+                $"🛤️ Voies / quais :\n{lines}\n\n" +
+                $"🚦 Signaux :\n{signals}";
         }
 
         private string GetBlockInfo(BlockPoint blockPoint)
@@ -157,6 +184,11 @@ namespace Locomotiv.ViewModel
             string blocksInfo = string.Join("\n", connectedBlocks);
 
             return $"🛤️ BlockPoint {blockPoint.Id}\n\nBlocs connectés :\n{blocksInfo}";
+        }
+
+        private string GetTrainInfo(Train train)
+        {
+            return "Petit train va loin";
         }
     }
 }

@@ -10,5 +10,10 @@ public class Block
 
     public List<BlockPoint> Points { get; set; } = new List<BlockPoint>();
 
-    public Train CurrentTrain { get; set; }
+    public Train? CurrentTrain { get; set; }
+
+    public double Longitude { get; set; }
+
+    public double Latitude { get; set; }
 }
+    
