@@ -210,18 +210,12 @@ namespace Locomotiv.ViewModel
                 ? string.Join("\n", st.TrainsInStation.Select(t => $"   • 🚉 Train {t.Id}"))
                 : "   Aucun train actuellement en gare";
 
-            string lines =
-                st.RalwayLines != null && st.RalwayLines.Count > 0
-                ? string.Join("\n", st.RalwayLines.Select(l => $"   • 🛤️ Ligne {l.Id} – {l.Name}"))
-                : "   Aucune voie / quai associé";
-
             string signals = "   Aucun signal enregistré";
 
             return
                 $"{header}\n\n" +
                 $"🚆 Trains attribués :\n{assignedTrains}\n\n" +
                 $"🚉 Trains en gare :\n{trainsInStation}\n\n" +
-                $"🛤️ Voies / quais :\n{lines}\n\n" +
                 $"🚦 Signaux :\n{signals}";
         }
 
