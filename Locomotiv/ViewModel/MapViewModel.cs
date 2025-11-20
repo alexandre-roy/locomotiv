@@ -60,8 +60,7 @@ namespace Locomotiv.ViewModel
                     label: $"🛤️{blockPoint.Id}",
                     color: Brushes.Black,
                     infoText: GetBlockInfo(blockPoint));
-            if (_userSessionService.ConnectedUser?.IsAdmin == true)
-            {
+
                 foreach (Station station in _stationDal.GetAll())
                 {
                     CreatePoint(station,
@@ -69,17 +68,7 @@ namespace Locomotiv.ViewModel
                         color: station.Type == StationType.Station ? Brushes.Red : Brushes.Green,
                         infoText: GetStationInfo(station));
                 }
-            }
-            else
-            {
-                foreach (Station station in _stationDal.GetAll().Where(s => s.Id == _userSessionService.ConnectedUser?.Station?.Id))
-                {
-                    CreatePoint(station,
-                        label: station.Name,
-                        color: Brushes.Red,
-                        infoText: GetStationInfo(station));
-                }
-            }
+
         }
 
         private void CreatePoint(dynamic obj, string label, Brush color, string infoText)
