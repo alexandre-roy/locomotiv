@@ -1,5 +1,4 @@
 ﻿using Locomotiv.Model.Interfaces;
-using Locomotiv.Utils.Services;
 using Locomotiv.Utils.Services.Interfaces;
 using Locomotiv.ViewModel;
 using Moq;
@@ -9,7 +8,6 @@ namespace LocomotivTests.ViewModel
     public class MapViewModelTest
     {
         private readonly Mock<IStationDAL> _stationDALMock;
-        private readonly Mock<ITrainDAL> _trainDALMock;
         private readonly Mock<IBlockPointDAL> _blockPointsDALMock;
         private readonly Mock<IBlockDAL> _blockDALMock;
         private readonly Mock<INavigationService> _navigationServiceMock;
