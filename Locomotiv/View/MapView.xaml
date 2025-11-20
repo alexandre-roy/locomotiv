@@ -36,6 +36,11 @@
                     <Rectangle Width="20" Height="20" Fill="Green" Margin="0 0 10 0"/>
                     <TextBlock Text="Points d'intérêts" />
                 </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0 5">
+                    <TextBlock Text="🚆" FontSize="18" Margin="0 0 10 0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Trains en mouvement" />
+                </StackPanel>
             </StackPanel>
         </Border>
     </Grid>

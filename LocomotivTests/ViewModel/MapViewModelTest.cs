@@ -1,4 +1,6 @@
 ﻿using Locomotiv.Model.Interfaces;
+using Locomotiv.Utils.Services;
+using Locomotiv.Utils.Services.Interfaces;
 using Locomotiv.ViewModel;
 using Moq;
 
@@ -9,6 +11,9 @@ namespace LocomotivTests.ViewModel
         private readonly Mock<IStationDAL> _stationDALMock;
         private readonly Mock<IBlockPointDAL> _blockPointsDALMock;
         private readonly Mock<IBlockDAL> _blockDALMock;
+        private readonly Mock<INavigationService> _navigationServiceMock;
+        private readonly Mock<IStationContextService> _stationContextServiceMock;
+        private readonly Mock<IUserSessionService> _userSessionServiceMock;
         private readonly MapViewModel _viewmodel;
         private readonly Station _station;
         private readonly List<BlockPoint> _blockPoints;
@@ -20,11 +25,17 @@ namespace LocomotivTests.ViewModel
             _stationDALMock = new Mock<IStationDAL>();
             _blockPointsDALMock = new Mock<IBlockPointDAL>();
             _blockDALMock = new Mock<IBlockDAL>();
+            _navigationServiceMock = new Mock<INavigationService>();
+            _stationContextServiceMock = new Mock<IStationContextService>();
+            _userSessionServiceMock = new Mock<IUserSessionService>();
 
             _viewmodel = new MapViewModel(
                 _stationDALMock.Object,
                 _blockDALMock.Object,
                 _blockPointsDALMock.Object,
+                _navigationServiceMock.Object,
+                _stationContextServiceMock.Object,
+                _userSessionServiceMock.Object,
                 false
             );
 

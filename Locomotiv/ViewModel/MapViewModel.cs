@@ -31,7 +31,8 @@ namespace Locomotiv.ViewModel
             IBlockPointDAL blockPointDal,
             INavigationService navigationService,
             IStationContextService stationContextService,
-            IUserSessionService userSessionService)
+            IUserSessionService userSessionService,
+            bool loadPointsOnStartup = true)
         {
             _stationDal = stationDal;
             _blockDal = blockDal;
@@ -42,7 +43,10 @@ namespace Locomotiv.ViewModel
 
             Markers = new ObservableCollection<GMapMarker>();
 
-            LoadPoints();
+            if (loadPointsOnStartup)
+            {
+                LoadPoints();
+            }
         }
         private void OpenTrainManagementWindow(Station station)
         {
@@ -68,6 +72,14 @@ namespace Locomotiv.ViewModel
                         color: station.Type == StationType.Station ? Brushes.Red : Brushes.Green,
                         infoText: GetStationInfo(station));
                 }
+            foreach (var block in _blockDal.GetAll())
+            {
+                if (block.CurrentTrain is not null)
+                    CreatePoint(block,
+                       label: $"🚆{block.CurrentTrain.Id}",
+                       color: Brushes.Blue,
+                       infoText: GetTrainInfo(block.CurrentTrain));
+            }
 
         }
 
@@ -174,20 +186,32 @@ namespace Locomotiv.ViewModel
             return panel;
         }
 
-        private string GetStationInfo(Station st)
+        internal string GetStationInfo(Station st)
         {
+            string header =
+                $"🏢 Station : {st.Name}\n" +
+                $"📍 Localisation : ({st.Latitude}, {st.Longitude})";
+
+            string assignedTrains =
+                st.Trains != null && st.Trains.Count > 0
+                ? string.Join("\n", st.Trains.Select(t => $"   • 🚉 Train {t.Id}"))
+                : "   Aucun train attribué";
+
+            string trainsInStation =
+                st.TrainsInStation != null && st.TrainsInStation.Count > 0
+                ? string.Join("\n", st.TrainsInStation.Select(t => $"   • 🚉 Train {t.Id}"))
+                : "   Aucun train actuellement en gare";
+
+            string signals = "   Aucun signal enregistré";
+
             return
-                $"Station : {st.Name}\n" +
-                "Arrivés :\n" +
-                "  - Train 101 (Montréal → Québec)\n" +
-                "  - Train 205 (Québec → Ottawa)\n" +
-                "\n" +
-                "Départs :\n" +
-                "  - Train 101 (Montréal → Québec)\n" +
-                "  - Train 205 (Québec → Ottawa)";
+                $"{header}\n\n" +
+                $"🚆 Trains attribués :\n{assignedTrains}\n\n" +
+                $"🚉 Trains en gare :\n{trainsInStation}\n\n" +
+                $"🚦 Signaux :\n{signals}";
         }
 
-        private string GetBlockInfo(BlockPoint blockPoint)
+        internal string GetBlockInfo(BlockPoint blockPoint)
         {
             IList<Block> blocks = _blockDal.GetAll();
             List<string> connectedBlocks = new List<string>();
@@ -208,6 +232,11 @@ namespace Locomotiv.ViewModel
             string blocksInfo = string.Join("\n", connectedBlocks);
 
             return $"🛤️ BlockPoint {blockPoint.Id}\n\nBlocs connectés :\n{blocksInfo}";
+        }
+
+        private string GetTrainInfo(Train train)
+        {
+            return "Petit train va loin";
         }
     }
 }
