@@ -126,7 +126,14 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-
+                <Button Grid.Row="0"
+                        Content="← Supprimer le train sélectionné"
+                        Command="{Binding DeleteTrainCommand}"
+                        Padding="10"
+                        Background="Black"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        HorizontalAlignment='Left'/>
                 <Button Grid.Row="2"
                         Content="← Supprimer le train sélectionné"
                         Command="{Binding DeleteTrainCommand}"

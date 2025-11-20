@@ -56,6 +56,15 @@ namespace Locomotiv.Model.DAL
               .ThenInclude(t => t.Wagons)
           .ToList();
         }
+        public IList<Train> GetAllTrain()
+        {
+
+            return _context.Trains
+                .Include(t => t.Locomotives)
+                .Include(t => t.Wagons)
+                .ToList();
+        }
+
         /// <summary>
         /// Retrieves a list of trains associated with the specified station.
         /// </summary>
@@ -75,6 +84,7 @@ namespace Locomotiv.Model.DAL
 
             return station?.Trains?.ToList() ?? new List<Train>();
         }
+
         /// <summary>
         /// Retrieves a list of trains currently located at the specified station.
         /// </summary>

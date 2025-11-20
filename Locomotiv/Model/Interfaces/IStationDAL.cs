@@ -10,6 +10,7 @@ namespace Locomotiv.Model.Interfaces
     {
         Station? FindById(int id);
         IList<Station> GetAll();
+        IList<Train> GetAllTrain();
         IList<Train> GetTrainsForStation(int stationId);
         IList<Train> GetTrainsInStation(int stationId);
         void RemoveTrainFromStation(int stationId, int trainId);

@@ -18,7 +18,6 @@ namespace Locomotiv.ViewModel
         private readonly INavigationService _navigationService;
         private readonly IUserSessionService _userSessionService;
         private readonly IStationDAL _stationDAL;
-        private readonly ApplicationDbContext _context;
 
         public User? ConnectedUser
         {
@@ -111,7 +110,7 @@ namespace Locomotiv.ViewModel
             {
                 if (!_totalTrains.HasValue && IsAdmin)
                 {
-                    _totalTrains = _context?.Trains?.Count() ?? 0;
+                    _totalTrains = _stationDAL?.GetAllTrain()?.Count() ?? 0;
                 }
                 return _totalTrains ?? 0;
             }
@@ -122,12 +121,19 @@ namespace Locomotiv.ViewModel
         {
             get
             {
+                int compteur = 0;
                 if (!_totalTrainsInStations.HasValue && IsAdmin)
                 {
                     IList<Station> stations = _stationDAL?.GetAll();
-                    _totalTrainsInStations = stations?.SelectMany(s => s.TrainsInStation ?? new List<Train>()).Distinct().Count() ?? 0;
+                    foreach (Station station in stations ?? new List<Station>())
+                    {
+                        if (station.TrainsInStation is not null)
+                        {
+                            compteur += station.TrainsInStation.Count();
+                        }
+                    }
                 }
-                return _totalTrainsInStations ?? 0;
+                return compteur;
             }
             set { _totalTrainsInStations = value; }
         }
@@ -136,14 +142,19 @@ namespace Locomotiv.ViewModel
         {
             get
             {
+                int compteur = 0;
                 if (!_totalAvailableTrains.HasValue && IsAdmin)
                 {
-                    IList<Train> allTrains = _context?.Trains?.ToList() ?? new List<Train>();
                     IList<Station> stations = _stationDAL?.GetAll();
-                    IList<Train> trainsInStations = stations?.SelectMany(s => s.TrainsInStation ?? new List<Train>()).Distinct().ToList() ?? new List<Train>();
-                    _totalAvailableTrains = allTrains.Count - trainsInStations.Count;
+                    foreach (Station station in stations ?? new List<Station>())
+                    {
+                        if (station.Trains is not null)
+                        {
+                            compteur += station.Trains.Count();
+                        }
+                    }
                 }
-                return _totalAvailableTrains ?? 0;
+                return compteur;
             }
             set { _totalAvailableTrains = value; }
         }
@@ -152,11 +163,17 @@ namespace Locomotiv.ViewModel
         {
             get
             {
+                int compteur = 0;
                 if (!_totalWagons.HasValue && IsAdmin)
                 {
-                    _totalWagons = _context?.Wagons?.Count() ?? 0;
+                    IList<Station> stations = _stationDAL?.GetAll();
+                    foreach (Station station in stations ?? new List<Station>())
+                    {
+                        compteur += station.Trains?.Sum(t => t.Wagons?.Count() ?? 0) ?? 0;
+                        compteur += station.TrainsInStation?.Sum(t => t.Wagons?.Count() ?? 0) ?? 0;
+                    }
                 }
-                return _totalWagons ?? 0;
+                return compteur;
             }
             set { _totalWagons = value; }
         }
@@ -165,22 +182,28 @@ namespace Locomotiv.ViewModel
         {
             get
             {
+                int compteur = 0;
+
                 if (!_totalLocomotives.HasValue && IsAdmin)
                 {
-                    _totalLocomotives = _context?.Locomotives?.Count() ?? 0;
+                    IList<Station> stations = _stationDAL?.GetAll();
+                    foreach (Station station in stations ?? new List<Station>())
+                    {
+                        compteur += station.Trains?.Sum(t => t.Locomotives?.Count() ?? 0) ?? 0;
+                        compteur += station.TrainsInStation?.Sum(t => t.Locomotives?.Count() ?? 0) ?? 0;
+                    }
                 }
-                return _totalLocomotives ?? 0;
+                return compteur;
             }
             set { _totalLocomotives = value; }
         }
 
-        public HomeViewModel(IUserDAL userDAL, INavigationService navigationService, IUserSessionService userSessionService, IStationDAL stationDAL, ApplicationDbContext context)
+        public HomeViewModel(IUserDAL userDAL, INavigationService navigationService, IUserSessionService userSessionService, IStationDAL stationDAL)
         {
             _userDAL = userDAL;
             _navigationService = navigationService;
             _userSessionService = userSessionService;
             _stationDAL = stationDAL;
-            _context = context;
             LogoutCommand = new RelayCommand(Logout, CanLogout);
         }
 
