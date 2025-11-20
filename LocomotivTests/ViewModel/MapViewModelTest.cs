@@ -127,7 +127,7 @@ namespace LocomotivTests.ViewModel
             // Assert
             Assert.Equal(
                 $"🏢 Station : Test Station\n" +
-                $"📍 Localisation : (46,842256, -71,204255)\n\n" +
+                $"📍 Localisation : ({_station.Latitude}, {_station.Longitude})\n\n" +
                 $"🚆 Trains attribués :\n" +
                 $"   • 🚉 Train 2\n\n" +
                 $"🚉 Trains en gare :\n" +
@@ -149,7 +149,7 @@ namespace LocomotivTests.ViewModel
             // Assert
             Assert.Equal(
                 $"🏢 Station : Empty Test Station\n" +
-                $"📍 Localisation : (46,842256, -71,204255)\n\n" +
+                $"📍 Localisation : ({_emptyStation.Latitude}, {_emptyStation.Longitude})\n\n" +
                 $"🚆 Trains attribués :\n" +
                 $"   Aucun train attribué\n\n" +
                 $"🚉 Trains en gare :\n" +
