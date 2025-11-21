@@ -301,11 +301,6 @@ namespace Locomotiv.ViewModel
             OnPropertyChanged(nameof(TrainsForSelectedStation));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
         public ICommand FindRouteCommand { get; }
 
         private bool CanFindRoute()

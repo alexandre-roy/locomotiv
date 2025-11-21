@@ -274,9 +274,12 @@
                             Margin="0,10,0,0"
                             Command="{Binding FindRouteCommand}"/>
 
-                        <TextBlock Foreground="Red" FontSize="18" FontWeight="Bold">
-                            <Run Text="{Binding SelectedRouteSummary}"/>
-                        </TextBlock>
+                        <TextBlock Text="{Binding SelectedRouteSummary, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                   Foreground="Green"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   TextWrapping="Wrap"
+                                   Margin="0,10,0,0"/>
                     </StackPanel>
                 </Border>
             </StackPanel>
