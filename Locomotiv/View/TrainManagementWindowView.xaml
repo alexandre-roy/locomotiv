@@ -30,6 +30,15 @@
                     BorderBrush="#BDBDBD"
                     Cursor="Hand"
                     ToolTip="Retour à la carte"/>
+
+            <Button
+         Content="↓ Creer un nouveau Train ↓"
+         Command="{Binding NavigateToCreateTrainForStationViewCommand}"
+         Padding="10"
+         Background="Black"
+         Foreground="White"
+         FontWeight="Bold"
+         HorizontalAlignment='Left' Margin="350,0,0,0" VerticalAlignment="Top" Width="200"/>
         </Grid>
 
         <Grid Grid.Row="1">
@@ -126,14 +135,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <Button Grid.Row="0"
-                        Content="← Supprimer le train sélectionné"
-                        Command="{Binding DeleteTrainCommand}"
-                        Padding="10"
-                        Background="Black"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        HorizontalAlignment='Left'/>
+               
                 <Button Grid.Row="2"
                         Content="← Supprimer le train sélectionné"
                         Command="{Binding DeleteTrainCommand}"

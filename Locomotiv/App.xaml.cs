@@ -36,11 +36,15 @@ namespace Locomotiv
             services.AddTransient<ConnectUserViewModel>();
             services.AddTransient<MapViewModel>();
             services.AddTransient<TrainManagementViewModel>();
+            services.AddTransient<CreateTrainForStationViewModel>();
 
             services.AddSingleton<IUserDAL, UserDAL>();
             services.AddSingleton<IStationDAL, StationDAL>();
             services.AddSingleton<IBlockDAL, BlockDAL>();
             services.AddSingleton<IBlockPointDAL, BlockPointDAL>();
+            services.AddSingleton<ILocomotiveDAL, LocomotiveDAL>();
+            services.AddSingleton<IWagonDAL, WagonDAL>();
+            services.AddSingleton<ITrainDAL, TrainDAL>();
             services.AddSingleton<IPredefinedRouteDAL, PredefinedRouteDal>();
 
             services.AddSingleton<INavigationService, NavigationService>();

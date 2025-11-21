@@ -56,6 +56,7 @@ namespace Locomotiv.ViewModel
 
         public ICommand AddTrainCommand { get; set; }
         public ICommand DeleteTrainCommand { get; set; }
+        public ICommand NavigateToCreateTrainForStationViewCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
         public TrainManagementViewModel(
@@ -71,6 +72,7 @@ namespace Locomotiv.ViewModel
             AvailableTrains = new ObservableCollection<Train>();
 
             AddTrainCommand = new RelayCommand(AddTrain, CanAddTrain);
+            NavigateToCreateTrainForStationViewCommand = new RelayCommand(CreateTrain, CanCreateTrain);
             DeleteTrainCommand = new RelayCommand(DeleteTrain, CanDeleteTrain);
             CloseCommand = new RelayCommand(Close);
 
@@ -87,7 +89,7 @@ namespace Locomotiv.ViewModel
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private void LoadTrainsForStation()
+        internal void LoadTrainsForStation()
         {
             Trains.Clear();
 
@@ -109,7 +111,7 @@ namespace Locomotiv.ViewModel
             }
         }
 
-        private void LoadAvailableTrains()
+        internal void LoadAvailableTrains()
         {
             AvailableTrains.Clear();
 
@@ -123,8 +125,17 @@ namespace Locomotiv.ViewModel
                 }
             }
         }
+        internal void CreateTrain()
+        {
+            _stationContextService.CurrentStation = _currentStation;
 
-        private void AddTrain()
+            _navigationService.NavigateTo<CreateTrainForStationViewModel>();
+        }
+        internal bool CanCreateTrain()
+        {
+            return _currentStation != null;
+        }
+        internal void AddTrain()
         {
             if (SelectedAvailableTrain != null && _currentStation != null)
             {
@@ -142,7 +153,7 @@ namespace Locomotiv.ViewModel
 
 
 
-        private void DeleteTrain()
+        internal void DeleteTrain()
         {
             _currentStation = _stationDAL.FindById(_currentStation.Id);
 
@@ -155,7 +166,7 @@ namespace Locomotiv.ViewModel
             }
         }
 
-        private bool CanAddTrain()
+        internal bool CanAddTrain()
         {
             if (SelectedAvailableTrain == null || _currentStation == null)
             {
@@ -166,14 +177,14 @@ namespace Locomotiv.ViewModel
         }
 
 
-        private bool CanDeleteTrain()
+        internal bool CanDeleteTrain()
         {
             return SelectedTrain != null;
         }
 
-        private void Close()
+        internal void Close()
         {
-            _navigationService.NavigateTo<MapViewModel>();
+            _navigationService.NavigateBack();
         }
     }
 }
