@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Locomotiv.Model;
-using Locomotiv.Model.DAL;
+﻿using System.Windows.Input;
 using Locomotiv.Model.Interfaces;
 using Locomotiv.Utils;
 using Locomotiv.Utils.Commands;
 using Locomotiv.Utils.Services.Interfaces;
-using Locomotiv.Utils.Services;
 
 namespace Locomotiv.ViewModel
 {
@@ -50,8 +42,13 @@ namespace Locomotiv.ViewModel
             }
         }
 
-        // Constructeur pour initialiser les services et la commande de connexion
-        public ConnectUserViewModel(IUserDAL userDAL, INavigationService navigationService, IUserSessionService userSessionService)
+        public ICommand ConnectCommand { get; set; }
+
+        public ConnectUserViewModel(
+            IUserDAL userDAL, 
+            INavigationService navigationService, 
+            IUserSessionService userSessionService
+        )
         {
             _userDAL = userDAL;
             _navigationService = navigationService;
@@ -59,9 +56,6 @@ namespace Locomotiv.ViewModel
             ConnectCommand = new RelayCommand(Connect, CanConnect);
         }
 
-        public ICommand ConnectCommand { get; set; }
-
-        // Méthode pour gérer la connexion de l'utilisateur
         private void Connect()
         {
             User? user = _userDAL.FindByUsernameAndPassword(Username, Password);
@@ -77,14 +71,12 @@ namespace Locomotiv.ViewModel
             }
         }
 
-        // Vérifie si la commande de connexion peut être exécutée
         private bool CanConnect()
         {
             bool allRequiredFieldsAreEntered = Username.NotEmpty() && Password.NotEmpty();
             return !HasErrors && allRequiredFieldsAreEntered;
         }
 
-        // Valide les propriétés Username et Password
         private void ValidateProperty(string propertyName, string value)
         {
             ClearErrors(propertyName);
@@ -93,17 +85,20 @@ namespace Locomotiv.ViewModel
                 case nameof(Username):
                     if (value.Empty())
                     {
-                        AddError(propertyName, "Le nom d'utilisateur est requis.");
+                        AddError(propertyName,
+                            "Le nom d'utilisateur est requis.");
                     }
                     else if (value.Length < 2)
                     {
-                        AddError(propertyName, "Le nom d'utilisateur doit contenir au moins 2 caractères.");
+                        AddError(propertyName,
+                            "Le nom d'utilisateur doit contenir au moins 2 caractères.");
                     }
                     break;
                 case nameof(Password):
                     if (value.Empty())
                     {
-                        AddError(propertyName, "Le mot de passe est requis.");
+                        AddError(propertyName,
+                            "Le mot de passe est requis.");
                     }
                     break;
             }

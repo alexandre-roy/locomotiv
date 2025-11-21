@@ -2,12 +2,6 @@
 using Locomotiv.Utils;
 using Locomotiv.Utils.Commands;
 using Locomotiv.Utils.Services.Interfaces;
-using Locomotiv.Utils.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Locomotiv.ViewModel
@@ -27,13 +21,14 @@ namespace Locomotiv.ViewModel
 
         public string WelcomeMessage
         {
-            get => ConnectedUser == null ? "Bienvenue chère personne inconnue!" : $"Bienvenue {ConnectedUser.Prenom}!";
+            get => ConnectedUser == null ? 
+                "Bienvenue chère personne inconnue!" : $"Bienvenue {ConnectedUser.Prenom}!";
         }
 
         public bool IsAdmin => ConnectedUser?.IsAdmin ?? false;
+
         public bool IsEmployee => ConnectedUser != null && !ConnectedUser.IsAdmin;
 
-        // Employee Station details
         private Station? _employeeStation;
         private string _stationName;
         private int _stationCapacity;
@@ -84,7 +79,6 @@ namespace Locomotiv.ViewModel
             set => _trainsInStation = value;
         }
 
-        // Admin Stations, Trains, Wagons, Locomotive details
         private int? _totalStations;
         private int? _totalTrains;
         private int? _totalTrainsInStations;
@@ -170,8 +164,10 @@ namespace Locomotiv.ViewModel
                     IList<Station> stations = _stationDAL?.GetAll();
                     foreach (Station station in stations ?? new List<Station>())
                     {
-                        compteur += station.Trains?.Sum(t => t.Wagons?.Count() ?? 0) ?? 0;
-                        compteur += station.TrainsInStation?.Sum(t => t.Wagons?.Count() ?? 0) ?? 0;
+                        compteur += station.Trains?
+                            .Sum(t => t.Wagons?.Count() ?? 0) ?? 0;
+                        compteur += station.TrainsInStation?
+                            .Sum(t => t.Wagons?.Count() ?? 0) ?? 0;
                     }
                 }
                 return compteur;
@@ -191,7 +187,8 @@ namespace Locomotiv.ViewModel
                     foreach (Station station in stations ?? new List<Station>())
                     {
                         compteur += station.Trains?.Sum(t => t.Locomotives?.Count() ?? 0) ?? 0;
-                        compteur += station.TrainsInStation?.Sum(t => t.Locomotives?.Count() ?? 0) ?? 0;
+                        compteur += station.TrainsInStation?
+                            .Sum(t => t.Locomotives?.Count() ?? 0) ?? 0;
                     }
                 }
                 return compteur;
@@ -199,7 +196,15 @@ namespace Locomotiv.ViewModel
             set { _totalLocomotives = value; }
         }
 
-        public HomeViewModel(IUserDAL userDAL, INavigationService navigationService, IUserSessionService userSessionService, IStationDAL stationDAL, IPredefinedRouteDAL predefinedRouteDAL)
+        public ICommand LogoutCommand { get; set; }
+
+        public HomeViewModel(
+            IUserDAL userDAL, 
+            INavigationService navigationService, 
+            IUserSessionService userSessionService, 
+            IStationDAL stationDAL, 
+            IPredefinedRouteDAL predefinedRouteDAL
+        )
         {
             _userDAL = userDAL;
             _navigationService = navigationService;
@@ -209,17 +214,12 @@ namespace Locomotiv.ViewModel
             LogoutCommand = new RelayCommand(Logout, CanLogout);
         }
 
-        // Commande pour la déconnexion
-        public ICommand LogoutCommand { get; set; }
-
-        // Méthode pour gérer la déconnexion de l'utilisateur
         private void Logout()
         {
             _userSessionService.ConnectedUser = null;
             _navigationService.NavigateTo<ConnectUserViewModel>();
         }
 
-        // Vérifie si la commande de déconnexion peut être exécutée
         private bool CanLogout()
         {
             return _userSessionService.IsUserConnected;

@@ -402,7 +402,8 @@ namespace LocomotivTests.ViewModel
             _viewmodel.LoadAvailableTrains();
 
             // Act
-            var canCreateTrain = _viewmodel.NavigateToCreateTrainForStationViewCommand.CanExecute(null);
+            var canCreateTrain = _viewmodel.NavigateToCreateTrainForStationViewCommand
+                .CanExecute(null);
 
             // Assert
             Assert.True(canCreateTrain);
@@ -422,14 +423,15 @@ namespace LocomotivTests.ViewModel
                 .Returns(_station.Trains.ToList());
 
             // Act
-            var canCreateTrain = _viewmodel.NavigateToCreateTrainForStationViewCommand.CanExecute(null);
+            var canCreateTrain = _viewmodel.NavigateToCreateTrainForStationViewCommand
+                .CanExecute(null);
 
             // Assert
             Assert.False(canCreateTrain);
         }
 
         [Fact]
-        public void Close_Anytime_NavigatesBack()
+        public void DeleteAvailableTrain_CanDelete_RemovesAvailableTrain()
         {
             // Arrange
             _stationContextServiceMock.SetupGet(s => s.CurrentStation)
@@ -437,19 +439,75 @@ namespace LocomotivTests.ViewModel
             _stationDALMock.Setup(d => d.FindById(_station.Id))
                 .Returns(_station);
             _stationDALMock.Setup(d => d.GetTrainsInStation(_station.Id))
-                .Returns(_station.TrainsInStation.ToList());
+                .Returns(_station.TrainsInStation.ToList()); 
             _stationDALMock.Setup(d => d.GetTrainsForStation(_station.Id))
-                .Returns(_station.Trains.ToList());
+                .Returns(new List<Train> { _trainNotInTestStation });
 
             _viewmodel.LoadTrainsForStation();
             _viewmodel.LoadAvailableTrains();
 
+            _viewmodel.SelectedAvailableTrain = _trainNotInTestStation;
+
+            _stationDALMock.Setup(d => d.DeleteTrainPermanently(_station.Id, _trainNotInTestStation.Id));
+            _stationDALMock.Setup(d => d.GetTrainsForStation(_station.Id))
+                        .Returns(new List<Train>());
+
+            // Act
+            _viewmodel.DeleteAvailableTrainCommand.Execute(null);
+
+            // Assert
+            _stationDALMock.Verify(d =>
+                d.DeleteTrainPermanently(_station.Id, _trainNotInTestStation.Id),
+                Times.Once
+            );
+
+            _viewmodel.LoadAvailableTrains();
+            Assert.DoesNotContain(_trainNotInTestStation, _viewmodel.AvailableTrains);
+        }
+
+        [Fact]
+        public void CanDeleteAvailableTrain_SelectedAvailableTrain_ReturnsTrue()
+        {
+            // Arrange
+            _stationContextServiceMock.SetupGet(s => s.CurrentStation)
+                .Returns(_station);
+            _stationDALMock.Setup(d => d.FindById(_station.Id))
+                .Returns(_station);
+
+            _viewmodel.SelectedAvailableTrain = _trainNotInTestStation;
+
+            // Act
+            var canDelete = _viewmodel.DeleteAvailableTrainCommand.CanExecute(null);
+
+            // Assert
+            Assert.True(canDelete);
+        }
+
+        [Fact]
+        public void CanDeleteAvailableTrain_NoSelectedAvailableTrain_ReturnsFalse()
+        {
+            // Arrange
+            _stationContextServiceMock.SetupGet(s => s.CurrentStation)
+                .Returns(_station);
+            _stationDALMock.Setup(d => d.FindById(_station.Id))
+                .Returns(_station);
+
+            // Act
+            var canDelete = _viewmodel.DeleteAvailableTrainCommand.CanExecute(null);
+
+            // Assert
+            Assert.False(canDelete);
+        }
+
+        [Fact]
+        public void Close_Anytime_NavigatesToMap()
+        {
             // Act
             _viewmodel.CloseCommand.Execute(null);
 
             // Assert
             _navigationServiceMock.Verify(
-                n => n.NavigateBack(),
+                n => n.NavigateTo<MapViewModel>(),
                 Times.Once
             );
         }
