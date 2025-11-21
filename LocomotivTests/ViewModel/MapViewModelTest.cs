@@ -148,7 +148,7 @@ namespace LocomotivTests.ViewModel
         public void GetStationInfo_HasTrains_ReturnsValidStationInfoString()
         {
             // Arrange
-            var station = _station;
+            Station station = _station;
 
             // Act
             string stationstring = _viewmodel.GetStationInfo(station);
@@ -171,7 +171,7 @@ namespace LocomotivTests.ViewModel
         public void GetStationInfo_HasNoTrains_ReturnsValidStationInfoString()
         {
             // Arrange
-            var station = _emptyStation;
+            Station station = _emptyStation;
 
             // Act
             string stationstring = _viewmodel.GetStationInfo(station);
@@ -194,7 +194,7 @@ namespace LocomotivTests.ViewModel
         public void GetBlockInfo_NoConnectedPoints_ReturnsCorrectBlockInfoString()
         {
             // Arrange
-            var blockPoint = _blockPoints[0];
+            BlockPoint blockPoint = _blockPoints[0];
 
             // Act
             _blockDALMock.Setup(d => d.GetBlocksByPointId(1)).Returns(new List<Block> { _block });
@@ -212,7 +212,7 @@ namespace LocomotivTests.ViewModel
         public void GetBlockInfo_ConnectedPoints_ReturnsCorrectBlockInfoString()
         {
             // Arrange
-            var blockPoint = _blockPoints[2];
+            BlockPoint blockPoint = _blockPoints[2];
 
             // Act
             _blockDALMock.Setup(d => d.GetBlocksByPointId(3))

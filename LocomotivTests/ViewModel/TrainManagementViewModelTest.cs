@@ -303,7 +303,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.SelectedAvailableTrain = _trainNotInTestStation;
 
             // Act
-            var canAddTrain = _viewmodel.AddTrainCommand.CanExecute(null);
+            bool canAddTrain = _viewmodel.AddTrainCommand.CanExecute(null);
 
             // Assert
             Assert.True(canAddTrain);
@@ -330,7 +330,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.SelectedAvailableTrain = null;
 
             // Act
-            var canAddTrain = _viewmodel.AddTrainCommand.CanExecute(null);
+            bool canAddTrain = _viewmodel.AddTrainCommand.CanExecute(null);
 
             // Assert
             Assert.False(canAddTrain);
@@ -354,7 +354,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.SelectedTrain = _trainInTestStation;
 
             // Act
-            var canDeleteTrain = _viewmodel.DeleteTrainCommand.CanExecute(null);
+            bool canDeleteTrain = _viewmodel.DeleteTrainCommand.CanExecute(null);
 
             // Assert
             Assert.True(canDeleteTrain);
@@ -379,7 +379,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.SelectedTrain = null;
 
             // Act
-            var canDeleteTrain = _viewmodel.DeleteTrainCommand.CanExecute(null);
+            bool canDeleteTrain = _viewmodel.DeleteTrainCommand.CanExecute(null);
 
             // Assert
             Assert.False(canDeleteTrain);
@@ -402,7 +402,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.LoadAvailableTrains();
 
             // Act
-            var canCreateTrain = _viewmodel.NavigateToCreateTrainForStationViewCommand
+            bool canCreateTrain = _viewmodel.NavigateToCreateTrainForStationViewCommand
                 .CanExecute(null);
 
             // Assert
@@ -423,7 +423,7 @@ namespace LocomotivTests.ViewModel
                 .Returns(_station.Trains.ToList());
 
             // Act
-            var canCreateTrain = _viewmodel.NavigateToCreateTrainForStationViewCommand
+            bool canCreateTrain = _viewmodel.NavigateToCreateTrainForStationViewCommand
                 .CanExecute(null);
 
             // Assert
@@ -477,7 +477,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.SelectedAvailableTrain = _trainNotInTestStation;
 
             // Act
-            var canDelete = _viewmodel.DeleteAvailableTrainCommand.CanExecute(null);
+            bool canDelete = _viewmodel.DeleteAvailableTrainCommand.CanExecute(null);
 
             // Assert
             Assert.True(canDelete);
@@ -493,7 +493,7 @@ namespace LocomotivTests.ViewModel
                 .Returns(_station);
 
             // Act
-            var canDelete = _viewmodel.DeleteAvailableTrainCommand.CanExecute(null);
+            bool canDelete = _viewmodel.DeleteAvailableTrainCommand.CanExecute(null);
 
             // Assert
             Assert.False(canDelete);
