@@ -1,4 +1,5 @@
-﻿using Locomotiv.Model.Interfaces;
+﻿using System.Collections.ObjectModel;
+using Locomotiv.Model.Interfaces;
 using Locomotiv.Utils.Services.Interfaces;
 using Locomotiv.ViewModel;
 using Moq;
@@ -11,7 +12,8 @@ namespace LocomotivTests.ViewModel
         private readonly Mock<IStationDAL> _stationDALMock;
         private readonly Mock<INavigationService> _navigationServiceMock;
         private readonly Mock<IUserSessionService> _userSessionServiceMock;
-        private readonly Mock <IPredefinedRouteDAL> _predefinedRouteDALMock;
+        private readonly Mock<IPredefinedRouteDAL> _predefinedRouteDALMock;
+        private readonly Mock<ITrainDAL> _trainDALMock;
         private readonly HomeViewModel _viewmodel;
 
         public HomeViewModelTest()
@@ -21,13 +23,18 @@ namespace LocomotivTests.ViewModel
             _navigationServiceMock = new Mock<INavigationService>();
             _userSessionServiceMock = new Mock<IUserSessionService>();
             _predefinedRouteDALMock = new Mock<IPredefinedRouteDAL>();
+            _trainDALMock = new Mock<ITrainDAL>();
+
+            _stationDALMock.Setup(dal => dal.GetAll())
+                .Returns(new List<Station>());
 
             _viewmodel = new HomeViewModel(
                 _userDALMock.Object,
                 _navigationServiceMock.Object,
                 _userSessionServiceMock.Object,
                 _stationDALMock.Object,
-                _predefinedRouteDALMock.Object
+                _predefinedRouteDALMock.Object,
+                _trainDALMock.Object
             );
         }
 

@@ -14,6 +14,8 @@ namespace LocomotivTests.ViewModel
         private readonly Mock<INavigationService> _navigationServiceMock;
         private readonly Mock<IStationContextService> _stationContextServiceMock;
         private readonly Mock<IUserSessionService> _userSessionServiceMock;
+        private readonly Mock<IPredefinedRouteDAL> _predefinedRouteDALMock;
+        private readonly Mock<ITrainDAL> _trainDALMock;
         private readonly Mock<TrainMovementService> _trainMovementServiceMock;
         private readonly Mock<MapMarkerFactory> _markerFactoryMock;
         private readonly Mock<MapInfoService> _infoServiceMock;
@@ -34,14 +36,18 @@ namespace LocomotivTests.ViewModel
             _navigationServiceMock = new Mock<INavigationService>();
             _stationContextServiceMock = new Mock<IStationContextService>();
             _userSessionServiceMock = new Mock<IUserSessionService>();
-            _trainMovementServiceMock = new Mock<TrainMovementService>();
+            _predefinedRouteDALMock = new Mock<IPredefinedRouteDAL>();
+            _trainDALMock = new Mock<ITrainDAL>();
+            _trainMovementServiceMock = new Mock<TrainMovementService>(_stationDALMock.Object, _blockDALMock.Object);
             _markerFactoryMock = new Mock<MapMarkerFactory>();
-            _infoServiceMock = new Mock<MapInfoService>();
+            _infoServiceMock = new Mock<MapInfoService>(_blockDALMock.Object);
 
             _viewmodel = new MapViewModel(
                 _stationDALMock.Object,
                 _blockDALMock.Object,
                 _blockPointsDALMock.Object,
+                _predefinedRouteDALMock.Object,
+                _trainDALMock.Object,
                 _navigationServiceMock.Object,
                 _stationContextServiceMock.Object,
                 _userSessionServiceMock.Object,
@@ -191,7 +197,7 @@ namespace LocomotivTests.ViewModel
             var blockPoint = _blockPoints[0];
 
             // Act
-            _blockDALMock.Setup(d => d.GetAll()).Returns(new List<Block> { _block });
+            _blockDALMock.Setup(d => d.GetBlocksByPointId(1)).Returns(new List<Block> { _block });
 
             string blockstring = _viewmodel.GetBlockInfo(_blockPoints[0]);
 
@@ -209,7 +215,7 @@ namespace LocomotivTests.ViewModel
             var blockPoint = _blockPoints[2];
 
             // Act
-            _blockDALMock.Setup(d => d.GetAll())
+            _blockDALMock.Setup(d => d.GetBlocksByPointId(3))
                 .Returns(new List<Block> { _blockNotConnected });
 
             string blockstring = _viewmodel.GetBlockInfo(_blockPoints[2]);

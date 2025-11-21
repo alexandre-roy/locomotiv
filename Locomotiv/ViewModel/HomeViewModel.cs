@@ -1,17 +1,9 @@
 ﻿using Locomotiv.Model;
-using Locomotiv.Model.DAL;
 using Locomotiv.Model.Interfaces;
 using Locomotiv.Utils;
 using Locomotiv.Utils.Commands;
-using Locomotiv.Utils.Services;
 using Locomotiv.Utils.Services.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Locomotiv.ViewModel
@@ -259,7 +251,14 @@ namespace Locomotiv.ViewModel
             }
         }
 
-        public HomeViewModel(IUserDAL userDAL, INavigationService navigationService, IUserSessionService userSessionService, IStationDAL stationDAL, IPredefinedRouteDAL predefinedRouteDAL, ITrainDAL trainDAL)
+        public HomeViewModel(
+            IUserDAL userDAL, 
+            INavigationService navigationService, 
+            IUserSessionService userSessionService, 
+            IStationDAL stationDAL, 
+            IPredefinedRouteDAL predefinedRouteDAL, 
+            ITrainDAL trainDAL
+        )
         {
             _userDAL = userDAL;
             _navigationService = navigationService;
