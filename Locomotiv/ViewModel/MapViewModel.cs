@@ -136,9 +136,12 @@ namespace Locomotiv.ViewModel
 
             Button manageButton = CreateManageTrainsButton(station);
 
-            var (mainMarker, infoMarker) = _markerFactory.CreateMarkerPair(
+            (GMapMarker mainMarker, GMapMarker infoMarker) 
+                = _markerFactory.CreateMarkerPair(
                 station, station.Name, color, _infoService.GetStationInfo(station),
-                onInfoPanelCreated: panel => StoreInfoPanel(station.Id, panel, _stationInfoPanels),
+                onInfoPanelCreated: panel => StoreInfoPanel(
+                    station.Id, panel, _stationInfoPanels
+                ),
                 additionalButton: manageButton);
 
             Markers.Add(mainMarker);
@@ -147,12 +150,15 @@ namespace Locomotiv.ViewModel
 
         private void CreateMarkerForBlockPoint(BlockPoint blockPoint)
         {
-            var (mainMarker, infoMarker) = _markerFactory.CreateMarkerPair(
+            (GMapMarker mainMarker, GMapMarker infoMarker) 
+                = _markerFactory.CreateMarkerPair(
                 blockPoint,
                 $"{MapConstants.BlockPointLabelPrefix}{blockPoint.Id}",
                 MapConstants.BlockPointColor,
                 _infoService.GetBlockPointInfo(blockPoint),
-                onInfoPanelCreated: panel => StoreInfoPanel(blockPoint.Id, panel, _blockPointInfoPanels));
+                onInfoPanelCreated: panel => StoreInfoPanel(
+                    blockPoint.Id, panel, _blockPointInfoPanels
+                ));
 
             Markers.Add(mainMarker);
             Markers.Add(infoMarker);
@@ -160,7 +166,8 @@ namespace Locomotiv.ViewModel
 
         private void CreateMarkerForTrain(Train train, Block block)
         {
-            var (mainMarker, infoMarker) = _markerFactory.CreateMarkerPair(
+            (GMapMarker mainMarker, GMapMarker infoMarker) 
+                = _markerFactory.CreateMarkerPair(
                 block,
                 $"{MapConstants.TrainLabelPrefix}{train.Id}",
                 MapConstants.TrainColor,
@@ -216,7 +223,7 @@ namespace Locomotiv.ViewModel
 
         private void RefreshAllInfoPanels()
         {
-            foreach (var panelEntry in _stationInfoPanels)
+            foreach (KeyValuePair<int, TextBlock> panelEntry in _stationInfoPanels)
             {
                 Station station = _stationDal.FindById(panelEntry.Key);
                 if (station != null)
@@ -225,7 +232,7 @@ namespace Locomotiv.ViewModel
                 }
             }
 
-            foreach (var panelEntry in _blockPointInfoPanels)
+            foreach (KeyValuePair<int, TextBlock> panelEntry in _blockPointInfoPanels)
             {
                 BlockPoint blockPoint = _blockPointDal.GetAll().FirstOrDefault(bp => bp.Id == panelEntry.Key);
                 if (blockPoint != null)
@@ -234,7 +241,7 @@ namespace Locomotiv.ViewModel
                 }
             }
 
-            foreach (var panelEntry in _trainInfoPanels)
+            foreach (KeyValuePair<int, TextBlock> panelEntry in _trainInfoPanels)
             {
                 if (_activeTrains.TryGetValue(panelEntry.Key, out TrainMovementState state))
                 {
@@ -296,7 +303,7 @@ namespace Locomotiv.ViewModel
         {
             List<int> trainsToRemove = new List<int>();
 
-            foreach (var activeTrain in _activeTrains)
+            foreach (KeyValuePair<int, TrainMovementState> activeTrain in _activeTrains)
             {
                 if (!activeTrain.Value.IsMoving)
                     continue;

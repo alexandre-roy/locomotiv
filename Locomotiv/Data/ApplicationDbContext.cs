@@ -11,11 +11,11 @@ public class ApplicationDbContext : DbContext
     protected override void OnConfiguring(
        DbContextOptionsBuilder optionsBuilder)
     {
-        var dbPath = Path.Combine(
+        string dbPath = Path.Combine(
             Environment.GetFolderPath(
                 Environment.SpecialFolder.ApplicationData), "Locomotiv", "Locomotiv.db");
         Directory.CreateDirectory(Path.GetDirectoryName(dbPath));
-        var connectionString = $"Data Source={dbPath}";
+        string connectionString = $"Data Source={dbPath}";
 
         optionsBuilder.UseSqlite(connectionString);
     }
@@ -634,9 +634,9 @@ public class ApplicationDbContext : DbContext
 
         if (!Blocks.Any())
         {
-            var allPoints = BlockPoints.ToList();
+            List<BlockPoint> allPoints = BlockPoints.ToList();
 
-            var block1 = new Block
+            Block block1 = new Block
             {
                 Points = new List<BlockPoint>
                     {
@@ -647,7 +647,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.79385,
             };
 
-            var block2 = new Block
+            Block block2 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -658,7 +658,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.79831,
             };
 
-            var block3 = new Block
+            Block block3 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -669,7 +669,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.800103,
             };
 
-            var block4 = new Block
+            Block block4 = new Block
             {
                 Points = new List<BlockPoint>
                                 {
@@ -680,7 +680,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.799643,
             };
 
-            var block5 = new Block
+            Block block5 = new Block
             {
                 Points = new List<BlockPoint>
                             {
@@ -691,7 +691,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.799439,
             };
 
-            var block6 = new Block
+            Block block6 = new Block
             {
                 Points = new List<BlockPoint>
                             {
@@ -702,7 +702,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.801149,
             };
 
-            var block7 = new Block
+            Block block7 = new Block
             {
                 Points = new List<BlockPoint>
             {
@@ -713,7 +713,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.788501,
             };
 
-            var block8 = new Block
+            Block block8 = new Block
             {
                 Points = new List<BlockPoint>
             {
@@ -724,7 +724,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.792441,
             };
 
-            var block9 = new Block
+            Block block9 = new Block
             {
                 Points = new List<BlockPoint>
                             {
@@ -735,7 +735,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.801491,
             };
 
-            var block10 = new Block
+            Block block10 = new Block
             {
                 Points = new List<BlockPoint>
             {
@@ -746,7 +746,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.79831,
             };
 
-            var block11 = new Block
+            Block block11 = new Block
             {
                 Points = new List<BlockPoint>
             {
@@ -757,7 +757,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.824494,
             };
 
-            var block12 = new Block
+            Block block12 = new Block
             {
                 Points = new List<BlockPoint>
             {
@@ -768,7 +768,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.826927,
             };
 
-            var block13 = new Block
+            Block block13 = new Block
             {
                 Points = new List<BlockPoint>
             {
@@ -779,7 +779,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.825947,
             };
 
-            var block14 = new Block
+            Block block14 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -789,7 +789,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.219592,
                 Latitude = 46.826274,
             };
-            var block15 = new Block
+            Block block15 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -799,7 +799,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.217863,
                 Latitude = 46.823377,
             };
-            var block16 = new Block
+            Block block16 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -809,7 +809,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.21435,
                 Latitude = 46.820183,
             };
-            var block17 = new Block
+            Block block17 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -819,7 +819,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.209355,
                 Latitude = 46.820637,
             };
-            var block18 = new Block
+            Block block18 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -829,7 +829,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.21474,
                 Latitude = 46.829571,
             };
-            var block19 = new Block
+            Block block19 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -839,7 +839,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.211696,
                 Latitude = 46.831275,
             };
-            var block20 = new Block
+            Block block20 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -849,7 +849,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.203122,
                 Latitude = 46.833609,
             };
-            var block21 = new Block
+            Block block21 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -859,7 +859,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.200375,
                 Latitude = 46.830724,
             };
-            var block22 = new Block
+            Block block22 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -869,7 +869,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.307474,
                 Latitude = 46.79831,
             };
-            var block23 = new Block
+            Block block23 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -879,7 +879,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.212456,
                 Latitude = 46.840691,
             };
-            var block24 = new Block
+            Block block24 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -889,7 +889,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.280914,
                 Latitude = 46.755228,
             };
-            var block25 = new Block
+            Block block25 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -899,7 +899,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.326776,
                 Latitude = 46.749941,
             };
-            var block26 = new Block
+            Block block26 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -909,7 +909,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.337484,
                 Latitude = 46.747471,
             };
-            var block27 = new Block
+            Block block27 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -919,7 +919,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.337041,
                 Latitude = 46.748059,
             };
-            var block28 = new Block
+            Block block28 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -929,7 +929,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.33818,
                 Latitude = 46.748129,
             };
-            var block29 = new Block
+            Block block29 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -939,7 +939,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.319399,
                 Latitude = 46.782033,
             };
-            var block30 = new Block
+            Block block30 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -949,7 +949,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.308737,
                 Latitude = 46.752576,
             };
-            var block31 = new Block
+            Block block31 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -959,7 +959,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.378468,
                 Latitude = 46.774911,
             };
-            var block32 = new Block
+            Block block32 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -970,7 +970,7 @@ public class ApplicationDbContext : DbContext
                 Latitude = 46.758048,
                 CurrentTrain = savedTrains[0]
             };
-            var block33 = new Block
+            Block block33 = new Block
             {
                 Points = new List<BlockPoint>
                 {
@@ -980,7 +980,7 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.224993,
                 Latitude = 46.794413,
             };
-            var block34 = new Block
+            Block block34 = new Block
             {
                 Points = new List<BlockPoint>
                 {

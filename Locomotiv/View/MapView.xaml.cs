@@ -32,7 +32,7 @@ namespace Locomotiv.View
             MapControl.CanDragMap = true;
             MapControl.ShowCenter = false;
 
-            foreach (var marker in _vm.Markers)
+            foreach (GMapMarker marker in _vm.Markers)
                 MapControl.Markers.Add(marker);
 
             _vm.Markers.CollectionChanged += Markers_CollectionChanged;

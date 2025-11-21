@@ -48,7 +48,7 @@ namespace Locomotiv.Model.DAL
 
         public void Delete(int id)
         {
-            var train = _context.Trains.Find(id);
+            Train train = _context.Trains.Find(id);
             if (train != null)
             {
                 _context.Trains.Remove(train);

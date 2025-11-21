@@ -140,7 +140,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.Password = "blabla";
 
             // Act
-            var canConnect = _viewmodel.ConnectCommand.CanExecute(null);
+            bool canConnect = _viewmodel.ConnectCommand.CanExecute(null);
 
             // Assert: should be able to connect
             Assert.True(canConnect);
@@ -154,7 +154,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.Password = "";
 
             // Act
-            var canConnect = _viewmodel.ConnectCommand.CanExecute(null);
+            bool canConnect = _viewmodel.ConnectCommand.CanExecute(null);
 
             // Asser: should not be able to connect
             Assert.False(canConnect);
@@ -168,7 +168,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.Password = "password123";
 
             // Act
-            var hasErrors = _viewmodel.HasErrors;
+            bool hasErrors = _viewmodel.HasErrors;
 
             // Assert: should not have errors
             Assert.False(hasErrors);
@@ -182,7 +182,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.Password = "password123";
 
             // Act
-            var hasErrors = _viewmodel.HasErrors;
+            bool hasErrors = _viewmodel.HasErrors;
 
             // Assert: should have errors
             Assert.True(hasErrors);
@@ -196,7 +196,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.Password = "password123";
 
             // Act
-            var hasErrors = _viewmodel.HasErrors;
+            bool hasErrors = _viewmodel.HasErrors;
 
             // Assert: should have errors
             Assert.True(hasErrors);
@@ -210,7 +210,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.Password = "";
 
             // Act
-            var hasErrors = _viewmodel.HasErrors;
+            bool hasErrors = _viewmodel.HasErrors;
 
             // Assert: should have errors
             Assert.True(hasErrors);

@@ -291,9 +291,9 @@ namespace Locomotiv.ViewModel
 
             if (SelectedStartStation != null)
             {
-                var trains = _stationDAL.GetTrainsInStation(SelectedStartStation.Id);
+                IList<Train> trains = _stationDAL.GetTrainsInStation(SelectedStartStation.Id);
 
-                foreach (var train in trains)
+                foreach (Train train in trains)
                     TrainsForSelectedStation.Add(train);
             }
 
@@ -311,9 +311,9 @@ namespace Locomotiv.ViewModel
 
         private void FindRoute()
         {
-            var routes = _predefinedRouteDAL.GetAll();
+            IList<PredefinedRoute> routes = _predefinedRouteDAL.GetAll();
 
-            var route = routes.FirstOrDefault(r =>
+            PredefinedRoute? route = routes.FirstOrDefault(r =>
                 r.StartStation.Id == SelectedStartStation.Id &&
                 r.EndStation.Id == SelectedEndStation.Id
             );
@@ -342,17 +342,17 @@ namespace Locomotiv.ViewModel
 
             if (SelectedStartStation == null)
             {
-                foreach (var station in AllStations)
+                foreach (Station station in AllStations)
                     AvailableEndStations.Add(station);
 
                 return;
             }
 
-            var routes = _predefinedRouteDAL.GetAll()
+            List<PredefinedRoute> routes = _predefinedRouteDAL.GetAll()
                 .Where(r => r.StartStation.Id == SelectedStartStation.Id)
                 .ToList();
 
-            foreach (var station in routes.Select(r => r.EndStation).Distinct())
+            foreach (Station station in routes.Select(r => r.EndStation).Distinct())
                 AvailableEndStations.Add(station);
         }
     }

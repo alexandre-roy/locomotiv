@@ -46,7 +46,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.NumberOfWagons = 3;
 
             // Act
-            var canCreate = _viewmodel.CreateTrainCommand
+            bool canCreate = _viewmodel.CreateTrainCommand
                 .CanExecute(null);
 
             // Assert
@@ -61,7 +61,7 @@ namespace LocomotivTests.ViewModel
             _viewmodel.NumberOfWagons = 3;
 
             // Act
-            var canCreate = _viewmodel.CreateTrainCommand
+            bool canCreate = _viewmodel.CreateTrainCommand
                 .CanExecute(null);
 
             // Assert
@@ -76,9 +76,9 @@ namespace LocomotivTests.ViewModel
             _viewmodel.NumberOfWagons = 0;
 
             // Act
-            var canCreate = _viewmodel.CreateTrainCommand
+            bool canCreate = _viewmodel.CreateTrainCommand
                 .CanExecute(null);
-            var expected = 1;
+            int expected = 1;
 
             // Assert
             Assert.Equal(_viewmodel.NumberOfWagons, expected);
@@ -92,7 +92,8 @@ namespace LocomotivTests.ViewModel
             _stationContextServiceMock.SetupGet(s => s.CurrentStation)
                 .Returns(_station);
 
-            var viewmodel = new CreateTrainForStationViewModel(
+            CreateTrainForStationViewModel viewmodel 
+                = new CreateTrainForStationViewModel(
                 _stationDALMock.Object,
                 _stationContextServiceMock.Object,
                 _navigationServiceMock.Object,
@@ -139,7 +140,8 @@ namespace LocomotivTests.ViewModel
             _stationContextServiceMock.SetupGet(s => s.CurrentStation)
                 .Returns((Station?)null);
 
-            var viewmodel = new CreateTrainForStationViewModel(
+            CreateTrainForStationViewModel viewmodel 
+                = new CreateTrainForStationViewModel(
                 _stationDALMock.Object,
                 _stationContextServiceMock.Object,
                 _navigationServiceMock.Object,

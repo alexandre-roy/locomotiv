@@ -76,7 +76,7 @@ namespace LocomotivTests.ViewModel
                 .Returns(true);
 
             // Act
-            var canLogout = _viewmodel.LogoutCommand.CanExecute(null);
+            bool canLogout = _viewmodel.LogoutCommand.CanExecute(null);
 
             // Assert: should be able to log out
             Assert.True(canLogout);
@@ -90,7 +90,7 @@ namespace LocomotivTests.ViewModel
                 .Returns(false);
 
             // Act
-            var canLogout = _viewmodel.LogoutCommand.CanExecute(null);
+            bool canLogout = _viewmodel.LogoutCommand.CanExecute(null);
 
             // Assert: should not be able to log out
             Assert.False(canLogout);
