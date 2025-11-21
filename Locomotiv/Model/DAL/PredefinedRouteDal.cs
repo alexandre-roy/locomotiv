@@ -26,7 +26,6 @@ namespace Locomotiv.Model.DAL
             return _context.PredefinedRoutes
                 .Include(b => b.StartStation)
                 .Include(b => b.EndStation)
-                .Include(b => b.BlockIds)
                 .ToList();
         }
     }

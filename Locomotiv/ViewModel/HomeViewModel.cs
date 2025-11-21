@@ -98,7 +98,7 @@ namespace Locomotiv.ViewModel
             {
                 if (!_totalStations.HasValue && IsAdmin)
                 {
-                    _totalStations = _stationDAL?.GetAll()?.Count ?? 0;
+                    _totalStations = _predefinedRouteDAL?.GetAll()?.Count ?? 0;
                 }
                 return _totalStations ?? 0;
             }
@@ -199,12 +199,13 @@ namespace Locomotiv.ViewModel
             set { _totalLocomotives = value; }
         }
 
-        public HomeViewModel(IUserDAL userDAL, INavigationService navigationService, IUserSessionService userSessionService, IStationDAL stationDAL)
+        public HomeViewModel(IUserDAL userDAL, INavigationService navigationService, IUserSessionService userSessionService, IStationDAL stationDAL, IPredefinedRouteDAL predefinedRouteDAL)
         {
             _userDAL = userDAL;
             _navigationService = navigationService;
             _userSessionService = userSessionService;
             _stationDAL = stationDAL;
+            _predefinedRouteDAL = predefinedRouteDAL;
             LogoutCommand = new RelayCommand(Logout, CanLogout);
         }
 
