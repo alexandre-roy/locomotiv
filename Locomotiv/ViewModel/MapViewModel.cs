@@ -43,6 +43,8 @@ namespace Locomotiv.ViewModel
         private Dictionary<int, TextBlock> _blockPointInfoPanels = new Dictionary<int, TextBlock>();
         private Dictionary<int, TextBlock> _trainInfoPanels = new Dictionary<int, TextBlock>();
 
+        private HashSet<int> _usedRouteIds = new HashSet<int>();
+
         public ICommand StartAllTrainsCommand { get; }
         public ICommand StopAllTrainsCommand { get; }
 
@@ -225,7 +227,7 @@ namespace Locomotiv.ViewModel
         {
             foreach (KeyValuePair<int, TextBlock> panelEntry in _stationInfoPanels)
             {
-                Station station = _stationDal.FindById(panelEntry.Key);
+                Station? station = _stationDal.FindById(panelEntry.Key);
                 if (station != null)
                 {
                     panelEntry.Value.Text = _infoService.GetStationInfo(station);
@@ -234,7 +236,7 @@ namespace Locomotiv.ViewModel
 
             foreach (KeyValuePair<int, TextBlock> panelEntry in _blockPointInfoPanels)
             {
-                BlockPoint blockPoint = _blockPointDal.GetAll().FirstOrDefault(bp => bp.Id == panelEntry.Key);
+                BlockPoint? blockPoint = _blockPointDal.GetAll().FirstOrDefault(bp => bp.Id == panelEntry.Key);
                 if (blockPoint != null)
                 {
                     panelEntry.Value.Text = _infoService.GetBlockPointInfo(blockPoint);
@@ -243,7 +245,7 @@ namespace Locomotiv.ViewModel
 
             foreach (KeyValuePair<int, TextBlock> panelEntry in _trainInfoPanels)
             {
-                if (_activeTrains.TryGetValue(panelEntry.Key, out TrainMovementState state))
+                if (_activeTrains.TryGetValue(panelEntry.Key, out TrainMovementState? state))
                 {
                     panelEntry.Value.Text = _infoService.GetTrainInfo(state.Train);
                 }
@@ -372,6 +374,11 @@ namespace Locomotiv.ViewModel
 
             PredefinedRoute newRoute = FindRouteFromStation(endStation.Id);
 
+            if (newRoute != null)
+            {
+                _usedRouteIds.Add(newRoute.Id);
+            }
+
             train.PredefinedRoute = newRoute;
             _trainDal.Update(train);
         }
@@ -418,6 +425,8 @@ namespace Locomotiv.ViewModel
 
         public void StartAllTrainsWithRoutes()
         {
+            _usedRouteIds.Clear();
+
             IList<Train> allTrains = _stationDal.GetAllTrain();
             HashSet<int> trainIdsOnBlocks = GetTrainIdsCurrentlyOnBlocks();
 
@@ -430,6 +439,7 @@ namespace Locomotiv.ViewModel
 
                 if (route != null)
                 {
+                    _usedRouteIds.Add(route.Id);
                     StartTrainMovement(train, route);
                 }
             }
@@ -439,6 +449,10 @@ namespace Locomotiv.ViewModel
         {
             if (train.PredefinedRoute != null)
             {
+                if (_usedRouteIds.Contains(train.PredefinedRoute.Id))
+                {
+                    return null;
+                }
                 return train.PredefinedRoute;
             }
 
@@ -474,7 +488,9 @@ namespace Locomotiv.ViewModel
         private PredefinedRoute FindRouteFromStation(int stationId)
         {
             IList<PredefinedRoute> routes = _predefinedRouteDal.GetAll();
-            return routes.FirstOrDefault(r => r.StartStation?.Id == stationId);
+            return routes.FirstOrDefault(r =>
+                r.StartStation?.Id == stationId &&
+                !_usedRouteIds.Contains(r.Id));
         }
 
         private void AssignRouteToTrain(Train train, PredefinedRoute route)
