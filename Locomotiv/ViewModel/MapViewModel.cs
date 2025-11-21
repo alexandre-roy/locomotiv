@@ -361,6 +361,7 @@ namespace Locomotiv.ViewModel
             firstBlock.CurrentTrain = train;
             train.Latitude = firstBlock.Latitude;
             train.Longitude = firstBlock.Longitude;
+            _blockDal.Update(firstBlock);
 
             UpdateTrainMarker(train, firstBlock);
 
@@ -399,16 +400,17 @@ namespace Locomotiv.ViewModel
         {
             List<int> trainsToRemove = new List<int>();
 
-            foreach (var kvp in _activeTrains)
+            foreach (var activeTrain in _activeTrains)
             {
-                int trainId = kvp.Key;
-                TrainMovementState state = kvp.Value;
+                int trainId = activeTrain.Key;
+                TrainMovementState state = activeTrain.Value;
 
                 if (!state.IsMoving)
                     continue;
 
                 Block currentBlock = state.Blocks[state.CurrentBlockIndex];
                 currentBlock.CurrentTrain = null;
+                _blockDal.Update(currentBlock);
 
                 state.CurrentBlockIndex++;
 
@@ -436,6 +438,7 @@ namespace Locomotiv.ViewModel
                 nextBlock.CurrentTrain = state.Train;
                 state.Train.Latitude = nextBlock.Latitude;
                 state.Train.Longitude = nextBlock.Longitude;
+                _blockDal.Update(nextBlock);
 
                 UpdateTrainMarker(state.Train, nextBlock);
             }

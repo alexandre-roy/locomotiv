@@ -40,5 +40,15 @@ namespace Locomotiv.Model.DAL
                 .Select(b => b.CurrentTrain)
                 .ToList();
         }
+
+        /// <summary>
+        /// Updates a block in the database and saves changes
+        /// </summary>
+        /// <param name="block">The block to update</param>
+        public void Update(Block block)
+        {
+            _context.Blocks.Update(block);
+            _context.SaveChanges();
+        }
     }
 }

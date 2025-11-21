@@ -10,5 +10,6 @@ namespace Locomotiv.Model.Interfaces
     {
         IList<Block> GetAll();
         IList<Train> GetTrainsCurrentlyOnBlocks();
+        void Update(Block block);
     }
 }
