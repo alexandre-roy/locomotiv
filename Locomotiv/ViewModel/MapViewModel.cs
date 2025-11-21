@@ -5,11 +5,15 @@ using Locomotiv.Model.DAL;
 using Locomotiv.Model.Interfaces;
 using Locomotiv.Utils;
 using Locomotiv.Utils.Services.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Locomotiv.View;
 using Locomotiv.Utils.Commands;
 
@@ -24,6 +28,18 @@ namespace Locomotiv.ViewModel
         private readonly IStationContextService _stationContextService;
         private readonly IUserSessionService _userSessionService;
         public ObservableCollection<GMapMarker> Markers { get; set; }
+
+        private DispatcherTimer _movementTimer;
+        private Dictionary<int, TrainMovementState> _activeTrains = new Dictionary<int, TrainMovementState>();
+        private Dictionary<int, GMapMarker> _trainMarkers = new Dictionary<int, GMapMarker>();
+        private Dictionary<int, GMapMarker> _trainInfoMarkers = new Dictionary<int, GMapMarker>();
+
+        private Dictionary<int, (Station station, TextBlock textBlock)> _stationInfoPanels = new Dictionary<int, (Station, TextBlock)>();
+        private Dictionary<int, (BlockPoint blockPoint, TextBlock textBlock)> _blockPointInfoPanels = new Dictionary<int, (BlockPoint, TextBlock)>();
+        private Dictionary<int, (Train train, TextBlock textBlock)> _trainInfoPanels = new Dictionary<int, (Train, TextBlock)>();
+
+        public ICommand StartAllTrainsCommand { get; }
+        public ICommand StopAllTrainsCommand { get; }
 
         public MapViewModel(
             IStationDAL stationDal,
@@ -42,6 +58,13 @@ namespace Locomotiv.ViewModel
             _userSessionService = userSessionService;
 
             Markers = new ObservableCollection<GMapMarker>();
+
+            _movementTimer = new DispatcherTimer();
+            _movementTimer.Interval = TimeSpan.FromSeconds(2);
+            _movementTimer.Tick += OnMovementTimerTick;
+
+            StartAllTrainsCommand = new RelayCommand(StartAllTrainsWithRoutes);
+            StopAllTrainsCommand = new RelayCommand(StopAllTrains);
 
             if (loadPointsOnStartup)
             {
@@ -114,6 +137,27 @@ namespace Locomotiv.ViewModel
                             infoText,
                             obj is Station,
                             obj as Station);
+
+            StackPanel stackPanel = infoPanel.Child as StackPanel;
+            if (stackPanel != null && stackPanel.Children.Count > 0)
+            {
+                TextBlock textBlock = stackPanel.Children[0] as TextBlock;
+                if (textBlock != null)
+                {
+                    if (obj is Station station)
+                    {
+                        _stationInfoPanels[station.Id] = (station, textBlock);
+                    }
+                    else if (obj is BlockPoint blockPoint)
+                    {
+                        _blockPointInfoPanels[blockPoint.Id] = (blockPoint, textBlock);
+                    }
+                    else if (obj is Block block && block.CurrentTrain != null)
+                    {
+                        _trainInfoPanels[block.CurrentTrain.Id] = (block.CurrentTrain, textBlock);
+                    }
+                }
+            }
 
             mainMarker.Shape = button;
             infoMarker.Shape = infoPanel;
@@ -253,5 +297,275 @@ namespace Locomotiv.ViewModel
         {
             return "Petit train va loin";
         }
+
+        /// <summary>
+        /// Refreshes all info panels to reflect current state
+        /// </summary>
+        private void RefreshAllInfoPanels()
+        {
+            foreach (var infoStation in _stationInfoPanels)
+            {
+                Station station = _stationDal.FindById(infoStation.Key);
+                if (station != null)
+                {
+                    infoStation.Value.textBlock.Text = GetStationInfo(station);
+                }
+            }
+
+            foreach (var infoBlock in _blockPointInfoPanels)
+            {
+                infoBlock.Value.textBlock.Text = GetBlockInfo(infoBlock.Value.blockPoint);
+            }
+
+            foreach (var infoTrain in _trainInfoPanels)
+            {
+                infoTrain.Value.textBlock.Text = GetTrainInfo(infoTrain.Value.train);
+            }
+        }
+
+        /// <summary>
+        /// Timer tick event - moves all active trains one step
+        /// </summary>
+        private void OnMovementTimerTick(object sender, EventArgs e)
+        {
+            MoveTrains();
+        }
+
+        /// <summary>
+        /// Starts movement for a specific train along a predefined route
+        /// </summary>
+        public void StartTrainMovement(Train train, PredefinedRoute route)
+        {
+            if (train == null || route == null || route.BlockIds == null || route.BlockIds.Count == 0)
+                return;
+
+            IList<Block> blocks = _stationDal.GetBlocksForPredefinedRoute(route.BlockIds);
+
+            if (blocks == null || blocks.Count == 0)
+                return;
+
+            _stationDal.RemoveTrainFromAllStations(train.Id);
+
+            TrainMovementState movementState = new TrainMovementState
+            {
+                Train = train,
+                Route = route,
+                Blocks = blocks,
+                CurrentBlockIndex = 0,
+                IsMoving = true
+            };
+
+            _activeTrains[train.Id] = movementState;
+
+            Block firstBlock = blocks[0];
+            firstBlock.CurrentTrain = train;
+            train.Latitude = firstBlock.Latitude;
+            train.Longitude = firstBlock.Longitude;
+
+            UpdateTrainMarker(train, firstBlock);
+
+            if (!_movementTimer.IsEnabled)
+                _movementTimer.Start();
+        }
+
+        /// <summary>
+        /// Stops movement for a specific train
+        /// </summary>
+        public void StopTrainMovement(int trainId)
+        {
+            if (_activeTrains.ContainsKey(trainId))
+            {
+                _activeTrains[trainId].IsMoving = false;
+                _activeTrains.Remove(trainId);
+            }
+
+            if (_activeTrains.Count == 0)
+                _movementTimer.Stop();
+        }
+
+        /// <summary>
+        /// Stops all train movements
+        /// </summary>
+        public void StopAllTrains()
+        {
+            _activeTrains.Clear();
+            _movementTimer.Stop();
+        }
+
+        /// <summary>
+        /// Moves all active trains to their next block
+        /// </summary>
+        private void MoveTrains()
+        {
+            List<int> trainsToRemove = new List<int>();
+
+            foreach (var kvp in _activeTrains)
+            {
+                int trainId = kvp.Key;
+                TrainMovementState state = kvp.Value;
+
+                if (!state.IsMoving)
+                    continue;
+
+                Block currentBlock = state.Blocks[state.CurrentBlockIndex];
+                currentBlock.CurrentTrain = null;
+
+                state.CurrentBlockIndex++;
+
+                if (state.CurrentBlockIndex >= state.Blocks.Count)
+                {
+                    trainsToRemove.Add(trainId);
+
+                    if (state.Route.EndStation != null)
+                    {
+                        Station endStation = _stationDal.FindById(state.Route.EndStation.Id);
+                        if (endStation != null)
+                        {
+                            int currentTrainsInStation = endStation.TrainsInStation?.Count ?? 0;
+                            bool hasCapacity = currentTrainsInStation < endStation.Capacity;
+
+                            _stationDal.AddTrainToStation(endStation.Id, trainId, addToTrainsInStation: hasCapacity);
+                        }
+                    }
+
+                    RemoveTrainMarker(trainId);
+                    continue;
+                }
+
+                Block nextBlock = state.Blocks[state.CurrentBlockIndex];
+                nextBlock.CurrentTrain = state.Train;
+                state.Train.Latitude = nextBlock.Latitude;
+                state.Train.Longitude = nextBlock.Longitude;
+
+                UpdateTrainMarker(state.Train, nextBlock);
+            }
+
+            foreach (int trainId in trainsToRemove)
+            {
+                _activeTrains.Remove(trainId);
+            }
+
+            RefreshAllInfoPanels();
+
+            if (_activeTrains.Count == 0)
+                _movementTimer.Stop();
+        }
+
+        /// <summary>
+        /// Updates or creates a marker for a train at its current position
+        /// </summary>
+        private void UpdateTrainMarker(Train train, Block block)
+        {
+            if (_trainMarkers.ContainsKey(train.Id))
+            {
+                GMapMarker marker = _trainMarkers[train.Id];
+                marker.Position = new PointLatLng(block.Latitude, block.Longitude);
+
+                if (_trainInfoMarkers.ContainsKey(train.Id))
+                {
+                    _trainInfoMarkers[train.Id].Position = new PointLatLng(block.Latitude, block.Longitude);
+                }
+            }
+            else
+            {
+                GMapMarker mainMarker = new GMapMarker(new PointLatLng(block.Latitude, block.Longitude))
+                {
+                    Offset = new Point(-16, -32)
+                };
+
+                GMapMarker infoMarker = new GMapMarker(new PointLatLng(block.Latitude, block.Longitude))
+                {
+                    Offset = new Point(-100, -120)
+                };
+
+                Button button = new Button
+                {
+                    Content = $"🚆{train.Id}",
+                    Background = Brushes.Blue,
+                    Foreground = Brushes.White,
+                    Padding = new Thickness(8, 2, 8, 2),
+                    Cursor = Cursors.Hand
+                };
+
+                Border infoPanel = CreateInfoPanel(
+                    GetTrainInfo(train),
+                    false,
+                    null);
+
+                StackPanel stackPanel = infoPanel.Child as StackPanel;
+                if (stackPanel != null && stackPanel.Children.Count > 0)
+                {
+                    TextBlock textBlock = stackPanel.Children[0] as TextBlock;
+                    if (textBlock != null)
+                    {
+                        _trainInfoPanels[train.Id] = (train, textBlock);
+                    }
+                }
+
+                mainMarker.Shape = button;
+                infoMarker.Shape = infoPanel;
+
+                button.Click += (s, e) =>
+                {
+                    infoPanel.Visibility =
+                        infoPanel.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                };
+
+                Markers.Add(mainMarker);
+                Markers.Add(infoMarker);
+
+                _trainMarkers[train.Id] = mainMarker;
+                _trainInfoMarkers[train.Id] = infoMarker;
+            }
+        }
+
+        /// <summary>
+        /// Removes a train marker from the map
+        /// </summary>
+        private void RemoveTrainMarker(int trainId)
+        {
+            if (_trainMarkers.ContainsKey(trainId))
+            {
+                Markers.Remove(_trainMarkers[trainId]);
+                _trainMarkers.Remove(trainId);
+            }
+
+            if (_trainInfoMarkers.ContainsKey(trainId))
+            {
+                Markers.Remove(_trainInfoMarkers[trainId]);
+                _trainInfoMarkers.Remove(trainId);
+            }
+
+            if (_trainInfoPanels.ContainsKey(trainId))
+            {
+                _trainInfoPanels.Remove(trainId);
+            }
+        }
+
+        /// <summary>
+        /// Starts all trains that have predefined routes
+        /// </summary>
+        public void StartAllTrainsWithRoutes()
+        {
+            IList<PredefinedRoute> routes = _stationDal.PrefefinedRouteForEachTrain();
+            IList<Train> allTrains = _stationDal.GetAllTrain();
+
+            IList<Train> trainsOnBlocks = _blockDal.GetTrainsCurrentlyOnBlocks();
+            HashSet<int> trainIdsOnBlocks = trainsOnBlocks.Select(t => t.Id).ToHashSet();
+
+            int routeIndex = 0;
+            foreach (Train train in allTrains)
+            {
+                if (routeIndex >= routes.Count)
+                    break;
+
+                if (_activeTrains.ContainsKey(train.Id) || trainIdsOnBlocks.Contains(train.Id))
+                    continue;
+
+                StartTrainMovement(train, routes[routeIndex]);
+                routeIndex++;
+            }
+        }
+
     }
 }

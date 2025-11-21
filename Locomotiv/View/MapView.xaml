@@ -11,6 +11,37 @@
                           MinZoom="2"
                           MaxZoom="18"
                           />
+
+        <!-- Train Control Panel -->
+        <Border Background="White"
+                Opacity="0.85"
+                Padding="10"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="10"
+                CornerRadius="6">
+            <StackPanel Width="180">
+                <TextBlock Text="Contrôle des Trains" FontWeight="Bold" Margin="0 0 0 10"/>
+                <Button Content="▶ Démarrer tous les trains"
+                        Command="{Binding StartAllTrainsCommand}"
+                        Margin="0 5"
+                        Padding="8 4"
+                        Background="#4CAF50"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand"/>
+                <Button Content="⏹ Arrêter tous les trains"
+                        Command="{Binding StopAllTrainsCommand}"
+                        Margin="0 5"
+                        Padding="8 4"
+                        Background="#F44336"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Legend Panel -->
         <Border Background="White"
         Opacity="0.85"
         Padding="10"

@@ -34,6 +34,22 @@ namespace Locomotiv.View
 
             foreach (var marker in _vm.Markers)
                 MapControl.Markers.Add(marker);
+
+            _vm.Markers.CollectionChanged += Markers_CollectionChanged;
+        }
+
+        private void Markers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (GMapMarker marker in e.NewItems)
+                    MapControl.Markers.Add(marker);
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (GMapMarker marker in e.OldItems)
+                    MapControl.Markers.Remove(marker);
+            }
         }
     }
 }

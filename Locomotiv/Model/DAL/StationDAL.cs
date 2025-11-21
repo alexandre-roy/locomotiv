@@ -108,6 +108,43 @@ namespace Locomotiv.Model.DAL
             return station?.TrainsInStation?.ToList() ?? new List<Train>();
         }
         /// <summary>
+        /// Removes the specified train from all stations.
+        /// </summary>
+        /// <remarks>This method removes the train from both Trains and TrainsInStation collections
+        /// across all stations. Useful when a train is departing or needs to be reassigned.</remarks>
+        /// <param name="trainId">The unique identifier of the train to remove from all stations.</param>
+        public void RemoveTrainFromAllStations(int trainId)
+        {
+            IList<Station> allStations = _context.Stations
+                .Include(s => s.Trains)
+                .Include(s => s.TrainsInStation)
+                .ToList();
+
+            Train? train = _context.Trains.Find(trainId);
+            if (train == null)
+                return;
+
+            foreach (Station station in allStations)
+            {
+                bool modified = false;
+
+                if (station.Trains != null && station.Trains.Contains(train))
+                {
+                    station.Trains.Remove(train);
+                    modified = true;
+                }
+
+                if (station.TrainsInStation != null && station.TrainsInStation.Contains(train))
+                {
+                    station.TrainsInStation.Remove(train);
+                    modified = true;
+                }
+            }
+
+            _context.SaveChanges();
+        }
+
+        /// <summary>
         /// Removes the specified train from the given station, updating the station's train collections accordingly.
         /// </summary>
         /// <remarks>If the specified station or train does not exist, no changes are made. The method
@@ -179,14 +216,32 @@ namespace Locomotiv.Model.DAL
                         {
                             station.TrainsInStation = new List<Train>();
                         }
-                        if (!station.TrainsInStation.Contains(train))
-                        {
-                            station.TrainsInStation.Add(train);
-                        }
 
-                        if (station.Trains != null && station.Trains.Contains(train))
+                        int currentCount = station.TrainsInStation.Count;
+                        bool hasCapacity = currentCount < station.Capacity;
+
+                        if (hasCapacity)
                         {
-                            station.Trains.Remove(train);
+                            if (!station.TrainsInStation.Contains(train))
+                            {
+                                station.TrainsInStation.Add(train);
+                            }
+
+                            if (station.Trains != null && station.Trains.Contains(train))
+                            {
+                                station.Trains.Remove(train);
+                            }
+                        }
+                        else
+                        {
+                            if (station.Trains == null)
+                            {
+                                station.Trains = new List<Train>();
+                            }
+                            if (!station.Trains.Contains(train))
+                            {
+                                station.Trains.Add(train);
+                            }
                         }
                     }
                     else
@@ -269,6 +324,32 @@ namespace Locomotiv.Model.DAL
                 _context.Trains.Remove(train);
                 _context.SaveChanges();
             }
+        }
+
+        public IList<PredefinedRoute> PrefefinedRouteForEachTrain()
+        {
+            IList<PredefinedRoute> routes = _context.PredefinedRoutes
+                .Include(s => s.StartStation)
+                .Include(s => s.EndStation)
+                .ToList();
+
+
+            return routes;
+        }
+
+        public IList<Block> GetBlocksForPredefinedRoute(List<int> idBlocks) 
+        {
+            IList<Block> blocks = new List<Block>();
+
+            foreach (int id in idBlocks)
+            {
+                blocks.Add(_context.Blocks
+                    .Include(b => b.Points)
+                    .Include(b => b.CurrentTrain)
+                    .FirstOrDefault(b => b.Id == id)!);
+            }
+
+            return blocks;
         }
     }
 }

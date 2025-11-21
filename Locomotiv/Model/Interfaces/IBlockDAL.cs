@@ -9,5 +9,6 @@ namespace Locomotiv.Model.Interfaces
     public interface IBlockDAL
     {
         IList<Block> GetAll();
+        IList<Train> GetTrainsCurrentlyOnBlocks();
     }
 }

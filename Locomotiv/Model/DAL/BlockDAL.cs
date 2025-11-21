@@ -28,5 +28,17 @@ namespace Locomotiv.Model.DAL
                 .Include(b => b.CurrentTrain)
                 .ToList();
         }
+
+        /// <summary>
+        /// Retrieves all trains that are currently positioned on blocks.
+        /// </summary>
+        /// <returns>A list of trains currently on blocks. Returns an empty list if no trains are on blocks.</returns>
+        public IList<Train> GetTrainsCurrentlyOnBlocks()
+        {
+            return _context.Blocks
+                .Where(b => b.CurrentTrain != null)
+                .Select(b => b.CurrentTrain)
+                .ToList();
+        }
     }
 }
