@@ -55,5 +55,11 @@ namespace Locomotiv.Model.DAL
                 _context.SaveChanges();
             }
         }
+
+        public void UpdatePredefinedRoute(PredefinedRoute predefinedRoute)
+        {
+            _context.PredefinedRoutes.Update(predefinedRoute);
+            _context.SaveChanges();
+        }
     }
 }

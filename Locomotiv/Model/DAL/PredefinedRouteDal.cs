@@ -24,5 +24,16 @@ namespace Locomotiv.Model.DAL
                 .Include(b => b.EndStation)
                 .ToList();
         }
+
+        public PredefinedRoute? GetByStations(Station start, Station end)
+        {
+            return _context.PredefinedRoutes
+                .Include(r => r.StartStation)
+                .Include(r => r.EndStation)
+                .FirstOrDefault(r =>
+                    r.StartStation.Id == start.Id &&
+                    r.EndStation.Id == end.Id
+                );
+        }
     }
 }

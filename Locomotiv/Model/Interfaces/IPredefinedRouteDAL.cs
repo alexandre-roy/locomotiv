@@ -9,5 +9,6 @@ namespace Locomotiv.Model.Interfaces
     public interface IPredefinedRouteDAL
     {
         IList<PredefinedRoute> GetAll();
+        PredefinedRoute? GetByStations(Station start, Station end);
     }
 }

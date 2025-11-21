@@ -53,6 +53,10 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<PredefinedRoute>()
             .HasOne(t => t.StartStation)
             .WithMany();
+
+        modelBuilder.Entity<Train>()
+            .HasOne(t => t.PredefinedRoute)
+            .WithMany();
     }
     public DbSet<Locomotive> Locomotives { get; set; }
     public DbSet<Wagon> Wagons { get; set; }

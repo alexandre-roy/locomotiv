@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using Locomotiv.Model;
 using Locomotiv.Model.Interfaces;
 
 public class Train : IMapPoint
@@ -20,4 +21,11 @@ public class Train : IMapPoint
     public double Longitude { get; set; }
 
     public ICollection<Locomotive> Locomotives { get; set; }
+
+    public PredefinedRoute? PredefinedRoute { get; set; }
+
+    public override string ToString()
+    {
+        return $"{TypeOfTrain} (Train #{Id})";
+    }
 }

@@ -1,7 +1,17 @@
-﻿using Locomotiv.Model.Interfaces;
+﻿using Locomotiv.Model;
+using Locomotiv.Model.DAL;
+using Locomotiv.Model.Interfaces;
 using Locomotiv.Utils;
 using Locomotiv.Utils.Commands;
+using Locomotiv.Utils.Services;
 using Locomotiv.Utils.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Locomotiv.ViewModel
@@ -13,6 +23,7 @@ namespace Locomotiv.ViewModel
         private readonly IUserSessionService _userSessionService;
         private readonly IStationDAL _stationDAL;
         private readonly IPredefinedRouteDAL _predefinedRouteDAL;
+        private readonly ITrainDAL _trainDAL;
 
         public User? ConnectedUser
         {
@@ -196,23 +207,73 @@ namespace Locomotiv.ViewModel
             set { _totalLocomotives = value; }
         }
 
-        public ICommand LogoutCommand { get; set; }
+        private Station _selectedStartStation;
+        private Station _selectedEndStation;
+        private Train _selectedTrain;
+        public IList<Station> AllStations { get; }
+        public ObservableCollection<Train> TrainsForSelectedStation { get; private set; }
+        public ObservableCollection<Station> AvailableEndStations { get; private set; }
+        public Train SelectedTrain
+        {
+            get => _selectedTrain;
+            set
+            {
+                _selectedTrain = value;
+                OnPropertyChanged(nameof(SelectedTrain));
+            }
+        }
 
-        public HomeViewModel(
-            IUserDAL userDAL, 
-            INavigationService navigationService, 
-            IUserSessionService userSessionService, 
-            IStationDAL stationDAL, 
-            IPredefinedRouteDAL predefinedRouteDAL
-        )
+        public Station SelectedStartStation
+        {
+            get => _selectedStartStation;
+            set
+            {
+                _selectedStartStation = value;
+                OnPropertyChanged(nameof(SelectedStartStation));
+
+                UpdateAvailableTrains();
+                UpdateAvailableEndStations();
+            }
+        }
+
+        public Station SelectedEndStation
+        {
+            get => _selectedEndStation;
+            set
+            {
+                _selectedEndStation = value;
+                OnPropertyChanged(nameof(SelectedEndStation));
+            }
+        }
+
+        private string _selectedRouteSummary;
+        public string SelectedRouteSummary
+        {
+            get { 
+                return _selectedRouteSummary;
+            } 
+            set
+            {
+                _selectedRouteSummary = value;
+                OnPropertyChanged(nameof(SelectedRouteSummary));
+            }
+        }
+
+        public HomeViewModel(IUserDAL userDAL, INavigationService navigationService, IUserSessionService userSessionService, IStationDAL stationDAL, IPredefinedRouteDAL predefinedRouteDAL, ITrainDAL trainDAL)
         {
             _userDAL = userDAL;
             _navigationService = navigationService;
             _userSessionService = userSessionService;
             _stationDAL = stationDAL;
             _predefinedRouteDAL = predefinedRouteDAL;
+            _trainDAL = trainDAL;
+            AllStations = _stationDAL.GetAll();
+            TrainsForSelectedStation = new ObservableCollection<Train>();
+            AvailableEndStations = new ObservableCollection<Station>(AllStations);
             LogoutCommand = new RelayCommand(Logout, CanLogout);
+            FindRouteCommand = new RelayCommand(FindRoute, CanFindRoute);
         }
+        public ICommand LogoutCommand { get; set; }
 
         private void Logout()
         {
@@ -223,6 +284,82 @@ namespace Locomotiv.ViewModel
         private bool CanLogout()
         {
             return _userSessionService.IsUserConnected;
+        }
+
+        private void UpdateAvailableTrains()
+        {
+            TrainsForSelectedStation.Clear();
+
+            if (SelectedStartStation != null)
+            {
+                var trains = _stationDAL.GetTrainsInStation(SelectedStartStation.Id);
+
+                foreach (var train in trains)
+                    TrainsForSelectedStation.Add(train);
+            }
+
+            OnPropertyChanged(nameof(TrainsForSelectedStation));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        public ICommand FindRouteCommand { get; }
+
+        private bool CanFindRoute()
+        {
+            return SelectedStartStation != null
+                   && SelectedEndStation != null
+                   && SelectedTrain != null;
+        }
+
+        private void FindRoute()
+        {
+            var routes = _predefinedRouteDAL.GetAll();
+
+            var route = routes.FirstOrDefault(r =>
+                r.StartStation.Id == SelectedStartStation.Id &&
+                r.EndStation.Id == SelectedEndStation.Id
+            );
+
+            if (route == null)
+            {
+                SelectedRouteSummary = "Aucun itinéraire trouvé entre ces deux stations.";
+                return;
+            }
+
+            SelectedRouteSummary =
+                $"Itinéraire trouvé : {route.Name}\n" +
+                $"Nombre de blocs : {route.BlockIds.Count}";
+
+            AddRouteToTrain(route);
+        }
+
+        private void AddRouteToTrain(PredefinedRoute predefinedRoute)
+        {
+            SelectedTrain.PredefinedRoute = predefinedRoute;
+            _trainDAL.Update(SelectedTrain);
+        }
+        private void UpdateAvailableEndStations()
+        {
+            AvailableEndStations.Clear();
+
+            if (SelectedStartStation == null)
+            {
+                foreach (var station in AllStations)
+                    AvailableEndStations.Add(station);
+
+                return;
+            }
+
+            var routes = _predefinedRouteDAL.GetAll()
+                .Where(r => r.StartStation.Id == SelectedStartStation.Id)
+                .ToList();
+
+            foreach (var station in routes.Select(r => r.EndStation).Distinct())
+                AvailableEndStations.Add(station);
         }
     }
 }

@@ -236,6 +236,49 @@
                         </TextBlock>
                     </StackPanel>
                 </Border>
+                <Border BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    Padding="15"
+                    Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Planifier un itinéraire"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           Margin="0,0,0,10"/>
+
+                        <StackPanel Margin="0,5">
+                            <TextBlock Text="Station de départ :" FontSize="14" />
+                            <ComboBox ItemsSource="{Binding AllStations}"
+                              SelectedItem="{Binding SelectedStartStation}"
+                              DisplayMemberPath="Name"
+                              Height="30"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5">
+                            <TextBlock Text="Station d'arrivée :" FontSize="14" />
+                            <ComboBox
+                                ItemsSource="{Binding AvailableEndStations}"
+                                SelectedItem="{Binding SelectedEndStation}"
+                                DisplayMemberPath="Name"
+                                Height="30" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5">
+                            <TextBlock Text="Train :" FontSize="14" />
+                            <ComboBox ItemsSource="{Binding TrainsForSelectedStation}"
+                              SelectedItem="{Binding SelectedTrain}" />
+                        </StackPanel>
+
+                        <Button Content="Trouver l'itinéraire"
+                            Height="35"
+                            Margin="0,10,0,0"
+                            Command="{Binding FindRouteCommand}"/>
+
+                        <TextBlock Foreground="Red" FontSize="18" FontWeight="Bold">
+                            <Run Text="{Binding SelectedRouteSummary}"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
             </StackPanel>
         </ScrollViewer>
     </Grid>
