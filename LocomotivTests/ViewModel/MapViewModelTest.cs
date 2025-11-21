@@ -9,6 +9,7 @@ namespace LocomotivTests.ViewModel
     public class MapViewModelTest
     {
         private readonly Mock<IStationDAL> _stationDALMock;
+        private readonly Mock<ITrainDAL> _trainDALMock;
         private readonly Mock<IBlockPointDAL> _blockPointsDALMock;
         private readonly Mock<IBlockDAL> _blockDALMock;
         private readonly Mock<INavigationService> _navigationServiceMock;
@@ -16,6 +17,9 @@ namespace LocomotivTests.ViewModel
         private readonly Mock<IUserSessionService> _userSessionServiceMock;
         private readonly MapViewModel _viewmodel;
         private readonly Station _station;
+        private readonly Station _emptyStation;
+        private readonly Train _trainInTestStation;
+        private readonly Train _trainNotInTestStation;
         private readonly List<BlockPoint> _blockPoints;
         private readonly Block _block;
         private readonly Block _blockNotConnected;
@@ -39,13 +43,48 @@ namespace LocomotivTests.ViewModel
                 false
             );
 
+            _trainInTestStation = new Train
+            {
+                Id = 1,
+                TypeOfTrain = TrainType.Merchandise,
+                PriotityLevel = PriorityLevel.Low,
+                State = TrainState.Idle,
+            };
+
+            _trainNotInTestStation = new Train
+            {
+                Id = 2,
+                TypeOfTrain = TrainType.Passenger,
+                PriotityLevel = PriorityLevel.Low,
+                State = TrainState.Idle,
+            };
+
             _station = new Station
             {
                 Id = 1,
                 Name = "Test Station",
                 Longitude = -71.204255,
                 Latitude = 46.842256,
-                Type = StationType.Station
+                Type = StationType.Station,
+                TrainsInStation = new List<Train>
+                {
+                    _trainInTestStation
+                },
+                Trains = new List<Train> 
+                {
+                    _trainNotInTestStation
+                }
+            };
+
+            _emptyStation = new Station
+            {
+                Id = 2,
+                Name = "Empty Test Station",
+                Longitude = -71.204255,
+                Latitude = 46.842256,
+                Type = StationType.Station,
+                TrainsInStation = new List<Train>() { },
+                Trains = new List<Train>() { }
             };
 
             _blockPoints = new List<BlockPoint>
@@ -77,7 +116,7 @@ namespace LocomotivTests.ViewModel
         }
 
         [Fact]
-        public void GetStationInfo_ReturnsStationInfoString()
+        public void GetStationInfo_HasTrains_ReturnsValidStationInfoString()
         {
             // Arrange
             var station = _station;
@@ -86,15 +125,38 @@ namespace LocomotivTests.ViewModel
             string stationstring = _viewmodel.GetStationInfo(station);
 
             // Assert
-            Assert.Equal($"Station : {station.Name}\n" +
-                "Arrivés :\n" +
-                "  - Train 101 (Montréal → Québec)\n" +
-                "  - Train 205 (Québec → Ottawa)\n" +
-                "\n" +
-                "Départs :\n" +
-                "  - Train 101 (Montréal → Québec)\n" +
-                "  - Train 205 (Québec → Ottawa)", 
-                stationstring);
+            Assert.Equal(
+                $"🏢 Station : Test Station\n" +
+                $"📍 Localisation : ({_station.Latitude}, {_station.Longitude})\n\n" +
+                $"🚆 Trains attribués :\n" +
+                $"   • 🚉 Train 2\n\n" +
+                $"🚉 Trains en gare :\n" +
+                $"   • 🚉 Train 1\n\n" +
+                $"🚦 Signaux :\n" +
+                $"   Aucun signal enregistré",
+            stationstring);
+        }
+
+        [Fact]
+        public void GetStationInfo_HasNoTrains_ReturnsValidStationInfoString()
+        {
+            // Arrange
+            var station = _emptyStation;
+
+            // Act
+            string stationstring = _viewmodel.GetStationInfo(station);
+
+            // Assert
+            Assert.Equal(
+                $"🏢 Station : Empty Test Station\n" +
+                $"📍 Localisation : ({_emptyStation.Latitude}, {_emptyStation.Longitude})\n\n" +
+                $"🚆 Trains attribués :\n" +
+                $"   Aucun train attribué\n\n" +
+                $"🚉 Trains en gare :\n" +
+                $"   Aucun train actuellement en gare\n\n" +
+                $"🚦 Signaux :\n" +
+                $"   Aucun signal enregistré",
+            stationstring);
         }
 
         [Fact]
@@ -110,8 +172,8 @@ namespace LocomotivTests.ViewModel
 
             // Assert
             Assert.Equal(
-                $"🛤️ BlockPoint {_blockPoints[0].Id}\n\n" +
-                $"Blocs connectés :\n - Block {_block.Id} → vers BlockPoint {_blockPoints[1].Id}", 
+                $"🛤️ BlockPoint 1\n\n" +
+                $"Blocs connectés :\n - Block 1 → vers BlockPoint 2", 
                 blockstring);
         }
 
@@ -128,8 +190,8 @@ namespace LocomotivTests.ViewModel
 
             // Assert
             Assert.Equal(
-                $"🛤️ BlockPoint {_blockPoints[2].Id}\n\n" +
-                $"Blocs connectés :\n - Block {_blockNotConnected.Id} → (point unique)",
+                $"🛤️ BlockPoint 3\n\n" +
+                $"Blocs connectés :\n - Block 2 → (point unique)",
                 blockstring);
         }
     }

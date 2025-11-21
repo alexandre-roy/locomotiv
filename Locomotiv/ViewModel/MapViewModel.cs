@@ -74,16 +74,6 @@ namespace Locomotiv.ViewModel
                         infoText: GetStationInfo(station));
                 }
             }
-            else
-            {
-                foreach (Station station in _stationDal.GetAll().Where(s => s.Id == _userSessionService.ConnectedUser?.Station?.Id))
-                {
-                    CreatePoint(station,
-                        label: station.Name,
-                        color: Brushes.Red,
-                        infoText: GetStationInfo(station));
-                }
-            }
 
             foreach (Block block in _blockDal.GetAll())
             {
@@ -93,6 +83,7 @@ namespace Locomotiv.ViewModel
                        color: Brushes.Blue,
                        infoText: GetTrainInfo(block.CurrentTrain));
             }
+
         }
 
         private void CreatePoint(dynamic obj, string label, Brush color, string infoText)

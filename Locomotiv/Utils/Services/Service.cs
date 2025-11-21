@@ -16,7 +16,13 @@ namespace Locomotiv.Utils.Services
                 OnPropertyChanged(nameof(ConnectedUser));
                 OnPropertyChanged(nameof(IsUserConnected));
                 OnPropertyChanged(nameof(IsUserDisconnected));
+                OnPropertyChanged(nameof(IsUserAdmin));
             }
+        }
+
+        public bool IsUserAdmin
+        {
+            get => _connectedUser != null && _connectedUser.IsAdmin;
         }
 
         public bool IsUserConnected

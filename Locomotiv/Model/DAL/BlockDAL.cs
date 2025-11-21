@@ -11,7 +11,10 @@ namespace Locomotiv.Model.DAL
     public class BlockDAL : IBlockDAL
     {
         private readonly ApplicationDbContext _context;
-
+        /// <summary>
+        /// 
+        /// </summary>  
+        /// <param name="c"></param>
         public BlockDAL(ApplicationDbContext c)
         {
             _context = c;

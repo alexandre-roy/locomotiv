@@ -32,10 +32,11 @@
                     Command="{Binding NavigateToConnectUserViewCommand}"
                     Visibility="{Binding UserSessionService.IsUserDisconnected, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <Button Content="Map"
+                    x:Name="MapButton"
                     Margin="10"
                     Height="25"
                     Command="{Binding NavigateToMapViewCommand}"
-                    Visibility="{Binding UserSessionService.IsUserConnected, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    Visibility="{Binding UserSessionService.IsUserAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
         </StackPanel>
         <ContentControl Grid.Column="1" Content="{Binding NavigationService.CurrentView}"></ContentControl>
     </Grid>

@@ -2,6 +2,7 @@
 using Locomotiv.Utils.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Documents;
 
@@ -54,6 +55,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Station> Stations { get; set; }
     public DbSet<Block> Blocks { get; set; }
     public DbSet<BlockPoint> BlockPoints { get; set; }
+    public DbSet<PredefinedRoute> PredefinedRoutes { get; set; }
 
     IConfiguration config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false).Build();
 
@@ -552,6 +554,12 @@ public class ApplicationDbContext : DbContext
                     Id = 30,
                     Longitude = -71.428995,
                     Latitude = 46.770815
+                },
+                new BlockPoint
+                {
+                    Id = 31,
+                    Longitude = -71.290745,
+                    Latitude = 46.750133
                 }
             );
             SaveChanges();
@@ -961,8 +969,166 @@ public class ApplicationDbContext : DbContext
                 Longitude = -71.224993,
                 Latitude = 46.794413,
             };
-            Blocks.AddRange(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24, block25, block26, block27, block28, block29, block30, block31, block32, block33);
+            var block34 = new Block
+            {
+                Points = new List<BlockPoint>
+                {
+                    allPoints.First(bp => bp.Id == 22),
+                    allPoints.First(bp => bp.Id == 31)
+                },
+                Longitude = -71.292397,
+                Latitude = 46.752794,
+            };
+            Blocks.AddRange(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24, block25, block26, block27, block28, block29, block30, block31, block32, block33, block34);
             SaveChanges();
         }
+
+        if (!PredefinedRoutes.Any())
+        {
+            List<Station> savedStations = Stations.ToList();
+                AddRouteWithReverse(
+                "Gare Québec-Gatineau vers Gatineau",
+                GetStationByName("Gare Québec-Gatineau", savedStations),
+                GetStationByName("Vers Gatineau", savedStations),
+                new() { 1, 31 }
+            );
+
+            AddRouteWithReverse(
+                "Gare Québec-Gatineau vers Gare CN",
+                GetStationByName("Gare Québec-Gatineau", savedStations),
+                GetStationByName("Gare CN", savedStations),
+                new() { 1, 2, 4, 29, 27, 25, 30 }
+            );
+
+            AddRouteWithReverse(
+                "Gare Québec-Gatineau vers le Nord",
+                GetStationByName("Gare Québec-Gatineau", savedStations),
+                GetStationByName("Vers le Nord", savedStations),
+                new() { 1, 2, 4, 29, 28, 32 }
+            );
+
+            AddRouteWithReverse(
+                "Gare Québec-Gatineau vers Gare du Palais",
+                GetStationByName("Gare Québec-Gatineau", savedStations),
+                GetStationByName("Gare du Palais", savedStations),
+                new() { 1, 2, 3, 9, 11, 13, 15 }
+            );
+
+            AddRouteWithReverse(
+                "Gare Québec-Gatineau vers Port de Québec",
+                GetStationByName("Gare Québec-Gatineau", savedStations),
+                GetStationByName("Port de Québec", savedStations),
+                new() { 1, 2, 3, 9, 11, 13, 15, 16, 17 }
+            );
+
+            AddRouteWithReverse(
+                "Gare Québec-Gatineau vers Baie de Beauport",
+                GetStationByName("Gare Québec-Gatineau", savedStations),
+                GetStationByName("Baie de Beauport", savedStations),
+                new() { 1, 2, 3, 9, 11, 12, 18 }
+            );
+
+            AddRouteWithReverse(
+                "Gare Québec-Gatineau vers Charlevoix",
+                GetStationByName("Gare Québec-Gatineau", savedStations),
+                GetStationByName("Vers Charlevoix", savedStations),
+                new() { 1, 2, 3, 9, 11, 12, 28 }
+            );
+
+            AddRouteWithReverse(
+                "Gare Québec-Gatineau vers Centre de distribution",
+                GetStationByName("Gare Québec-Gatineau", savedStations),
+                GetStationByName("Centre de distribution", savedStations),
+                new() { 1, 2, 3, 9, 11, 13, 15, 16, 17 }
+            );
+
+            AddRouteWithReverse(
+                "Gare CN vers la Rive-Sud",
+                GetStationByName("Gare CN", savedStations),
+                GetStationByName("Vers la Rive-Sud", savedStations),
+                new() { 30, 34 }
+            );
+
+            AddRouteWithReverse(
+                "Gare CN vers le Nord",
+                GetStationByName("Gare CN", savedStations),
+                GetStationByName("Vers la Nord", savedStations),
+                new() { 30, 25, 26, 22, 32 }
+            );
+
+            AddRouteWithReverse(
+                "Gare CN vers Centre de distribution",
+                GetStationByName("Gare CN", savedStations),
+                GetStationByName("Centre de distribution", savedStations),
+                new() { 30, 24, 7 }
+            );
+
+            AddRouteWithReverse(
+                "Gare CN vers Gare du Palais",
+                GetStationByName("Gare CN", savedStations),
+                GetStationByName("Gare du Palais", savedStations),
+                new() { 30, 25, 27, 29, 5, 10, 11, 13, 15 }
+            );
+
+            AddRouteWithReverse(
+                "Gare CN vers Port de Québec",
+                GetStationByName("Gare CN", savedStations),
+                GetStationByName("Port de Québec", savedStations),
+                new() { 30, 25, 27, 29, 5, 10, 11, 13, 15, 16, 17 }
+            );
+
+            AddRouteWithReverse(
+                "Gare CN vers Baie de Beauport",
+                GetStationByName("Gare CN", savedStations),
+                GetStationByName("Baie de Beauport", savedStations),
+                new() { 30, 25, 27, 29, 5, 10, 11, 12, 18 }
+            );
+
+            AddRouteWithReverse(
+                "Gare CN vers Charlevoix",
+                GetStationByName("Gare CN", savedStations),
+                GetStationByName("Vers Charlevoix", savedStations),
+                new() { 30, 25, 27, 29, 5, 10, 11, 12, 23 }
+            );
+
+            AddRouteWithReverse(
+                "Gare du Palais vers Charlevoix",
+                GetStationByName("Gare du Palais", savedStations),
+                GetStationByName("Vers Charlevoix", savedStations),
+                new() { 15, 14, 23 }
+            );
+
+            AddRouteWithReverse(
+                "Gare du Palais vers Baie de Beauport",
+                GetStationByName("Gare du Palais", savedStations),
+                GetStationByName("Baie de Beauport", savedStations),
+                new() { 15, 14, 18 }
+            );
+            SaveChanges();
+        }
+
+    }
+    public Station GetStationByName(string name, List<Station> savedStations)
+    {
+        return savedStations.FirstOrDefault(s => s.Name == name);
+    }
+
+    private void AddRouteWithReverse(string name, Station start, Station end, List<int> blockIds)
+    {
+        PredefinedRoutes.Add(new PredefinedRoute
+        {
+            Name = name,
+            StartStation = start,
+            EndStation = end,
+            BlockIds = blockIds
+        });
+
+        PredefinedRoutes.Add(new PredefinedRoute
+        {
+            Name = $"{name} (Retour)",
+            StartStation = end,
+            EndStation = start,
+            BlockIds = blockIds.AsEnumerable().Reverse().ToList()
+        });
     }
 }

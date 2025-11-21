@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Locomotiv.View"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="1000">
+             d:DesignHeight="800" d:DesignWidth="1400">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -126,7 +126,14 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-
+                <Button Grid.Row="0"
+                        Content="← Supprimer le train sélectionné"
+                        Command="{Binding DeleteTrainCommand}"
+                        Padding="10"
+                        Background="Black"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        HorizontalAlignment='Left'/>
                 <Button Grid.Row="2"
                         Content="← Supprimer le train sélectionné"
                         Command="{Binding DeleteTrainCommand}"

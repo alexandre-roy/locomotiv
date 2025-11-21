@@ -31,8 +31,8 @@ namespace Locomotiv
                 DataContext = provider.GetRequiredService<MainViewModel>()
             });
 
-            services.AddSingleton<MainViewModel>();
-            services.AddSingleton<HomeViewModel>();
+            services.AddTransient<MainViewModel>();
+            services.AddTransient<HomeViewModel>();
             services.AddTransient<ConnectUserViewModel>();
             services.AddTransient<MapViewModel>();
             services.AddTransient<TrainManagementViewModel>();
@@ -41,6 +41,7 @@ namespace Locomotiv
             services.AddSingleton<IStationDAL, StationDAL>();
             services.AddSingleton<IBlockDAL, BlockDAL>();
             services.AddSingleton<IBlockPointDAL, BlockPointDAL>();
+            services.AddSingleton<IPredefinedRouteDAL, PredefinedRouteDal>();
 
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IUserSessionService, Service>();
