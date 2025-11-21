@@ -98,7 +98,7 @@ namespace Locomotiv.ViewModel
             {
                 if (!_totalStations.HasValue && IsAdmin)
                 {
-                    _totalStations = _predefinedRouteDAL?.GetAll()?.Count ?? 0;
+                    _totalStations = _stationDAL?.GetAll()?.Count ?? 0;
                 }
                 return _totalStations ?? 0;
             }

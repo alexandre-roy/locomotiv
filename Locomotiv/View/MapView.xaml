@@ -12,7 +12,6 @@
                           MaxZoom="18"
                           />
 
-        <!-- Train Control Panel -->
         <Border Background="White"
                 Opacity="0.85"
                 Padding="10"
@@ -41,7 +40,6 @@
             </StackPanel>
         </Border>
 
-        <!-- Legend Panel -->
         <Border Background="White"
         Opacity="0.85"
         Padding="10"
