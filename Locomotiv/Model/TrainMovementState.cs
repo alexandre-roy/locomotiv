@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace Locomotiv.Model
 {
-    /// <summary>
-    /// Tracks the movement state of a train along its route
-    /// </summary>
     public class TrainMovementState
     {
         public Train Train { get; set; }

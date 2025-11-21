@@ -9,20 +9,11 @@ namespace Locomotiv.Model.DAL
     {
         private readonly ApplicationDbContext _context;
 
-        public UserDAL(ApplicationDbContext c)
+        public UserDAL(ApplicationDbContext _db)
         {
-            _context = c;
+            _context = _db;
         }
-        /// <summary>
-        /// Retrieves a user matching the specified username and password, including related station and train
-        /// information.
-        /// </summary>
-        /// <remarks>The returned user includes related entities such as the user's station, trains,
-        /// locomotives, and wagons. This method performs a database query and may impact performance if used
-        /// frequently.</remarks>
-        /// <param name="u">The username to search for. Cannot be null.</param>
-        /// <param name="p">The password associated with the username. Cannot be null.</param>
-        /// <returns>A <see cref="User"/> object if a matching user is found; otherwise, <see langword="null"/>.</returns>
+
         public User? FindByUsernameAndPassword(string u, string p)
         {
             return _context.Users

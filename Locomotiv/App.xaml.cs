@@ -11,6 +11,7 @@ using Locomotiv.Utils.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using Locomotiv.Utils.Services.Map;
 
 namespace Locomotiv
 {
@@ -19,7 +20,6 @@ namespace Locomotiv
         private readonly ServiceProvider _serviceProvider;
         public App()
         {
-            // Note à moi-même, mieux séparer en fonctions ici. 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory());
             IConfiguration configuration = builder.Build();
@@ -50,6 +50,11 @@ namespace Locomotiv
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IUserSessionService, Service>();
             services.AddSingleton<IStationContextService, StationContextService>();
+
+            services.AddSingleton<TrainMovementService>();
+            services.AddSingleton<MapMarkerFactory>();
+            services.AddSingleton<MapInfoService>();
+
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<Func<Type, BaseViewModel>>(serviceProvider =>
             {

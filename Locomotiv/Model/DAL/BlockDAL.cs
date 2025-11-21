@@ -11,15 +11,11 @@ namespace Locomotiv.Model.DAL
     public class BlockDAL : IBlockDAL
     {
         private readonly ApplicationDbContext _context;
-        /// <summary>
-        /// 
-        /// </summary>  
-        /// <param name="c"></param>
+
         public BlockDAL(ApplicationDbContext c)
         {
             _context = c;
         }
-
 
         public IList<Block> GetAll()
         {
@@ -29,10 +25,6 @@ namespace Locomotiv.Model.DAL
                 .ToList();
         }
 
-        /// <summary>
-        /// Retrieves all trains that are currently positioned on blocks.
-        /// </summary>
-        /// <returns>A list of trains currently on blocks. Returns an empty list if no trains are on blocks.</returns>
         public IList<Train> GetTrainsCurrentlyOnBlocks()
         {
             return _context.Blocks
@@ -41,14 +33,20 @@ namespace Locomotiv.Model.DAL
                 .ToList();
         }
 
-        /// <summary>
-        /// Updates a block in the database and saves changes
-        /// </summary>
-        /// <param name="block">The block to update</param>
         public void Update(Block block)
         {
             _context.Blocks.Update(block);
             _context.SaveChanges();
+        }
+
+
+        public IList<Block> GetBlocksByPointId(int blockPointId)
+        {
+            return _context.Blocks
+                .Include(b => b.Points)
+                .Include(b => b.CurrentTrain)
+                .Where(b => b.Points.Any(p => p.Id == blockPointId))
+                .ToList();
         }
     }
 }

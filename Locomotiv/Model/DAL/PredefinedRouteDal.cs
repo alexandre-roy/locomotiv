@@ -11,15 +11,11 @@ namespace Locomotiv.Model.DAL
     public class PredefinedRouteDal : IPredefinedRouteDAL
     {
         private readonly ApplicationDbContext _context;
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="c"></param>
-        public PredefinedRouteDal(ApplicationDbContext c)
-        {
-            _context = c;
-        }
 
+        public PredefinedRouteDal(ApplicationDbContext _db)
+        {
+            _context = _db;
+        }
 
         public IList<PredefinedRoute> GetAll()
         {

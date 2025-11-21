@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Security.Cryptography;
-public class Train
+using Locomotiv.Model.Interfaces;
+
+public class Train : IMapPoint
 {
     public int Id { get; set; }
 

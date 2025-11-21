@@ -11,9 +11,9 @@ namespace Locomotiv.Model.DAL
     {
         private readonly ApplicationDbContext _context;
 
-        public LocomotiveDAL(ApplicationDbContext c)
+        public LocomotiveDAL(ApplicationDbContext _db)
         {
-            _context = c;
+            _context = _db;
         }
 
         public IList<Locomotive> GetAll()

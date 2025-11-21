@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Locomotiv.Model.Interfaces;
 
-public class Station
+public class Station : IMapPoint
 {
     public int Id { get; set; }
 
