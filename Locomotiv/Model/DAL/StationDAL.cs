@@ -22,12 +22,15 @@ namespace Locomotiv.Model.DAL
                   .ThenInclude(t => t.Locomotives)
               .Include(s => s.Trains)
                   .ThenInclude(t => t.Wagons)
+              .Include(s => s.Trains)
+                  .ThenInclude(t => t.PredefinedRoute)
               .Include(s => s.TrainsInStation)
                   .ThenInclude(t => t.Locomotives)
               .Include(s => s.TrainsInStation)
                   .ThenInclude(t => t.Wagons)
+              .Include(s => s.TrainsInStation)
+                  .ThenInclude(t => t.PredefinedRoute)
               .FirstOrDefault(s => s.Id == id);
-        
         }
 
         public IList<Station> GetAll()
@@ -37,19 +40,25 @@ namespace Locomotiv.Model.DAL
                   .ThenInclude(t => t.Locomotives)
               .Include(s => s.Trains)
                   .ThenInclude(t => t.Wagons)
+              .Include(s => s.Trains)
+                  .ThenInclude(t => t.PredefinedRoute)
               .Include(s => s.TrainsInStation)
                   .ThenInclude(t => t.Locomotives)
               .Include(s => s.TrainsInStation)
                   .ThenInclude(t => t.Wagons)
+              .Include(s => s.TrainsInStation)
+                  .ThenInclude(t => t.PredefinedRoute)
               .ToList();
-        
         }
         public IList<Train> GetAllTrain()
         {
-
             return _context.Trains
                 .Include(t => t.Locomotives)
                 .Include(t => t.Wagons)
+                .Include(t => t.PredefinedRoute)
+                    .ThenInclude(r => r.StartStation)
+                .Include(t => t.PredefinedRoute)
+                    .ThenInclude(r => r.EndStation)
                 .ToList();
         }
 
@@ -60,6 +69,8 @@ namespace Locomotiv.Model.DAL
                     .ThenInclude(t => t.Locomotives)
                 .Include(s => s.Trains)
                     .ThenInclude(t => t.Wagons)
+                .Include(s => s.Trains)
+                    .ThenInclude(t => t.PredefinedRoute)
                 .FirstOrDefault(s => s.Id == stationId);
 
             return station?.Trains?.ToList() ?? new List<Train>();
@@ -72,6 +83,8 @@ namespace Locomotiv.Model.DAL
                     .ThenInclude(t => t.Locomotives)
                 .Include(s => s.TrainsInStation)
                     .ThenInclude(t => t.Wagons)
+                .Include(s => s.TrainsInStation)
+                    .ThenInclude(t => t.PredefinedRoute)
                 .FirstOrDefault(s => s.Id == stationId);
 
             return station?.TrainsInStation?.ToList() ?? new List<Train>();

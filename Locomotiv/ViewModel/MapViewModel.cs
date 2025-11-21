@@ -20,6 +20,8 @@ namespace Locomotiv.ViewModel
         private readonly IStationDAL _stationDal;
         private readonly IBlockDAL _blockDal;
         private readonly IBlockPointDAL _blockPointDal;
+        private readonly IPredefinedRouteDAL _predefinedRouteDal;
+        private readonly ITrainDAL _trainDal;
         private readonly INavigationService _navigationService;
         private readonly IStationContextService _stationContextService;
         private readonly IUserSessionService _userSessionService;
@@ -34,9 +36,12 @@ namespace Locomotiv.ViewModel
         private Dictionary<int, TrainMovementState> _activeTrains 
             = new Dictionary<int, TrainMovementState>();
 
-        private Dictionary<int, (GMapMarker main, GMapMarker info)> _trainMarkers 
+        private Dictionary<int, (GMapMarker main, GMapMarker info)> _trainMarkers
             = new Dictionary<int, (GMapMarker, GMapMarker)>();
-        private Dictionary<int, TextBlock> _infoPanels = new Dictionary<int, TextBlock>();
+
+        private Dictionary<int, TextBlock> _stationInfoPanels = new Dictionary<int, TextBlock>();
+        private Dictionary<int, TextBlock> _blockPointInfoPanels = new Dictionary<int, TextBlock>();
+        private Dictionary<int, TextBlock> _trainInfoPanels = new Dictionary<int, TextBlock>();
 
         public ICommand StartAllTrainsCommand { get; }
         public ICommand StopAllTrainsCommand { get; }
@@ -45,6 +50,8 @@ namespace Locomotiv.ViewModel
             IStationDAL stationDal,
             IBlockDAL blockDal,
             IBlockPointDAL blockPointDal,
+            IPredefinedRouteDAL predefinedRouteDal,
+            ITrainDAL trainDal,
             INavigationService navigationService,
             IStationContextService stationContextService,
             IUserSessionService userSessionService,
@@ -56,6 +63,8 @@ namespace Locomotiv.ViewModel
             _stationDal = stationDal;
             _blockDal = blockDal;
             _blockPointDal = blockPointDal;
+            _predefinedRouteDal = predefinedRouteDal;
+            _trainDal = trainDal;
             _navigationService = navigationService;
             _stationContextService = stationContextService;
             _userSessionService = userSessionService;
@@ -96,11 +105,7 @@ namespace Locomotiv.ViewModel
         {
             foreach (BlockPoint blockPoint in _blockPointDal.GetAll())
             {
-                CreateMarkerForPoint(
-                    blockPoint,
-                    $"{MapConstants.BlockPointLabelPrefix}{blockPoint.Id}",
-                    MapConstants.BlockPointColor,
-                    _infoService.GetBlockPointInfo(blockPoint));
+                CreateMarkerForBlockPoint(blockPoint);
             }
         }
 
@@ -108,18 +113,7 @@ namespace Locomotiv.ViewModel
         {
             foreach (Station station in _stationDal.GetAll())
             {
-                Brush color = station.Type == StationType.Station
-                    ? MapConstants.StationColor
-                    : MapConstants.PointColor;
-
-                Button manageButton = CreateManageTrainsButton(station);
-
-                CreateMarkerForPoint(
-                    station,
-                    station.Name,
-                    color,
-                    _infoService.GetStationInfo(station),
-                    manageButton);
+                CreateMarkerForStation(station);
             }
         }
 
@@ -134,17 +128,31 @@ namespace Locomotiv.ViewModel
             }
         }
 
-        private void CreateMarkerForPoint(
-            IMapPoint mapPoint,
-            string label,
-            Brush color,
-            string infoText,
-            Button additionalButton = null)
+        private void CreateMarkerForStation(Station station)
+        {
+            Brush color = station.Type == StationType.Station
+                ? MapConstants.StationColor
+                : MapConstants.PointColor;
+
+            Button manageButton = CreateManageTrainsButton(station);
+
+            var (mainMarker, infoMarker) = _markerFactory.CreateMarkerPair(
+                station, station.Name, color, _infoService.GetStationInfo(station),
+                onInfoPanelCreated: panel => StoreInfoPanel(station.Id, panel, _stationInfoPanels),
+                additionalButton: manageButton);
+
+            Markers.Add(mainMarker);
+            Markers.Add(infoMarker);
+        }
+
+        private void CreateMarkerForBlockPoint(BlockPoint blockPoint)
         {
             var (mainMarker, infoMarker) = _markerFactory.CreateMarkerPair(
-                mapPoint, label, color, infoText,
-                onInfoPanelCreated: panel => StoreInfoPanel(mapPoint.Id, panel),
-                additionalButton: additionalButton);
+                blockPoint,
+                $"{MapConstants.BlockPointLabelPrefix}{blockPoint.Id}",
+                MapConstants.BlockPointColor,
+                _infoService.GetBlockPointInfo(blockPoint),
+                onInfoPanelCreated: panel => StoreInfoPanel(blockPoint.Id, panel, _blockPointInfoPanels));
 
             Markers.Add(mainMarker);
             Markers.Add(infoMarker);
@@ -157,7 +165,7 @@ namespace Locomotiv.ViewModel
                 $"{MapConstants.TrainLabelPrefix}{train.Id}",
                 MapConstants.TrainColor,
                 _infoService.GetTrainInfo(train),
-                onInfoPanelCreated: panel => StoreInfoPanel(train.Id, panel));
+                onInfoPanelCreated: panel => StoreInfoPanel(train.Id, panel, _trainInfoPanels));
 
             Markers.Add(mainMarker);
             Markers.Add(infoMarker);
@@ -187,13 +195,13 @@ namespace Locomotiv.ViewModel
             return button;
         }
 
-        private void StoreInfoPanel(int id, Border panel)
+        private void StoreInfoPanel(int id, Border panel, Dictionary<int, TextBlock> targetDictionary)
         {
             if (panel.Child is StackPanel stack && stack.Children.Count > 0)
             {
                 if (stack.Children[0] is TextBlock textBlock)
                 {
-                    _infoPanels[id] = textBlock;
+                    targetDictionary[id] = textBlock;
                 }
             }
         }
@@ -208,26 +216,30 @@ namespace Locomotiv.ViewModel
 
         private void RefreshAllInfoPanels()
         {
-            foreach (var panelEntry in _infoPanels)
+            foreach (var panelEntry in _stationInfoPanels)
             {
-                int id = panelEntry.Key;
-                TextBlock textBlock = panelEntry.Value;
-
-                Station station = _stationDal.FindById(id);
+                Station station = _stationDal.FindById(panelEntry.Key);
                 if (station != null)
                 {
-                    textBlock.Text = _infoService.GetStationInfo(station);
-                    continue;
+                    panelEntry.Value.Text = _infoService.GetStationInfo(station);
                 }
+            }
 
-                BlockPoint blockPoint = _blockPointDal.GetAll().FirstOrDefault(bp => bp.Id == id);
+            foreach (var panelEntry in _blockPointInfoPanels)
+            {
+                BlockPoint blockPoint = _blockPointDal.GetAll().FirstOrDefault(bp => bp.Id == panelEntry.Key);
                 if (blockPoint != null)
                 {
-                    textBlock.Text = _infoService.GetBlockPointInfo(blockPoint);
-                    continue;
+                    panelEntry.Value.Text = _infoService.GetBlockPointInfo(blockPoint);
                 }
+            }
 
-
+            foreach (var panelEntry in _trainInfoPanels)
+            {
+                if (_activeTrains.TryGetValue(panelEntry.Key, out TrainMovementState state))
+                {
+                    panelEntry.Value.Text = _infoService.GetTrainInfo(state.Train);
+                }
             }
         }
 
@@ -326,9 +338,11 @@ namespace Locomotiv.ViewModel
         {
             _trainMovementService.ClearTrainFromBlock(currentBlock);
 
+            Station endStation = null;
+
             if (state.Route.EndStation != null)
             {
-                Station endStation = _stationDal.FindById(state.Route.EndStation.Id);
+                endStation = _stationDal.FindById(state.Route.EndStation.Id);
                 if (endStation != null)
                 {
                     _trainMovementService.ArriveAtStation(state.Train, endStation);
@@ -336,6 +350,23 @@ namespace Locomotiv.ViewModel
             }
 
             RemoveTrainMarker(trainId);
+
+            AssignNewRouteFromEndStation(state.Train, endStation);
+        }
+
+        private void AssignNewRouteFromEndStation(Train train, Station endStation)
+        {
+            if (endStation == null)
+            {
+                train.PredefinedRoute = null;
+                _trainDal.Update(train);
+                return;
+            }
+
+            PredefinedRoute newRoute = FindRouteFromStation(endStation.Id);
+
+            train.PredefinedRoute = newRoute;
+            _trainDal.Update(train);
         }
 
         private void RemoveCompletedTrains(List<int> trainIds)
@@ -375,27 +406,74 @@ namespace Locomotiv.ViewModel
                 _trainMarkers.Remove(trainId);
             }
 
-            _infoPanels.Remove(trainId);
+            _trainInfoPanels.Remove(trainId);
         }
 
         public void StartAllTrainsWithRoutes()
         {
-            IList<PredefinedRoute> routes = _stationDal.PrefefinedRouteForEachTrain();
             IList<Train> allTrains = _stationDal.GetAllTrain();
             HashSet<int> trainIdsOnBlocks = GetTrainIdsCurrentlyOnBlocks();
 
-            int routeIndex = 0;
             foreach (Train train in allTrains)
             {
-                if (routeIndex >= routes.Count)
-                    break;
+                if (!CanStartTrain(train.Id, trainIdsOnBlocks))
+                    continue;
 
-                if (CanStartTrain(train.Id, trainIdsOnBlocks))
+                PredefinedRoute route = GetOrAssignRouteForTrain(train);
+
+                if (route != null)
                 {
-                    StartTrainMovement(train, routes[routeIndex]);
-                    routeIndex++;
+                    StartTrainMovement(train, route);
                 }
             }
+        }
+
+        private PredefinedRoute GetOrAssignRouteForTrain(Train train)
+        {
+            if (train.PredefinedRoute != null)
+            {
+                return train.PredefinedRoute;
+            }
+
+            Station currentStation = FindTrainCurrentStation(train);
+            if (currentStation == null)
+                return null;
+
+            PredefinedRoute newRoute = FindRouteFromStation(currentStation.Id);
+            if (newRoute != null)
+            {
+                AssignRouteToTrain(train, newRoute);
+            }
+
+            return newRoute;
+        }
+
+        private Station FindTrainCurrentStation(Train train)
+        {
+            IList<Station> stations = _stationDal.GetAll();
+
+            foreach (Station station in stations)
+            {
+                if (station.TrainsInStation?.Any(t => t.Id == train.Id) == true)
+                    return station;
+
+                if (station.Trains?.Any(t => t.Id == train.Id) == true)
+                    return station;
+            }
+
+            return null;
+        }
+
+        private PredefinedRoute FindRouteFromStation(int stationId)
+        {
+            IList<PredefinedRoute> routes = _predefinedRouteDal.GetAll();
+            return routes.FirstOrDefault(r => r.StartStation?.Id == stationId);
+        }
+
+        private void AssignRouteToTrain(Train train, PredefinedRoute route)
+        {
+            train.PredefinedRoute = route;
+            _trainDal.Update(train);
         }
 
         private HashSet<int> GetTrainIdsCurrentlyOnBlocks()
