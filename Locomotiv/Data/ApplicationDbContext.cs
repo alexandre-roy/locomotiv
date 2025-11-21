@@ -45,6 +45,13 @@ public class ApplicationDbContext : DbContext
             .HasMany(t => t.Wagons)
             .WithMany();
 
+        modelBuilder.Entity<PredefinedRoute>()
+            .HasOne(t => t.EndStation)
+            .WithMany();
+
+        modelBuilder.Entity<PredefinedRoute>()
+            .HasOne(t => t.StartStation)
+            .WithMany();
     }
 
 
@@ -1052,7 +1059,7 @@ public class ApplicationDbContext : DbContext
             AddRouteWithReverse(
                 "Gare CN vers le Nord",
                 GetStationByName("Gare CN", savedStations),
-                GetStationByName("Vers la Nord", savedStations),
+                GetStationByName("Vers le Nord", savedStations),
                 new() { 30, 25, 26, 22, 32 }
             );
 
