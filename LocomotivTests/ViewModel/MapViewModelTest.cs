@@ -1,5 +1,6 @@
 ﻿using Locomotiv.Model.Interfaces;
 using Locomotiv.Utils.Services.Interfaces;
+using Locomotiv.Utils.Services.Map;
 using Locomotiv.ViewModel;
 using Moq;
 
@@ -13,6 +14,9 @@ namespace LocomotivTests.ViewModel
         private readonly Mock<INavigationService> _navigationServiceMock;
         private readonly Mock<IStationContextService> _stationContextServiceMock;
         private readonly Mock<IUserSessionService> _userSessionServiceMock;
+        private readonly Mock<TrainMovementService> _trainMovementServiceMock;
+        private readonly Mock<MapMarkerFactory> _markerFactoryMock;
+        private readonly Mock<MapInfoService> _infoServiceMock;
         private readonly MapViewModel _viewmodel;
         private readonly Station _station;
         private readonly Station _emptyStation;
@@ -30,6 +34,9 @@ namespace LocomotivTests.ViewModel
             _navigationServiceMock = new Mock<INavigationService>();
             _stationContextServiceMock = new Mock<IStationContextService>();
             _userSessionServiceMock = new Mock<IUserSessionService>();
+            _trainMovementServiceMock = new Mock<TrainMovementService>();
+            _markerFactoryMock = new Mock<MapMarkerFactory>();
+            _infoServiceMock = new Mock<MapInfoService>();
 
             _viewmodel = new MapViewModel(
                 _stationDALMock.Object,
@@ -38,6 +45,9 @@ namespace LocomotivTests.ViewModel
                 _navigationServiceMock.Object,
                 _stationContextServiceMock.Object,
                 _userSessionServiceMock.Object,
+                _trainMovementServiceMock.Object,
+                _markerFactoryMock.Object,
+                _infoServiceMock.Object,
                 false
             );
 
