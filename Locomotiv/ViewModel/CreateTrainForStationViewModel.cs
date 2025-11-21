@@ -2,11 +2,6 @@
 using Locomotiv.Utils;
 using Locomotiv.Utils.Commands;
 using Locomotiv.Utils.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Locomotiv.ViewModel
@@ -25,27 +20,6 @@ namespace Locomotiv.ViewModel
         private string _locomotiveCode;
         private int _numberOfWagons;
         private string _errorMessage;
-
-        public CreateTrainForStationViewModel(
-            IStationDAL stationDAL,
-            IStationContextService stationContextService,
-            INavigationService navigationService,
-            ITrainDAL trainDAL)
-        {
-            _stationDAL = stationDAL;
-            _stationContextService = stationContextService;
-            _navigationService = navigationService;
-            _trainDAL = trainDAL;
-
-            _currentStation = _stationContextService.CurrentStation;
-
-            CreateTrainCommand = new RelayCommand(CreateTrain, CanCreateTrain);
-            CancelCommand = new RelayCommand(Cancel);
-
-            TrainTypes = Enum.GetValues(typeof(TrainType)).Cast<TrainType>().ToList();
-            PriorityLevels = Enum.GetValues(typeof(PriorityLevel)).Cast<PriorityLevel>().ToList();
-            TrainStates = Enum.GetValues(typeof(TrainState)).Cast<TrainState>().ToList();
-        }
 
         public List<TrainType> TrainTypes { get; }
         public List<PriorityLevel> PriorityLevels { get; }
@@ -119,7 +93,33 @@ namespace Locomotiv.ViewModel
         }
 
         public ICommand CreateTrainCommand { get; }
+
         public ICommand CancelCommand { get; }
+
+        public CreateTrainForStationViewModel(
+            IStationDAL stationDAL,
+            IStationContextService stationContextService,
+            INavigationService navigationService,
+            ITrainDAL trainDAL
+        )
+        {
+            _stationDAL = stationDAL;
+            _stationContextService = stationContextService;
+            _navigationService = navigationService;
+            _trainDAL = trainDAL;
+
+            _currentStation = _stationContextService.CurrentStation;
+
+            CreateTrainCommand = new RelayCommand(CreateTrain, CanCreateTrain);
+            CancelCommand = new RelayCommand(Cancel);
+
+            TrainTypes = Enum.GetValues(typeof(TrainType))
+                .Cast<TrainType>().ToList();
+            PriorityLevels = Enum.GetValues(typeof(PriorityLevel))
+                .Cast<PriorityLevel>().ToList();
+            TrainStates = Enum.GetValues(typeof(TrainState))
+                .Cast<TrainState>().ToList();
+        }
 
         private bool CanCreateTrain()
         {

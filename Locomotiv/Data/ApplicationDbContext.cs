@@ -11,14 +11,15 @@ public class ApplicationDbContext : DbContext
     protected override void OnConfiguring(
        DbContextOptionsBuilder optionsBuilder)
     {
-        // Définir le chemin absolu pour la base de données dans le répertoire AppData
-        var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Locomotiv", "Locomotiv.db");
+        var dbPath = Path.Combine(
+            Environment.GetFolderPath(
+                Environment.SpecialFolder.ApplicationData), "Locomotiv", "Locomotiv.db");
         Directory.CreateDirectory(Path.GetDirectoryName(dbPath));
         var connectionString = $"Data Source={dbPath}";
 
-        // Configurer le DbContext pour utiliser la chaîne de connexion
         optionsBuilder.UseSqlite(connectionString);
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Station>()
@@ -53,8 +54,6 @@ public class ApplicationDbContext : DbContext
             .HasOne(t => t.StartStation)
             .WithMany();
     }
-
-
     public DbSet<Locomotive> Locomotives { get; set; }
     public DbSet<Wagon> Wagons { get; set; }
     public DbSet<Train> Trains { get; set; }
@@ -64,11 +63,12 @@ public class ApplicationDbContext : DbContext
     public DbSet<BlockPoint> BlockPoints { get; set; }
     public DbSet<PredefinedRoute> PredefinedRoutes { get; set; }
 
-    IConfiguration config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false).Build();
+    IConfiguration config = new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("appsettings.json", optional: false).Build();
 
     public void SeedData()
     {
-
         if (!Locomotives.Any())
         {
             Locomotives.AddRange(

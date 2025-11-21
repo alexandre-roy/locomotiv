@@ -11,6 +11,7 @@ namespace LocomotivTests.ViewModel
         private readonly Mock<IStationDAL> _stationDALMock;
         private readonly Mock<INavigationService> _navigationServiceMock;
         private readonly Mock<IUserSessionService> _userSessionServiceMock;
+        private readonly Mock <IPredefinedRouteDAL> _predefinedRouteDALMock;
         private readonly HomeViewModel _viewmodel;
 
         public HomeViewModelTest()
@@ -19,12 +20,14 @@ namespace LocomotivTests.ViewModel
             _stationDALMock = new Mock<IStationDAL>();
             _navigationServiceMock = new Mock<INavigationService>();
             _userSessionServiceMock = new Mock<IUserSessionService>();
+            _predefinedRouteDALMock = new Mock<IPredefinedRouteDAL>();
 
             _viewmodel = new HomeViewModel(
                 _userDALMock.Object,
                 _navigationServiceMock.Object,
                 _userSessionServiceMock.Object,
-                _stationDALMock.Object
+                _stationDALMock.Object,
+                _predefinedRouteDALMock.Object
             );
         }
 
@@ -32,33 +35,38 @@ namespace LocomotivTests.ViewModel
         public void Logout_ConnectedUser_LogsOutUser()
         {
             // Arrange
-            _userSessionServiceMock.SetupGet(c => c.IsUserConnected).Returns(true);
+            _userSessionServiceMock.SetupGet(c => c.IsUserConnected)
+                .Returns(true);
 
             // Act
             _viewmodel.LogoutCommand.Execute(null);
 
             // Assert: should log out user
-            _userSessionServiceMock.VerifySet(c => c.ConnectedUser = null, Times.Once);
+            _userSessionServiceMock.VerifySet(c => c.ConnectedUser = null,
+                Times.Once);
         }
 
         [Fact]
         public void Logout_ConnectedUser_NavigatesToConnectUser()
         {
             // Arrange
-            _userSessionServiceMock.SetupGet(c => c.IsUserConnected).Returns(true);
+            _userSessionServiceMock.SetupGet(c => c.IsUserConnected)
+                .Returns(true);
 
             // Act
             _viewmodel.LogoutCommand.Execute(null);
 
             // Assert: should navigate to connect user
-            _navigationServiceMock.Verify(n => n.NavigateTo<ConnectUserViewModel>(), Times.Once);
+            _navigationServiceMock.Verify(n => n.NavigateTo<ConnectUserViewModel>(),
+                Times.Once);
         }
 
         [Fact]
         public void CanLogout_ConnectedUser_ReturnsTrue()
         {
             // Arrange
-            _userSessionServiceMock.SetupGet(c => c.IsUserConnected).Returns(true);
+            _userSessionServiceMock.SetupGet(c => c.IsUserConnected)
+                .Returns(true);
 
             // Act
             var canLogout = _viewmodel.LogoutCommand.CanExecute(null);
@@ -71,7 +79,8 @@ namespace LocomotivTests.ViewModel
         public void CanLogout_NoConnectedUser_ReturnsFalse()
         {
             // Arrange
-            _userSessionServiceMock.SetupGet(c => c.IsUserConnected).Returns(false);
+            _userSessionServiceMock.SetupGet(c => c.IsUserConnected)
+                .Returns(false);
 
             // Act
             var canLogout = _viewmodel.LogoutCommand.CanExecute(null);

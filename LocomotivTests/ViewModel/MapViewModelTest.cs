@@ -87,9 +87,24 @@ namespace LocomotivTests.ViewModel
 
             _blockPoints = new List<BlockPoint>
             {
-                new BlockPoint { Id = 1, Longitude = -71.204255, Latitude = 46.842256 },
-                new BlockPoint { Id = 2, Longitude = -71.334879, Latitude = 46.747842 },
-                new BlockPoint { Id = 3, Longitude = -71.123456, Latitude = 46.654321 }
+                new BlockPoint 
+                { 
+                    Id = 1,
+                    Longitude = -71.204255,
+                    Latitude = 46.842256
+                },
+                new BlockPoint 
+                {
+                    Id = 2, 
+                    Longitude = -71.334879, 
+                    Latitude = 46.747842 
+                },
+                new BlockPoint 
+                { 
+                    Id = 3, 
+                    Longitude = -71.123456, 
+                    Latitude = 46.654321 
+                }
             };
 
             _block = new Block
@@ -125,7 +140,8 @@ namespace LocomotivTests.ViewModel
             // Assert
             Assert.Equal(
                 $"🏢 Station : Test Station\n" +
-                $"📍 Localisation : ({_station.Latitude}, {_station.Longitude})\n\n" +
+                $"📍 Localisation : ({_station.Latitude}, " +
+                $"{_station.Longitude})\n\n" +
                 $"🚆 Trains attribués :\n" +
                 $"   • 🚉 Train 2\n\n" +
                 $"🚉 Trains en gare :\n" +
@@ -147,7 +163,8 @@ namespace LocomotivTests.ViewModel
             // Assert
             Assert.Equal(
                 $"🏢 Station : Empty Test Station\n" +
-                $"📍 Localisation : ({_emptyStation.Latitude}, {_emptyStation.Longitude})\n\n" +
+                $"📍 Localisation : ({_emptyStation.Latitude}, " +
+                $"{_emptyStation.Longitude})\n\n" +
                 $"🚆 Trains attribués :\n" +
                 $"   Aucun train attribué\n\n" +
                 $"🚉 Trains en gare :\n" +
@@ -171,7 +188,7 @@ namespace LocomotivTests.ViewModel
             // Assert
             Assert.Equal(
                 $"🛤️ BlockPoint 1\n\n" +
-                $"Blocs connectés :\n - Block 1 → vers BlockPoint 2", 
+                $"Blocs connectés :\n - Block 1 (Libre) → vers BlockPoint 2", 
                 blockstring);
         }
 
@@ -182,14 +199,15 @@ namespace LocomotivTests.ViewModel
             var blockPoint = _blockPoints[2];
 
             // Act
-            _blockDALMock.Setup(d => d.GetAll()).Returns(new List<Block> { _blockNotConnected });
+            _blockDALMock.Setup(d => d.GetAll())
+                .Returns(new List<Block> { _blockNotConnected });
 
             string blockstring = _viewmodel.GetBlockInfo(_blockPoints[2]);
 
             // Assert
             Assert.Equal(
                 $"🛤️ BlockPoint 3\n\n" +
-                $"Blocs connectés :\n - Block 2 → (point unique)",
+                $"Blocs connectés :\n - Block 2 (Libre) → (point unique)",
                 blockstring);
         }
     }

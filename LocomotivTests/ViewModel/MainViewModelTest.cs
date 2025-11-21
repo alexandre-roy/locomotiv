@@ -26,27 +26,30 @@ namespace LocomotivTests.ViewModel
         public void Disconnect_ConnectedUser_LogsOutUser()
         {
             // Arrange
-            _userSessionServiceMock.SetupGet(c => c.IsUserConnected).Returns(true);
+            _userSessionServiceMock.SetupGet(c => c.IsUserConnected)
+                .Returns(true);
 
             // Act
             _viewmodel.DisconnectCommand.Execute(null);
 
             // Assert: should log out user
-            _userSessionServiceMock.VerifySet(c => c.ConnectedUser = null, Times.Once);
+            _userSessionServiceMock.VerifySet(c => c.ConnectedUser = null,
+                Times.Once);
         }
 
         [Fact]
         public void Disconnect_ConnectedUser_NavigatesToConnectUser()
         {
             // Arrange
-            _userSessionServiceMock.SetupGet(c => c.IsUserConnected).Returns(true);
+            _userSessionServiceMock.SetupGet(c => c.IsUserConnected)
+                .Returns(true);
 
             // Act
             _viewmodel.DisconnectCommand.Execute(null);
 
             // Assert: should navigate to connect user
-            _navigationServiceMock.Verify(n => n.NavigateTo<ConnectUserViewModel>(), Times.Once);
-
+            _navigationServiceMock.Verify(n => n.NavigateTo<ConnectUserViewModel>(),
+                Times.Once);
         }
     }
 }

@@ -49,7 +49,8 @@ namespace LocomotivTests.ViewModel
             _viewmodel.ConnectCommand.Execute(null);
 
             // Assert: should connect user
-            _userSessionServiceMock.VerifySet(c => c.ConnectedUser = _user, Times.Once);
+            _userSessionServiceMock.VerifySet(c => c.ConnectedUser = _user,
+               Times.Once);
         }
 
         [Fact]
@@ -68,7 +69,8 @@ namespace LocomotivTests.ViewModel
             _viewmodel.ConnectCommand.Execute(null);
 
             // Assert: should not connect user
-            _userSessionServiceMock.VerifySet(c => c.ConnectedUser = _user, Times.Never);
+            _userSessionServiceMock.VerifySet(c => c.ConnectedUser = _user, 
+                Times.Never);
         }
 
         [Fact]
@@ -87,7 +89,8 @@ namespace LocomotivTests.ViewModel
             _viewmodel.ConnectCommand.Execute(null);
 
             // Assert: should navigate to home
-            _navigationServiceMock.Verify(n => n.NavigateTo<HomeViewModel>(), Times.Once);
+            _navigationServiceMock.Verify(n => n.NavigateTo<HomeViewModel>(), 
+                Times.Once);
         }
 
         [Fact]
@@ -106,7 +109,8 @@ namespace LocomotivTests.ViewModel
             _viewmodel.ConnectCommand.Execute(null);
 
             // Assert: should not navigate to home
-            _navigationServiceMock.Verify(n => n.NavigateTo<HomeViewModel>(), Times.Never);
+            _navigationServiceMock.Verify(n => n.NavigateTo<HomeViewModel>(), 
+                Times.Never);
         }
 
         [Fact]

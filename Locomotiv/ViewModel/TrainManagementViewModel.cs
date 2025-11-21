@@ -1,11 +1,9 @@
-using Locomotiv.Model;
 using Locomotiv.Model.Interfaces;
 using Locomotiv.Utils;
 using Locomotiv.Utils.Commands;
 using Locomotiv.Utils.Services.Interfaces;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using System.Windows;
 
 namespace Locomotiv.ViewModel
 {
@@ -17,6 +15,7 @@ namespace Locomotiv.ViewModel
         private Station? _currentStation;
 
         public ObservableCollection<Train> Trains { get; set; }
+
         public ObservableCollection<Train> AvailableTrains { get; set; }
 
         private Train? _selectedTrain;
@@ -55,15 +54,20 @@ namespace Locomotiv.ViewModel
         }
 
         public ICommand AddTrainCommand { get; set; }
+
         public ICommand DeleteTrainCommand { get; set; }
+
         public ICommand DeleteAvailableTrainCommand { get; set; }
+
         public ICommand NavigateToCreateTrainForStationViewCommand { get; set; }
+
         public ICommand CloseCommand { get; set; }
 
         public TrainManagementViewModel(
             IStationDAL stationDAL,
             IStationContextService stationContextService,
-            INavigationService navigationService)
+            INavigationService navigationService
+        )
         {
             _stationDAL = stationDAL;
             _stationContextService = stationContextService;
@@ -72,14 +76,23 @@ namespace Locomotiv.ViewModel
             Trains = new ObservableCollection<Train>();
             AvailableTrains = new ObservableCollection<Train>();
 
-            AddTrainCommand = new RelayCommand(AddTrain, CanAddTrain);
-            NavigateToCreateTrainForStationViewCommand = new RelayCommand(CreateTrain, CanCreateTrain);
-            DeleteTrainCommand = new RelayCommand(DeleteTrain, CanDeleteTrain);
-            DeleteAvailableTrainCommand = new RelayCommand(DeleteAvailableTrain, CanDeleteAvailableTrain);
+            AddTrainCommand = new RelayCommand(
+                AddTrain, CanAddTrain
+            );
+            NavigateToCreateTrainForStationViewCommand = new RelayCommand(
+                CreateTrain, CanCreateTrain
+            );
+            DeleteTrainCommand = new RelayCommand(
+                DeleteTrain, CanDeleteTrain
+            );
+            DeleteAvailableTrainCommand = new RelayCommand(
+                DeleteAvailableTrain, CanDeleteAvailableTrain
+            );
             CloseCommand = new RelayCommand(Close);
 
             LoadData();
         }
+
 
         private void LoadData()
         {
@@ -119,7 +132,8 @@ namespace Locomotiv.ViewModel
 
             if (_currentStation != null)
             {
-                IList<Train> availableTrains = _stationDAL.GetTrainsForStation(_currentStation.Id);
+                // Handle potential null return from DAL
+                IList<Train> availableTrains = _stationDAL.GetTrainsForStation(_currentStation.Id) ?? new List<Train>();
 
                 foreach (Train train in availableTrains)
                 {
@@ -127,16 +141,19 @@ namespace Locomotiv.ViewModel
                 }
             }
         }
+
         internal void CreateTrain()
         {
             _stationContextService.CurrentStation = _currentStation;
 
             _navigationService.NavigateTo<CreateTrainForStationViewModel>();
         }
+
         internal bool CanCreateTrain()
         {
             return _currentStation != null;
         }
+
         internal void AddTrain()
         {
             if (SelectedAvailableTrain != null && _currentStation != null)
@@ -152,8 +169,6 @@ namespace Locomotiv.ViewModel
                 }
             }
         }
-
-
 
         internal void DeleteTrain()
         {
@@ -177,7 +192,6 @@ namespace Locomotiv.ViewModel
 
             return Trains.Count < _currentStation.Capacity;
         }
-
 
         internal bool CanDeleteTrain()
         {
