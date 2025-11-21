@@ -161,8 +161,8 @@ namespace Locomotiv.ViewModel
                     Wagons = wagons
                 };
 
-                _trainDAL.Add(train);
-                _navigationService.NavigateBack();
+                _stationDAL.CreateTrainForStation(_currentStation.Id, train);
+                _navigationService.NavigateTo<TrainManagementViewModel>();
             }
             catch (Exception ex)
             {
@@ -172,7 +172,7 @@ namespace Locomotiv.ViewModel
 
         private void Cancel()
         {
-            _navigationService.NavigateBack();
+            _navigationService.NavigateTo<TrainManagementViewModel>();
         }
     }
 }

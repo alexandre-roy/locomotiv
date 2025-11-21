@@ -12,7 +12,6 @@ namespace Locomotiv.Utils.Services
     {
         private BaseViewModel _currentView;
         private Func<Type, BaseViewModel> _viewModelFactory;
-        private Stack<BaseViewModel> _navigationHistory = new Stack<BaseViewModel>();
 
         public BaseViewModel CurrentView
         {
@@ -31,21 +30,10 @@ namespace Locomotiv.Utils.Services
 
         public void NavigateTo<TViewModel>() where TViewModel : BaseViewModel
         {
-            if (_currentView != null)
-            {
-                _navigationHistory.Push(_currentView);
-            }
-
             BaseViewModel viewModel = _viewModelFactory.Invoke(typeof(TViewModel));
             CurrentView = viewModel;
         }
 
-        public void NavigateBack()
-        {
-            if (_navigationHistory.Count > 0)
-            {
-                CurrentView = _navigationHistory.Pop();
-            }
-        }
+
     }
 }

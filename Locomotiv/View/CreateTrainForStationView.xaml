@@ -22,18 +22,7 @@
                        FontWeight="Bold"
                        VerticalAlignment="Center"/>
 
-            <Button Content="✕"
-                    Command="{Binding CancelCommand}"
-                    Width="30"
-                    Height="30"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    FontSize="16"
-                    FontWeight="Bold"
-                    Background="#E0E0E0"
-                    BorderBrush="#BDBDBD"
-                    Cursor="Hand"
-                    ToolTip="Annuler"/>
+            
         </Grid>
 
         <StackPanel Grid.Row="1" Grid.Column="1" MaxWidth="500" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -100,5 +89,18 @@
                     HorizontalAlignment="Stretch"
                     Cursor="Hand"/>
         </StackPanel>
+        <Button Content="✕"
+                Grid.Column="1"
+        Command="{Binding CancelCommand}"
+        Width="30"
+        Height="30"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Top"
+        FontSize="16"
+        FontWeight="Bold"
+        Background="#E0E0E0"
+        BorderBrush="#BDBDBD"
+        Cursor="Hand"
+        ToolTip="Annuler"/>
     </Grid>
 </UserControl>

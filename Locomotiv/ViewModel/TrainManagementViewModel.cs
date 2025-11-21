@@ -56,6 +56,7 @@ namespace Locomotiv.ViewModel
 
         public ICommand AddTrainCommand { get; set; }
         public ICommand DeleteTrainCommand { get; set; }
+        public ICommand DeleteAvailableTrainCommand { get; set; }
         public ICommand NavigateToCreateTrainForStationViewCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
@@ -74,6 +75,7 @@ namespace Locomotiv.ViewModel
             AddTrainCommand = new RelayCommand(AddTrain, CanAddTrain);
             NavigateToCreateTrainForStationViewCommand = new RelayCommand(CreateTrain, CanCreateTrain);
             DeleteTrainCommand = new RelayCommand(DeleteTrain, CanDeleteTrain);
+            DeleteAvailableTrainCommand = new RelayCommand(DeleteAvailableTrain, CanDeleteAvailableTrain);
             CloseCommand = new RelayCommand(Close);
 
             LoadData();
@@ -182,9 +184,30 @@ namespace Locomotiv.ViewModel
             return SelectedTrain != null;
         }
 
+        internal void DeleteAvailableTrain()
+        {
+            if (SelectedAvailableTrain != null && _currentStation != null)
+            {
+                _currentStation = _stationDAL.FindById(_currentStation.Id);
+
+                if (_currentStation != null)
+                {
+                    _stationDAL.DeleteTrainPermanently(_currentStation.Id, SelectedAvailableTrain.Id);
+
+                    LoadData();
+                    SelectedAvailableTrain = null;
+                }
+            }
+        }
+
+        internal bool CanDeleteAvailableTrain()
+        {
+            return SelectedAvailableTrain != null;
+        }
+
         internal void Close()
         {
-            _navigationService.NavigateBack();
+            _navigationService.NavigateTo<MapViewModel>();
         }
     }
 }

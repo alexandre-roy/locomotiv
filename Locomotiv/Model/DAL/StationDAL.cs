@@ -205,5 +205,70 @@ namespace Locomotiv.Model.DAL
                 }
             }
         }
+        /// <summary>
+        /// Adds a new train to the specified station.
+        /// </summary>
+        /// <remarks>If the specified station does not exist, no action is taken. The train is added to
+        /// both the station's train collection and the database context.</remarks>
+        /// <param name="stationId">The unique identifier of the station to which the train will be added.</param>
+        /// <param name="train">The train entity to associate with the station. Cannot be null.</param>
+        public void CreateTrainForStation(int stationId, Train train)
+        {
+            Station? station = _context.Stations
+                .Include(s => s.Trains)
+                .FirstOrDefault(s => s.Id == stationId);
+            if (station != null)
+            {
+                if (station.Trains == null)
+                {
+                    station.Trains = new List<Train>();
+                }
+
+                _context.Trains.Add(train);
+                station.Trains.Add(train);
+                _context.SaveChanges();
+            }
+        }
+        /// <summary>
+        /// Permanently deletes the specified train and all of its associated locomotives and wagons from the given
+        /// station.
+        /// </summary>
+        /// <remarks>If either the station or train does not exist, or if the train is not associated with
+        /// the specified station, no changes are made. This operation removes all related data for the train and cannot
+        /// be undone.</remarks>
+        /// <param name="stationId">The unique identifier of the station from which the train will be removed.</param>
+        /// <param name="trainId">The unique identifier of the train to be deleted.</param>
+        public void DeleteTrainPermanently(int stationId, int trainId)
+        {
+            Station? station = _context.Stations
+                .Include(s => s.Trains)
+                .FirstOrDefault(s => s.Id == stationId);
+
+            Train? train = _context.Trains
+                .Include(t => t.Locomotives)
+                .Include(t => t.Wagons)
+                .FirstOrDefault(t => t.Id == trainId);
+
+            if (station != null && train != null)
+            {
+                if (station.Trains != null && station.Trains.Contains(train))
+                {
+                    station.Trains.Remove(train);
+                }
+
+                if (train.Locomotives != null)
+                {
+                    _context.Locomotives.RemoveRange(train.Locomotives);
+                }
+
+                if (train.Wagons != null)
+                {
+                    _context.Wagons.RemoveRange(train.Wagons);
+                }
+
+                _context.Trains.Remove(train);
+                _context.SaveChanges();
+            }
+        }
     }
 }

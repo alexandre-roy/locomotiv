@@ -53,6 +53,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Text="Trains disponibles"
@@ -90,6 +91,16 @@
                         Command="{Binding AddTrainCommand}"
                         Padding="10"
                         Background="Green"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Stretch"
+                        Margin="0,0,0,5"/>
+
+                <Button Grid.Row="3"
+                        Content="Supprimer définitivement le train"
+                        Command="{Binding DeleteAvailableTrainCommand}"
+                        Padding="10"
+                        Background="#D32F2F"
                         Foreground="White"
                         FontWeight="Bold"
                         HorizontalAlignment="Stretch"/>
@@ -137,7 +148,7 @@
                 </ListBox>
                
                 <Button Grid.Row="2"
-                        Content="← Supprimer le train sélectionné"
+                        Content="← Enlever le train sélectionné"
                         Command="{Binding DeleteTrainCommand}"
                         Padding="10"
                         Background="#D32F2F"

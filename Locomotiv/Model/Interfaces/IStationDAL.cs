@@ -15,5 +15,8 @@ namespace Locomotiv.Model.Interfaces
         IList<Train> GetTrainsInStation(int stationId);
         void RemoveTrainFromStation(int stationId, int trainId);
         void AddTrainToStation(int stationId, int trainId, bool addToTrainsInStation);
+
+        void CreateTrainForStation(int stationId, Train train);
+        void DeleteTrainPermanently(int stationId, int trainId);
     }
 }

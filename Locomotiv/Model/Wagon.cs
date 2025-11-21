@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 public class Wagon
 {
     public int Id { get; set; }
-
+    
     public string Code { get; set; }
 }
