@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Locomotiv.Model;
 using Locomotiv.Model.Interfaces;
 using Locomotiv.Utils.Services.Interfaces;
 using Locomotiv.ViewModel;
@@ -94,6 +95,117 @@ namespace LocomotivTests.ViewModel
 
             // Assert: should not be able to log out
             Assert.False(canLogout);
+        }
+
+        [Fact]
+        public void CanFindRoute_AllSelectionsMade_ReturnsTrue()
+        {
+            // Arrange
+            Station start = new Station { Id = 1, Name = "A" };
+            Station end = new Station { Id = 2, Name = "B" };
+            Train train = new Train { Id = 1 };
+
+            _stationDALMock.Setup(d => d.GetAll())
+                .Returns(new List<Station>());
+            _stationDALMock.Setup(d => d.GetTrainsInStation(start.Id))
+                .Returns(new List<Train>());
+            _predefinedRouteDALMock.Setup(d => d.GetAll())
+                .Returns(new List<PredefinedRoute>());
+
+            _viewmodel.SelectedStartStation = start;
+            _viewmodel.SelectedEndStation = end;
+            _viewmodel.SelectedTrain = train;
+
+            // Act
+            bool canFind = _viewmodel.FindRouteCommand.CanExecute(null);
+
+            // Assert
+            Assert.True(canFind);
+        }
+
+        [Fact]
+        public void CanFindRoute_MissingSelection_ReturnsFalse()
+        {
+            // Arrange
+            Station start = new Station { Id = 1, Name = "A" };
+
+            _stationDALMock.Setup(d => d.GetAll())
+                .Returns(new List<Station>());
+            _stationDALMock.Setup(d => d.GetTrainsInStation(start.Id))
+                .Returns(new List<Train>());
+            _predefinedRouteDALMock.Setup(d => d.GetAll())
+                .Returns(new List<PredefinedRoute>());
+
+            _viewmodel.SelectedStartStation = start;
+
+            // Act
+            bool canFind = _viewmodel.FindRouteCommand.CanExecute(null);
+
+            // Assert
+            Assert.False(canFind);
+        }
+
+        [Fact]
+        public void FindRoute_MatchingRoute_SetsCorrectSummary()
+        {
+            // Arrange
+            Station start = new Station { Id = 1 };
+            Station end = new Station { Id = 2 };
+            Train train = new Train { Id = 1 };
+
+            PredefinedRoute route = new PredefinedRoute
+            {
+                Name = "TestRoute",
+                StartStation = start,
+                EndStation = end,
+                BlockIds = new List<int> { 1, 2, 3 }
+            };
+
+            _stationDALMock.Setup(d => d.GetAll())
+                .Returns(new List<Station>());
+            _stationDALMock.Setup(d => d.GetTrainsInStation(start.Id))
+                .Returns(new List<Train>());
+            _predefinedRouteDALMock.Setup(d => d.GetAll())
+                .Returns(new List<PredefinedRoute> { route });
+
+            _viewmodel.SelectedStartStation = start;
+            _viewmodel.SelectedEndStation = end;
+            _viewmodel.SelectedTrain = train;
+
+            // Act
+            _viewmodel.FindRouteCommand.Execute(null);
+
+            // Assert
+            Assert.Equal(
+                "Itinéraire trouvé : TestRoute\nNombre de blocs : 3",
+                _viewmodel.SelectedRouteSummary
+            );
+        }
+
+        [Fact]
+        public void FindRoute_NoMatchingRoute_SetsErrorMessage()
+        {
+            // Arrange
+            Station start = new Station { Id = 1 };
+            Station end = new Station { Id = 2 };
+            Train train = new Train { Id = 1 };
+
+            _stationDALMock.Setup(d => d.GetAll())
+                .Returns(new List<Station>());
+            _stationDALMock.Setup(d => d.GetTrainsInStation(start.Id))
+                .Returns(new List<Train>());
+            _predefinedRouteDALMock.Setup(d => d.GetAll())
+                .Returns(new List<PredefinedRoute>());
+
+            _viewmodel.SelectedStartStation = start;
+            _viewmodel.SelectedEndStation = end;
+            _viewmodel.SelectedTrain = train;
+
+            // Act
+            _viewmodel.FindRouteCommand.Execute(null);
+
+            // Assert
+            Assert.Equal("Aucun itinéraire trouvé entre ces deux stations.", _viewmodel.SelectedRouteSummary);
         }
     }
 }
